@@ -1,0 +1,51 @@
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  code,
+  pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-md px-5 py-3 font-semibold transition;
+    background-color: var(--fortuno-gold-intense);
+    color: var(--fortuno-black);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--fortuno-gold-soft);
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-md border px-5 py-3 font-medium transition;
+    border-color: var(--color-border-strong);
+    color: var(--color-text);
+    background-color: transparent;
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--color-bg);
+  }
+}

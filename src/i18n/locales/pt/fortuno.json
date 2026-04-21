@@ -1,0 +1,88 @@
+{
+  "menu": {
+    "home": "Home",
+    "lotteries": "Sorteios",
+    "myNumbers": "Meus Números",
+    "about": "Quem Somos",
+    "contact": "Fale Conosco",
+    "login": "Entrar",
+    "logout": "Sair",
+    "dashboard": "Dashboard",
+    "myPoints": "Meus Pontos",
+    "myLotteries": "Meus Sorteios",
+    "changePassword": "Alterar senha",
+    "editProfile": "Meus dados"
+  },
+  "cta": {
+    "buyNow": "Compre já",
+    "buy": "Comprar",
+    "continue": "Continuar",
+    "pay": "Pagar",
+    "fillRandomRest": "Preencher o restante aleatoriamente",
+    "backHome": "Voltar à Home",
+    "viewMyNumbers": "Ver em Meus Números",
+    "createLottery": "Crie seu sorteio",
+    "downloadPdf": "Baixar PDF"
+  },
+  "checkout": {
+    "generatingQr": "Gerando QR Code...",
+    "chooseNumbersQuestion": "Deseja selecionar os números?",
+    "chooseNumbers": "Sim, quero escolher",
+    "randomNumbers": "Não, aleatórios",
+    "pasteToPay": "Cole o código no seu app do banco ou escaneie o QR Code",
+    "expiresIn": "Expira em",
+    "expired": "QR Code expirado",
+    "newQrCode": "Gerar novo QR Code",
+    "waitingPayment": "Aguardando confirmação do pagamento...",
+    "paymentConfirmed": "Pagamento confirmado!",
+    "paymentSimulated": "Simulador de pagamento acionado",
+    "congratulations": "Parabéns! Seus bilhetes foram gerados."
+  },
+  "dashboard": {
+    "greeting": "Olá",
+    "myReferralCode": "Seu código de indicação",
+    "countTickets": "Bilhetes comprados",
+    "countLotteries": "Loterias em que participa",
+    "countPoints": "Pontos acumulados",
+    "ownedLotteries": "Loterias que administro",
+    "totalPurchases": "Total de indicações",
+    "totalToReceive": "Valor a receber"
+  },
+  "wizard": {
+    "step1": "Dados Básicos",
+    "step2": "Formato da Numeração",
+    "step3": "Descrições",
+    "step4": "Imagens",
+    "step5": "Combos",
+    "step6": "Sorteios",
+    "step7": "Prêmios",
+    "step8": "Ativar",
+    "totalPossibilities": "Total de possibilidades de bilhetes",
+    "possibilitiesExample": "Exemplos de números válidos"
+  },
+  "home": {
+    "heroTitle": "A sorte está próxima.",
+    "heroSubtitle": "Participe dos sorteios Fortuno e concorra a prêmios todos os dias.",
+    "fraudWarningTitle": "COMUNICADO",
+    "fraudStayAlert": "FIQUE LIGADO!",
+    "securityTitle": "Segurança em primeiro lugar",
+    "easyTitle": "É FÁCIL PARTICIPAR!",
+    "easySubtitle": "E o melhor de tudo é poder concorrer a esse super prêmio com apenas algumas moedas!"
+  },
+  "common": {
+    "loading": "Carregando...",
+    "error": "Ocorreu um erro. Tente novamente.",
+    "copy": "Copiar",
+    "copied": "Código copiado",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "previous": "Anterior",
+    "empty": "Nenhum registro encontrado.",
+    "required": "Campo obrigatório"
+  }
+}

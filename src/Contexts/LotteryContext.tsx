@@ -1,0 +1,224 @@
+import { createContext, useCallback, useState, type ReactNode } from 'react';
+import { toast } from 'sonner';
+import { lotteryService } from '@/Services/lotteryService';
+import type {
+  LotteryInfo,
+  LotteryInsertInfo,
+  LotteryUpdateInfo,
+  LotteryCancelRequest,
+} from '@/types/lottery';
+import { ApiError, UnauthenticatedError } from '@/Services/apiHelpers';
+
+export interface LotteryContextType {
+  openLotteries: LotteryInfo[];
+  currentLottery: LotteryInfo | null;
+  myLotteries: LotteryInfo[];
+  loading: boolean;
+  error: string | null;
+  loadOpen: () => Promise<void>;
+  loadById: (lotteryId: number) => Promise<LotteryInfo | null>;
+  loadBySlug: (slug: string) => Promise<LotteryInfo | null>;
+  loadByStore: (storeId: number) => Promise<void>;
+  create: (payload: LotteryInsertInfo) => Promise<LotteryInfo | null>;
+  update: (payload: LotteryUpdateInfo) => Promise<LotteryInfo | null>;
+  publish: (lotteryId: number) => Promise<boolean>;
+  close: (lotteryId: number) => Promise<boolean>;
+  cancel: (lotteryId: number, payload: LotteryCancelRequest) => Promise<boolean>;
+  clearError: () => void;
+}
+
+const LotteryContext = createContext<LotteryContextType | undefined>(undefined);
+
+export const LotteryProvider = ({ children }: { children: ReactNode }): JSX.Element => {
+  const [openLotteries, setOpenLotteries] = useState<LotteryInfo[]>([]);
+  const [currentLottery, setCurrentLottery] = useState<LotteryInfo | null>(null);
+  const [myLotteries, setMyLotteries] = useState<LotteryInfo[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleError = useCallback((err: unknown, fallback = 'Erro inesperado') => {
+    if (err instanceof UnauthenticatedError) {
+      toast.error('Sessão expirada. Faça login novamente.');
+    } else if (err instanceof ApiError) {
+      toast.error(err.message);
+    } else {
+      toast.error(fallback);
+    }
+    setError(err instanceof Error ? err.message : fallback);
+  }, []);
+
+  const loadOpen = useCallback(async (): Promise<void> => {
+    setLoading(true);
+    try {
+      const list = await lotteryService.listOpen();
+      setOpenLotteries(list);
+      setError(null);
+    } catch (err) {
+      handleError(err, 'Falha ao carregar sorteios em andamento.');
+    } finally {
+      setLoading(false);
+    }
+  }, [handleError]);
+
+  const loadById = useCallback(
+    async (lotteryId: number): Promise<LotteryInfo | null> => {
+      setLoading(true);
+      try {
+        const lottery = await lotteryService.getById(lotteryId);
+        setCurrentLottery(lottery);
+        setError(null);
+        return lottery;
+      } catch (err) {
+        handleError(err, 'Falha ao carregar sorteio.');
+        return null;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [handleError],
+  );
+
+  const loadBySlug = useCallback(
+    async (slug: string): Promise<LotteryInfo | null> => {
+      setLoading(true);
+      try {
+        const lottery = await lotteryService.getBySlug(slug);
+        setCurrentLottery(lottery);
+        setError(null);
+        return lottery;
+      } catch (err) {
+        handleError(err, 'Sorteio não encontrado.');
+        return null;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [handleError],
+  );
+
+  const loadByStore = useCallback(
+    async (storeId: number): Promise<void> => {
+      setLoading(true);
+      try {
+        const list = await lotteryService.listByStore(storeId);
+        setMyLotteries(list);
+        setError(null);
+      } catch (err) {
+        handleError(err, 'Falha ao carregar meus sorteios.');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [handleError],
+  );
+
+  const create = useCallback(
+    async (payload: LotteryInsertInfo): Promise<LotteryInfo | null> => {
+      setLoading(true);
+      try {
+        const lottery = await lotteryService.create(payload);
+        setCurrentLottery(lottery);
+        setMyLotteries((prev) => [lottery, ...prev]);
+        toast.success('Sorteio criado em rascunho.');
+        return lottery;
+      } catch (err) {
+        handleError(err, 'Falha ao criar sorteio.');
+        return null;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [handleError],
+  );
+
+  const update = useCallback(
+    async (payload: LotteryUpdateInfo): Promise<LotteryInfo | null> => {
+      setLoading(true);
+      try {
+        const lottery = await lotteryService.update(payload);
+        setCurrentLottery(lottery);
+        setMyLotteries((prev) =>
+          prev.map((l) => (l.lotteryId === lottery.lotteryId ? lottery : l)),
+        );
+        toast.success('Sorteio atualizado.');
+        return lottery;
+      } catch (err) {
+        handleError(err, 'Falha ao atualizar sorteio.');
+        return null;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [handleError],
+  );
+
+  const publish = useCallback(
+    async (lotteryId: number): Promise<boolean> => {
+      try {
+        await lotteryService.publish(lotteryId);
+        toast.success('Sorteio publicado!');
+        return true;
+      } catch (err) {
+        handleError(err, 'Falha ao publicar sorteio.');
+        return false;
+      }
+    },
+    [handleError],
+  );
+
+  const closeFn = useCallback(
+    async (lotteryId: number): Promise<boolean> => {
+      try {
+        await lotteryService.close(lotteryId);
+        toast.success('Sorteio encerrado.');
+        return true;
+      } catch (err) {
+        handleError(err, 'Falha ao encerrar sorteio.');
+        return false;
+      }
+    },
+    [handleError],
+  );
+
+  const cancel = useCallback(
+    async (lotteryId: number, payload: LotteryCancelRequest): Promise<boolean> => {
+      try {
+        await lotteryService.cancel(lotteryId, payload);
+        toast.success('Sorteio cancelado.');
+        return true;
+      } catch (err) {
+        handleError(err, 'Falha ao cancelar sorteio.');
+        return false;
+      }
+    },
+    [handleError],
+  );
+
+  const clearError = useCallback(() => setError(null), []);
+
+  return (
+    <LotteryContext.Provider
+      value={{
+        openLotteries,
+        currentLottery,
+        myLotteries,
+        loading,
+        error,
+        loadOpen,
+        loadById,
+        loadBySlug,
+        loadByStore,
+        create,
+        update,
+        publish,
+        close: closeFn,
+        cancel,
+        clearError,
+      }}
+    >
+      {children}
+    </LotteryContext.Provider>
+  );
+};
+
+export default LotteryContext;
