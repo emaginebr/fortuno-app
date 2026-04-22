@@ -1,9 +1,9 @@
-import { apiUrl, getHeaders, handleResponse } from './apiHelpers';
+import { apiUrl, getHeaders, handleResponse, safeFetch } from './apiHelpers';
 import type { LotteryCommissionsPanel } from '@/types/commission';
 
 export class CommissionService {
   public async listByLottery(lotteryId: number): Promise<LotteryCommissionsPanel> {
-    const res = await fetch(apiUrl(`/commissions/lottery/${lotteryId}`), {
+    const res = await safeFetch(apiUrl(`/commissions/lottery/${lotteryId}`), {
       method: 'GET',
       headers: getHeaders(true),
     });

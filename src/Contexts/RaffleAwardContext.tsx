@@ -12,6 +12,7 @@ export interface RaffleAwardContextType {
   loading: boolean;
   error: string | null;
   loadByRaffle: (raffleId: number) => Promise<void>;
+  loadByRaffles: (raffleIds: number[]) => Promise<void>;
   create: (payload: RaffleAwardInsertInfo) => Promise<RaffleAwardInfo | null>;
   update: (payload: RaffleAwardUpdateInfo) => Promise<RaffleAwardInfo | null>;
   remove: (raffleAwardId: number) => Promise<boolean>;
@@ -36,6 +37,32 @@ export const RaffleAwardProvider = ({ children }: { children: ReactNode }): JSX.
       try {
         const list = await raffleAwardService.listByRaffle(raffleId);
         setAwards([...list].sort((a, b) => a.position - b.position));
+        setError(null);
+      } catch (err) {
+        fail(err, 'Falha ao carregar prêmios.');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [fail],
+  );
+
+  const loadByRaffles = useCallback(
+    async (raffleIds: number[]): Promise<void> => {
+      if (raffleIds.length === 0) {
+        setAwards([]);
+        return;
+      }
+      setLoading(true);
+      try {
+        const lists = await Promise.all(
+          raffleIds.map((id) => raffleAwardService.listByRaffle(id)),
+        );
+        const merged = lists.flat().sort((a, b) => {
+          if (a.raffleId !== b.raffleId) return a.raffleId - b.raffleId;
+          return a.position - b.position;
+        });
+        setAwards(merged);
         setError(null);
       } catch (err) {
         fail(err, 'Falha ao carregar prêmios.');
@@ -97,7 +124,17 @@ export const RaffleAwardProvider = ({ children }: { children: ReactNode }): JSX.
 
   return (
     <RaffleAwardContext.Provider
-      value={{ awards, loading, error, loadByRaffle, create, update, remove, clearError }}
+      value={{
+        awards,
+        loading,
+        error,
+        loadByRaffle,
+        loadByRaffles,
+        create,
+        update,
+        remove,
+        clearError,
+      }}
     >
       {children}
     </RaffleAwardContext.Provider>

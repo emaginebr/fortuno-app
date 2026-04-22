@@ -22,8 +22,10 @@ export interface LotteryContextType {
   create: (payload: LotteryInsertInfo) => Promise<LotteryInfo | null>;
   update: (payload: LotteryUpdateInfo) => Promise<LotteryInfo | null>;
   publish: (lotteryId: number) => Promise<boolean>;
+  revertToDraft: (lotteryId: number) => Promise<boolean>;
   close: (lotteryId: number) => Promise<boolean>;
   cancel: (lotteryId: number, payload: LotteryCancelRequest) => Promise<boolean>;
+  remove: (lotteryId: number) => Promise<boolean>;
   clearError: () => void;
 }
 
@@ -166,6 +168,20 @@ export const LotteryProvider = ({ children }: { children: ReactNode }): JSX.Elem
     [handleError],
   );
 
+  const revertToDraft = useCallback(
+    async (lotteryId: number): Promise<boolean> => {
+      try {
+        await lotteryService.revertToDraft(lotteryId);
+        toast.success('Sorteio revertido para rascunho.');
+        return true;
+      } catch (err) {
+        handleError(err, 'Falha ao reverter sorteio para rascunho.');
+        return false;
+      }
+    },
+    [handleError],
+  );
+
   const closeFn = useCallback(
     async (lotteryId: number): Promise<boolean> => {
       try {
@@ -194,6 +210,24 @@ export const LotteryProvider = ({ children }: { children: ReactNode }): JSX.Elem
     [handleError],
   );
 
+  const remove = useCallback(
+    async (lotteryId: number): Promise<boolean> => {
+      setLoading(true);
+      try {
+        await lotteryService.remove(lotteryId);
+        setMyLotteries((prev) => prev.filter((l) => l.lotteryId !== lotteryId));
+        toast.success('Sorteio excluído.');
+        return true;
+      } catch (err) {
+        handleError(err, 'Falha ao excluir sorteio.');
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [handleError],
+  );
+
   const clearError = useCallback(() => setError(null), []);
 
   return (
@@ -211,8 +245,10 @@ export const LotteryProvider = ({ children }: { children: ReactNode }): JSX.Elem
         create,
         update,
         publish,
+        revertToDraft,
         close: closeFn,
         cancel,
+        remove,
         clearError,
       }}
     >

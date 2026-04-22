@@ -1,4 +1,6 @@
 @import './tokens.css';
+@import './home.css';
+@import './dashboard.css';
 
 @tailwind base;
 @tailwind components;
@@ -25,6 +27,11 @@
   pre {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   }
+
+  :focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-gold-focus);
+  }
 }
 
 @layer components {
@@ -47,5 +54,69 @@
 
   .btn-secondary:hover {
     background-color: var(--color-bg);
+  }
+
+  /* Wizard form fields — espelha .field-input do mockup wizard-vertical */
+  /* `:not(.w-md-editor *)` impede que a regra vaze para o MDEditor (que tem layout próprio). */
+  .wz-form input:not([type='radio']):not([type='checkbox']):not([type='file']):not(.w-md-editor *),
+  .wz-form select:not(.w-md-editor *),
+  .wz-form textarea:not(.w-md-editor *) {
+    background: rgba(7, 32, 26, 0.55);
+    border: 1px solid rgba(236, 232, 225, 0.12);
+    color: var(--fortuno-offwhite);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    transition:
+      border-color 160ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 160ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .wz-form input:not(.w-md-editor *)::placeholder,
+  .wz-form textarea:not(.w-md-editor *)::placeholder {
+    color: rgba(236, 232, 225, 0.35);
+  }
+  .wz-form input:not(.w-md-editor *):focus,
+  .wz-form select:not(.w-md-editor *):focus,
+  .wz-form textarea:not(.w-md-editor *):focus {
+    outline: none;
+    border-color: var(--fortuno-gold-soft);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.25);
+  }
+  .wz-form label > span {
+    color: var(--fortuno-offwhite);
+  }
+
+  /* MDEditor — casar com o wizard: sem borda round interna, fundo transparente */
+  .wz-form .w-md-editor {
+    background: transparent;
+    border: 1px solid rgba(236, 232, 225, 0.12);
+    border-radius: 0.75rem;
+    overflow: hidden;
+  }
+  .wz-form .w-md-editor-text,
+  .wz-form .w-md-editor-text-input,
+  .wz-form .w-md-editor-text textarea {
+    background: transparent !important;
+    color: var(--fortuno-offwhite) !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    padding: 0.75rem 1rem !important;
+    box-shadow: none !important;
+  }
+  .wz-form .w-md-editor-toolbar {
+    background: rgba(7, 32, 26, 0.55);
+    border-bottom: 1px solid rgba(236, 232, 225, 0.08);
+  }
+}
+
+/* ===========================================================
+   Respeito global a prefers-reduced-motion
+   =========================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
   }
 }

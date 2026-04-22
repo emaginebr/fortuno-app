@@ -1,0 +1,354 @@
+/*
+ * Fortuno — Dashboard v2 · Editorial Casino Noir (light body · COMPACT)
+ * Complementa Tailwind com seletores complexos: ring conic no avatar,
+ * ornamento art déco do footer band e user-menu items.
+ */
+
+/* ===========================================================
+   AVATAR FRAME — ring conic ouro pulsante
+   =========================================================== */
+.avatar-frame {
+  position: relative;
+  border-radius: 50%;
+  isolation: isolate;
+  flex-shrink: 0;
+}
+.avatar-frame::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  background: var(--avatar-ring);
+  animation: avatar-breath 6s ease-in-out infinite;
+  z-index: -1;
+}
+.avatar-frame.avatar-sm {
+  width: 44px;
+  height: 44px;
+}
+.avatar-frame.avatar-md {
+  width: 52px;
+  height: 52px;
+}
+.avatar-frame.avatar-lg {
+  width: 56px;
+  height: 56px;
+}
+.avatar-frame .avatar-core {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #1c5b48, #0a2a20);
+  border: 2px solid rgba(212, 175, 55, 0.32);
+  display: grid;
+  place-items: center;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--fortuno-gold-soft);
+  letter-spacing: -0.02em;
+}
+.avatar-frame.avatar-sm .avatar-core {
+  font-size: 16px;
+}
+.avatar-frame.avatar-md .avatar-core {
+  font-size: 20px;
+}
+.avatar-frame.avatar-lg .avatar-core {
+  font-size: 22px;
+  border-color: rgba(212, 175, 55, 0.45);
+}
+
+@keyframes avatar-breath {
+  0%,
+  100% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.75;
+  }
+  50% {
+    transform: rotate(180deg) scale(1.03);
+    opacity: 0.95;
+  }
+}
+
+/* ===========================================================
+   LOGO — PNG tingido em ouro via CSS mask
+   =========================================================== */
+.site-logo-link {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+  user-select: none;
+}
+.site-logo {
+  display: inline-block;
+  width: 132px;
+  height: 40px;
+  background-color: var(--fortuno-gold-intense);
+  -webkit-mask-image: url('/logo-light.png');
+  mask-image: url('/logo-light.png');
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: left center;
+  mask-position: left center;
+  transition: background-color 0.2s ease;
+}
+.site-logo-link:hover .site-logo {
+  background-color: var(--fortuno-gold-soft);
+}
+
+/* ===========================================================
+   NAV PÚBLICA — item ativo com underline ouro
+   =========================================================== */
+.site-nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: rgba(236, 232, 225, 0.78);
+  border-radius: 10px;
+  transition:
+    color var(--duration-fast) var(--easing-out),
+    background var(--duration-fast) var(--easing-out);
+}
+.site-nav-link:hover {
+  color: var(--fortuno-gold-soft);
+}
+.site-nav-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.55);
+}
+.site-nav-link.is-active {
+  color: var(--fortuno-gold-soft);
+  background: var(--nav-item-active-bg);
+  border: 1px solid var(--nav-item-active-border);
+  padding: 7px 13px;
+}
+.site-nav-link.is-active::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 2px;
+  background: var(--fortuno-gold-soft);
+  border-radius: 2px;
+  box-shadow: 0 0 6px rgba(212, 175, 55, 0.6);
+}
+
+/* ===========================================================
+   USER MENU — itens com icon-box e chevron
+   =========================================================== */
+.user-menu-item {
+  display: grid;
+  grid-template-columns: 32px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: var(--dropdown-item-fg);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition:
+    background var(--duration-fast) var(--easing-out),
+    color var(--duration-fast) var(--easing-out),
+    transform var(--duration-fast) var(--easing-out);
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  background: transparent;
+  border: none;
+  min-height: 40px;
+  text-decoration: none;
+}
+.user-menu-item:hover,
+.user-menu-item:focus-visible {
+  background: var(--dropdown-item-bg-hover);
+  color: var(--dropdown-item-fg-hover);
+  outline: none;
+}
+.user-menu-item:focus-visible {
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.55);
+}
+.user-menu-item .item-icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(184, 150, 63, 0.1);
+  border: 1px solid rgba(184, 150, 63, 0.25);
+  color: var(--fortuno-gold-intense);
+  transition:
+    transform var(--duration-fast) var(--easing-spring),
+    background var(--duration-fast) var(--easing-out);
+}
+.user-menu-item:hover .item-icon {
+  transform: translateX(2px);
+  background: rgba(184, 150, 63, 0.2);
+}
+.user-menu-item .item-chevron {
+  width: 13px;
+  height: 13px;
+  color: rgba(11, 11, 11, 0.25);
+  transition:
+    transform var(--duration-fast) var(--easing-spring),
+    color var(--duration-fast) var(--easing-out);
+}
+.user-menu-item:hover .item-chevron {
+  transform: translateX(3px);
+  color: var(--fortuno-gold-intense);
+}
+
+/* Item logout (cobre queimado) */
+.user-menu-item.is-danger {
+  color: var(--dropdown-danger-fg);
+}
+.user-menu-item.is-danger .item-icon {
+  background: rgba(138, 90, 43, 0.1);
+  border-color: rgba(138, 90, 43, 0.3);
+  color: var(--dropdown-danger-fg);
+}
+.user-menu-item.is-danger:hover,
+.user-menu-item.is-danger:focus-visible {
+  background: var(--dropdown-danger-bg-hover);
+  color: var(--dropdown-danger-fg-hover);
+}
+.user-menu-item.is-danger:hover .item-icon {
+  background: rgba(138, 90, 43, 0.18);
+  color: var(--dropdown-danger-fg-hover);
+}
+.user-menu-item.is-danger .item-chevron {
+  color: rgba(138, 90, 43, 0.35);
+}
+.user-menu-item.is-danger:hover .item-chevron {
+  color: var(--dropdown-danger-fg-hover);
+}
+
+/* ===========================================================
+   FOOTER BAND — ornamento art déco
+   =========================================================== */
+.footer-ornament {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(212, 175, 55, 0.55);
+}
+.footer-ornament::before,
+.footer-ornament::after {
+  content: '';
+  width: 18px;
+  height: 1px;
+  background: rgba(212, 175, 55, 0.35);
+}
+.footer-ornament .deco-diamond {
+  width: 6px;
+  height: 6px;
+  background: var(--fortuno-gold-soft);
+  transform: rotate(45deg);
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.2);
+  display: inline-block;
+}
+.footer-link {
+  color: rgba(236, 232, 225, 0.7);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: color var(--duration-fast) var(--easing-out);
+  text-decoration: none;
+}
+.footer-link:hover {
+  color: var(--fortuno-gold-soft);
+}
+.footer-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.55);
+}
+
+/* ===========================================================
+   USER TRIGGER (pílula com avatar + nome + chevron)
+   =========================================================== */
+.user-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 12px 5px 5px;
+  background: var(--user-trigger-bg);
+  border: 1px solid var(--user-trigger-border);
+  border-radius: 999px;
+  color: var(--fortuno-offwhite);
+  transition:
+    background var(--duration-fast) var(--easing-out),
+    border-color var(--duration-fast) var(--easing-out);
+  min-height: 44px;
+}
+.user-trigger:hover {
+  background: var(--user-trigger-bg-hover);
+  border-color: var(--user-trigger-border-hover);
+}
+.user-trigger:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.55);
+  border-color: var(--user-trigger-border-hover);
+}
+.user-trigger[aria-expanded='true'] {
+  background: var(--user-trigger-bg-hover);
+  border-color: var(--user-trigger-border-hover);
+}
+.user-trigger .user-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #1c5b48, #0a2a20);
+  border: 1.5px solid rgba(212, 175, 55, 0.45);
+  display: grid;
+  place-items: center;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--fortuno-gold-soft);
+  font-size: 14px;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+.user-trigger .user-name-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fortuno-offwhite);
+  letter-spacing: 0.01em;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.user-trigger .user-chevron {
+  width: 15px;
+  height: 15px;
+  color: rgba(212, 175, 55, 0.75);
+  transition: transform var(--duration-base) var(--easing-out);
+}
+.user-trigger[aria-expanded='true'] .user-chevron {
+  transform: rotate(180deg);
+  color: var(--fortuno-gold-soft);
+}
+
+@media (max-width: 639px) {
+  .user-trigger .user-name-label {
+    display: none;
+  }
+  .user-trigger {
+    padding: 5px 10px 5px 5px;
+  }
+}

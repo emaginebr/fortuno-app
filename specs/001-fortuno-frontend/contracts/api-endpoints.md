@@ -18,16 +18,22 @@ Base URL: `import.meta.env.VITE_API_URL`
 |--------|--------------------------------------------|-------|------------------------------|------------------------------------------|---------------------------------------------|
 | GET    | `/lotteries/{lotteryId}`                   | Não   | `LotteryInfo`                | `lotteryService.getById`                | LotteryDetail, Checkout, Wizard (edit)      |
 | GET    | `/lotteries/slug/{slug}`                   | Não   | `LotteryInfo`                | `lotteryService.getBySlug`              | LotteryDetail (SEO-friendly URLs)           |
-| GET    | `/lotteries/store/{storeId}`               | Sim   | `LotteryInfo[]`              | `lotteryService.listByStore`            | MyLotteries, LotteryList (Open)             |
+| GET    | `/lotteries/open`                          | Não   | `LotteryInfo[]`              | `lotteryService.listOpen`               | HomePage (carrossel), LotteryList público   |
+| GET    | `/lotteries/store/{storeId}`               | Sim   | `LotteryInfo[]`              | `lotteryService.listByStore`            | MyLotteries                                 |
 | POST   | `/lotteries`                               | Sim   | `LotteryInsertInfo` → `LotteryInfo` | `lotteryService.create`          | Wizard Step 1 (new)                         |
 | PUT    | `/lotteries/{lotteryId}`                   | Sim   | `LotteryUpdateInfo` → `LotteryInfo` | `lotteryService.update`          | Wizard Step 1–2 (edit)                      |
 | POST   | `/lotteries/{lotteryId}/publish`           | Sim   | —                            | `lotteryService.publish`                | Wizard Step 8                               |
+| POST   | `/lotteries/{lotteryId}/revert-to-draft`   | Sim   | —                            | `lotteryService.revertToDraft`          | MyLotteries (status Open)                   |
 | POST   | `/lotteries/{lotteryId}/close`             | Sim   | —                            | `lotteryService.close`                  | MyLotteries → modal status                  |
 | POST   | `/lotteries/{lotteryId}/cancel`            | Sim   | `LotteryCancelRequest`       | `lotteryService.cancel`                 | MyLotteries → modal cancel (reason)         |
+| DELETE | `/lotteries/{lotteryId}`                   | Sim   | —                            | `lotteryService.remove`                 | MyLotteries, Dashboard preview              |
+
+**Regra de exclusão (`DELETE /lotteries/{lotteryId}`)**: permitido apenas para loterias com status `Draft` ou `Cancelled`. Outros status retornam erro do backend. O frontend já oculta o botão "Excluir" quando o status não permite a operação.
+
+**Reversão de status (`POST /lotteries/{lotteryId}/revert-to-draft`)**: permitida apenas para loterias `Open` e somente o dono da Store autoriza. Bilhetes existentes não são afetados pela reversão (validação no backend).
 
 **Listagem pública de loterias em andamento (home + `/sorteios`)**:
-A coleção Bruno não contém um endpoint público `GET /lotteries?status=Open` explícito — o único listagem disponível é `list-by-store` (autenticado). O frontend chamará `list-by-store` quando o usuário estiver autenticado OU tentará chamada pública se o backend expuser algo do tipo `GET /lotteries/open`. Até confirmação:
-- `// MOCK: aguarda endpoint público de loterias abertas` em `lotteryService.listOpen()`, caindo em `list-by-store` com storeId do Fortuno quando a env `VITE_FORTUNO_STORE_ID` estiver definida.
+Atendida por `GET /lotteries/open` (público, sem auth). `lotteryService.listOpen()` chama essa rota diretamente — sem fallback, sem filtro client-side.
 
 ---
 

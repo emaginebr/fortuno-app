@@ -1,0 +1,1697 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fortuno — Home (Editorial Casino Noir)</title>
+
+  <!-- Tailwind CDN para preview standalone -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fonts: Inter + Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700&display=swap" rel="stylesheet" />
+
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: ['class'],
+      theme: {
+        extend: {
+          colors: {
+            fortuno: {
+              green: { deep: '#0a2a20', elegant: '#134436' },
+              gold:  { intense: '#b8963f', soft: '#d4af37' },
+              black: '#0b0b0b',
+              offwhite: '#ece8e1',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['"Playfair Display"', 'Georgia', 'serif'],
+          },
+          boxShadow: {
+            'gold-glow':       '0 0 0 3px rgba(212,175,55,0.18), 0 0 24px -6px rgba(212,175,55,0.55)',
+            'gold-ring':       '0 0 0 2px rgba(212,175,55,0.55)',
+            'noir-card':       '0 1px 0 rgba(255,255,255,0.04) inset, 0 30px 60px -30px rgba(0,0,0,0.7), 0 12px 24px -12px rgba(0,0,0,0.45)',
+            'noir-card-hover': '0 1px 0 rgba(255,255,255,0.06) inset, 0 40px 80px -30px rgba(0,0,0,0.85), 0 18px 36px -12px rgba(184,150,63,0.35)',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* ===========================================================
+       Editorial Casino Noir — tokens (reutilizados do wizard)
+       =========================================================== */
+    :root {
+      --fortuno-green-deep:    #0a2a20;
+      --fortuno-green-elegant: #134436;
+      --fortuno-gold-intense:  #b8963f;
+      --fortuno-gold-soft:     #d4af37;
+      --fortuno-black:         #0b0b0b;
+      --fortuno-offwhite:      #ece8e1;
+
+      --noir-bg-page:
+        radial-gradient(1200px 600px at 80% -10%, rgba(212,175,55,0.10), transparent 60%),
+        radial-gradient(900px 500px at -10% 110%, rgba(19,68,54,0.55), transparent 55%),
+        linear-gradient(180deg, #07201a 0%, #0a2a20 60%, #081e18 100%);
+
+      --noir-bg-hero:
+        radial-gradient(800px 400px at 50% 100%, rgba(184,150,63,0.18), transparent 65%),
+        radial-gradient(1400px 800px at 80% 0%, rgba(212,175,55,0.08), transparent 60%),
+        linear-gradient(180deg, #061d17 0%, #0a2a20 55%, #07201a 100%);
+
+      --glass-surface: linear-gradient(180deg, rgba(236,232,225,0.06), rgba(236,232,225,0.02));
+      --glass-border:  rgba(212,175,55,0.22);
+
+      --gold-divider:  linear-gradient(90deg, transparent, rgba(212,175,55,0.55), transparent);
+      --gold-divider-v: linear-gradient(180deg, transparent, rgba(212,175,55,0.55), transparent);
+
+      --metal-card:     radial-gradient(140% 120% at 20% 0%, rgba(184,150,63,0.14) 0%, transparent 45%),
+                        linear-gradient(180deg, rgba(19,68,54,0.75) 0%, rgba(7,32,26,0.85) 100%);
+      --metal-stat:     radial-gradient(120% 120% at 30% 20%, #1c5b48 0%, #0f3b2e 60%, #06241c 100%);
+
+      --duration-fast: 160ms;
+      --duration-base: 240ms;
+      --duration-slow: 420ms;
+      --easing-out:    cubic-bezier(0.22, 1, 0.36, 1);
+      --easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--noir-bg-page);
+      color: var(--fortuno-offwhite);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Grain sutil para profundidade editorial */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      pointer-events: none;
+      opacity: 0.06;
+      mix-blend-mode: overlay;
+      background-image: radial-gradient(rgba(236,232,225,0.6) 1px, transparent 1px);
+      background-size: 3px 3px;
+      z-index: 0;
+    }
+
+    .font-display { font-family: 'Playfair Display', Georgia, serif; letter-spacing: -0.01em; }
+
+    /* ===========================================================
+       HERO — vitrine cinematográfica do sorteio em destaque
+       (HeroFeaturedLottery — substitui o HomeHero institucional)
+       =========================================================== */
+    .hero-bg {
+      background: var(--noir-bg-hero);
+      position: relative;
+    }
+    .hero-bg::after {
+      /* rays sutis vindo de baixo */
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        conic-gradient(from 180deg at 50% 120%,
+          transparent 0deg,
+          rgba(212,175,55,0.06) 90deg,
+          transparent 120deg,
+          rgba(212,175,55,0.04) 240deg,
+          transparent 360deg);
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    /* --- Vitrine: imagem cinematográfica wide --- */
+    .hero-stage {
+      position: relative;
+      overflow: hidden;
+      border-radius: 24px;
+      border: 1px solid rgba(212,175,55,0.32);
+      background: #050f0c;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.05) inset,
+        0 50px 100px -40px rgba(0,0,0,0.85),
+        0 24px 48px -18px rgba(0,0,0,0.6);
+      isolation: isolate;
+    }
+    .hero-stage .hero-image {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      transition: transform 1.2s var(--easing-out);
+    }
+    .hero-stage:hover .hero-image { transform: scale(1.02); }
+
+    /* Treatment cinematográfico: gradient bottom-up + vinheta + grão */
+    .hero-stage::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(180deg,
+          rgba(7,32,26,0.10) 0%,
+          rgba(6,21,17,0.05) 35%,
+          rgba(6,21,17,0.55) 70%,
+          rgba(5,15,12,0.92) 100%),
+        radial-gradient(120% 90% at 50% 50%,
+          transparent 50%,
+          rgba(0,0,0,0.55) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .hero-stage::after {
+      /* grão fino editorial */
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(rgba(236,232,225,0.6) 1px, transparent 1px);
+      background-size: 3px 3px;
+      mix-blend-mode: overlay;
+      opacity: 0.08;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Filete dourado interno (passe de cassino editorial) */
+    .hero-stage .stage-frame {
+      position: absolute; inset: 10px;
+      border: 1px solid rgba(212,175,55,0.22);
+      border-radius: 18px;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    /* Caption do palco (badge + título do sorteio) */
+    .hero-stage .stage-caption {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      padding: 28px 32px 32px;
+      z-index: 4;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    @media (min-width: 768px) {
+      .hero-stage .stage-caption { padding: 36px 44px 40px; }
+    }
+
+    /* Painel lateral de informação + ação */
+    .hero-panel {
+      background:
+        linear-gradient(180deg, rgba(19,68,54,0.55), rgba(7,32,26,0.65)),
+        radial-gradient(120% 100% at 0% 0%, rgba(212,175,55,0.08), transparent 55%);
+      border: 1px solid rgba(212,175,55,0.28);
+      border-radius: 22px;
+      padding: 28px;
+      position: relative;
+      backdrop-filter: blur(14px) saturate(140%);
+      -webkit-backdrop-filter: blur(14px) saturate(140%);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.05) inset,
+        0 30px 60px -30px rgba(0,0,0,0.7);
+    }
+    @media (min-width: 768px) {
+      .hero-panel { padding: 36px 32px; }
+    }
+
+    /* Selos de credibilidade (glass micro-bordas ouro) */
+    .hero-seals {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .hero-seal {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 8px;
+      padding: 12px 10px;
+      background: linear-gradient(180deg, rgba(7,32,26,0.55), rgba(7,32,26,0.30));
+      border: 1px solid rgba(212,175,55,0.28);
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: border-color var(--duration-base) var(--easing-out),
+                  background var(--duration-base) var(--easing-out),
+                  transform var(--duration-base) var(--easing-out);
+    }
+    .hero-seal:hover {
+      border-color: rgba(212,175,55,0.55);
+      background: linear-gradient(180deg, rgba(7,32,26,0.7), rgba(7,32,26,0.45));
+      transform: translateY(-1px);
+    }
+    .hero-seal i {
+      width: 18px; height: 18px;
+      color: var(--fortuno-gold-soft);
+      flex-shrink: 0;
+    }
+    .hero-seal .seal-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(236,232,225,0.78);
+      line-height: 1.25;
+    }
+
+    /* Scarcity pulse — quando bilhetes >= 80% */
+    .scarcity-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #f0d27a;
+      font-weight: 700;
+    }
+    .scarcity-hint .pulse-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #f0d27a;
+      box-shadow: 0 0 0 0 rgba(240,210,122,0.7);
+      animation: live-pulse 1.6s ease-in-out infinite;
+    }
+
+    /* Fallback hero (sem sorteio em destaque) */
+    .hero-fallback {
+      background:
+        radial-gradient(600px 300px at 50% 100%, rgba(212,175,55,0.12), transparent 70%),
+        linear-gradient(180deg, rgba(19,68,54,0.6), rgba(7,32,26,0.85));
+      border: 1px dashed rgba(212,175,55,0.35);
+      border-radius: 24px;
+      padding: 64px 32px;
+      text-align: center;
+    }
+
+    .gold-numeral {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-weight: 800;
+      line-height: 0.88;
+      letter-spacing: -0.04em;
+      background: linear-gradient(180deg,
+        var(--fortuno-gold-soft) 0%,
+        var(--fortuno-gold-intense) 55%,
+        rgba(184,150,63,0.28) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 4px 80px rgba(184,150,63,0.22);
+    }
+
+    /* Shimmer que atravessa o numeral */
+    .gold-numeral.shimmer {
+      position: relative;
+      isolation: isolate;
+    }
+    .gold-numeral.shimmer::after {
+      content: attr(data-text);
+      position: absolute; inset: 0;
+      background: linear-gradient(110deg,
+        transparent 30%,
+        rgba(255,255,255,0.85) 45%,
+        rgba(255,255,255,0.4) 50%,
+        transparent 60%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      mix-blend-mode: screen;
+      animation: numeral-shimmer 4.8s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes numeral-shimmer {
+      0%, 20% { background-position: -200% 0; opacity: 0; }
+      40%     { opacity: 0.9; }
+      65%     { opacity: 0.6; }
+      100%    { background-position: 200% 0; opacity: 0; }
+    }
+
+    /* Partículas (pontos dourados flutuantes) */
+    .hero-particles {
+      position: absolute; inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .hero-particles span {
+      position: absolute;
+      width: 3px; height: 3px;
+      background: radial-gradient(circle, rgba(212,175,55,0.9), rgba(212,175,55,0) 70%);
+      border-radius: 50%;
+      opacity: 0.6;
+      animation: particle-float 14s linear infinite;
+    }
+    .hero-particles span:nth-child(1){ left: 8%;  top: 90%; animation-delay: 0s;   }
+    .hero-particles span:nth-child(2){ left: 18%; top: 85%; animation-delay: -2s;  width: 4px; height: 4px; }
+    .hero-particles span:nth-child(3){ left: 28%; top: 92%; animation-delay: -5s;  }
+    .hero-particles span:nth-child(4){ left: 42%; top: 88%; animation-delay: -8s;  }
+    .hero-particles span:nth-child(5){ left: 58%; top: 95%; animation-delay: -1s;  width: 4px; height: 4px; }
+    .hero-particles span:nth-child(6){ left: 70%; top: 82%; animation-delay: -4s;  }
+    .hero-particles span:nth-child(7){ left: 82%; top: 90%; animation-delay: -7s;  }
+    .hero-particles span:nth-child(8){ left: 92%; top: 86%; animation-delay: -11s; }
+    @keyframes particle-float {
+      0%   { transform: translateY(0)    scale(1);   opacity: 0; }
+      10%  { opacity: 0.7; }
+      70%  { opacity: 0.5; }
+      100% { transform: translateY(-120vh) scale(0.4); opacity: 0; }
+    }
+
+    /* ===========================================================
+       CTAs (coerentes com wizard)
+       =========================================================== */
+    .cta-primary {
+      background: var(--fortuno-gold-intense);
+      color: var(--fortuno-black);
+      border-radius: 999px;
+      padding: 14px 28px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      box-shadow: 0 8px 22px -6px rgba(212,175,55,0.4), 0 1px 0 rgba(255,255,255,0.25) inset;
+      transition: background var(--duration-fast) var(--easing-out),
+                  transform var(--duration-fast) var(--easing-out),
+                  box-shadow var(--duration-base) var(--easing-out);
+      display: inline-flex; align-items: center; gap: 10px;
+    }
+    .cta-primary:hover { background: var(--fortuno-gold-soft); box-shadow: 0 10px 28px -6px rgba(212,175,55,0.65), 0 1px 0 rgba(255,255,255,0.3) inset; transform: translateY(-1px); }
+    .cta-primary:active { transform: translateY(0); }
+    .cta-primary:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(212,175,55,0.55); }
+
+    .cta-ghost {
+      background: transparent;
+      color: var(--fortuno-offwhite);
+      border: 1px solid rgba(236,232,225,0.22);
+      border-radius: 999px;
+      padding: 13px 26px;
+      font-weight: 600;
+      transition: background var(--duration-fast) var(--easing-out), border-color var(--duration-fast) var(--easing-out);
+      display: inline-flex; align-items: center; gap: 10px;
+    }
+    .cta-ghost:hover { background: rgba(236,232,225,0.06); border-color: rgba(212,175,55,0.55); }
+    .cta-ghost:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(212,175,55,0.55); }
+
+    /* ===========================================================
+       LOTTERY CARDS — passes de cassino
+       =========================================================== */
+    .lottery-card {
+      position: relative;
+      background: var(--metal-card);
+      border: 1px solid rgba(212,175,55,0.28);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.06) inset,
+        0 30px 60px -30px rgba(0,0,0,0.7),
+        0 12px 24px -12px rgba(0,0,0,0.45);
+      transition: transform var(--duration-base) var(--easing-spring),
+                  box-shadow var(--duration-base) var(--easing-out),
+                  border-color var(--duration-base) var(--easing-out);
+    }
+    .lottery-card::before {
+      /* filete interno dourado (casino ticket) */
+      content: '';
+      position: absolute; inset: 8px;
+      border: 1px solid rgba(212,175,55,0.18);
+      border-radius: 14px;
+      pointer-events: none;
+    }
+    .lottery-card:hover {
+      transform: translateY(-6px);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.08) inset,
+        0 40px 80px -30px rgba(0,0,0,0.85),
+        0 18px 36px -12px rgba(184,150,63,0.4);
+      border-color: rgba(212,175,55,0.6);
+    }
+    .lottery-card:focus-within {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.55), 0 30px 60px -30px rgba(0,0,0,0.7);
+    }
+
+    /* Badge ABERTO pulsando */
+    .badge-live {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 12px 5px 10px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      background: rgba(212,175,55,0.12);
+      border: 1px solid rgba(212,175,55,0.45);
+      color: var(--fortuno-gold-soft);
+      backdrop-filter: blur(8px);
+    }
+    .badge-live .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #e7c05c;
+      box-shadow: 0 0 0 0 rgba(212,175,55,0.7);
+      animation: live-pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes live-pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(212,175,55,0.65); }
+      70%  { box-shadow: 0 0 0 8px rgba(212,175,55,0); }
+      100% { box-shadow: 0 0 0 0 rgba(212,175,55,0); }
+    }
+
+    /* Barra de progresso ouro */
+    .progress-rail {
+      height: 5px; width: 100%;
+      background: rgba(236,232,225,0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-rail > span {
+      display: block; height: 100%;
+      background: linear-gradient(90deg, var(--fortuno-gold-soft), var(--fortuno-gold-intense));
+      box-shadow: 0 0 10px rgba(212,175,55,0.45);
+      position: relative;
+    }
+    .progress-rail > span::after {
+      content: '';
+      position: absolute; top: 0; left: -40%;
+      width: 30%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
+      animation: progress-shimmer 2.4s ease-in-out infinite;
+    }
+    @keyframes progress-shimmer {
+      0%   { left: -40%; }
+      100% { left: 110%; }
+    }
+
+    /* ===========================================================
+       COUNTDOWN
+       =========================================================== */
+    .countdown-cell {
+      background: rgba(7,32,26,0.55);
+      border: 1px solid rgba(212,175,55,0.22);
+      border-radius: 12px;
+      padding: 12px 16px;
+      min-width: 72px;
+      text-align: center;
+      position: relative;
+    }
+    .countdown-cell::after {
+      content: '';
+      position: absolute; left: 8px; right: 8px; top: 50%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(212,175,55,0.15), transparent);
+    }
+    .countdown-num {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: 34px;
+      line-height: 1;
+      color: var(--fortuno-gold-soft);
+      font-variant-numeric: tabular-nums;
+    }
+    .countdown-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.24em;
+      color: rgba(236,232,225,0.55);
+      margin-top: 6px;
+    }
+
+    /* ===========================================================
+       STATS BAND
+       =========================================================== */
+    .stats-strip {
+      background:
+        linear-gradient(180deg, rgba(11,11,11,0.2), rgba(11,11,11,0.0)),
+        linear-gradient(90deg, rgba(212,175,55,0.05), rgba(212,175,55,0.10) 50%, rgba(212,175,55,0.05));
+      border-top: 1px solid rgba(212,175,55,0.15);
+      border-bottom: 1px solid rgba(212,175,55,0.15);
+      position: relative;
+    }
+    .stats-strip::before,
+    .stats-strip::after {
+      content: '';
+      position: absolute; left: 0; right: 0;
+      height: 1px;
+      background: var(--gold-divider);
+    }
+    .stats-strip::before { top: -1px; }
+    .stats-strip::after  { bottom: -1px; }
+
+    .stat-num {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-style: italic;
+      line-height: 1;
+      font-size: clamp(36px, 5.5vw, 64px);
+      letter-spacing: -0.02em;
+      background: linear-gradient(180deg, var(--fortuno-gold-soft), var(--fortuno-gold-intense));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-variant-numeric: tabular-nums;
+    }
+    /* CSS count-up puramente visual */
+    @property --count {
+      syntax: '<integer>';
+      initial-value: 0;
+      inherits: false;
+    }
+    .stat-count {
+      counter-reset: num var(--count);
+      animation: count-up 2.2s var(--easing-out) forwards;
+      animation-delay: 150ms;
+    }
+    .stat-count::after { content: counter(num); }
+    .stat-count[data-target="12400000"] { --count: 0; animation-name: count-12m; }
+    .stat-count[data-target="248"]      { --count: 0; animation-name: count-248; }
+    .stat-count[data-target="15320"]    { --count: 0; animation-name: count-15k; }
+    .stat-count[data-target="100"]      { --count: 0; animation-name: count-100; }
+    @keyframes count-12m { to { --count: 12400000; } }
+    @keyframes count-248 { to { --count: 248; } }
+    @keyframes count-15k { to { --count: 15320; } }
+    @keyframes count-100 { to { --count: 100; } }
+
+    /* Divisor vertical entre stats */
+    .stat-divider {
+      width: 1px;
+      align-self: stretch;
+      background: var(--gold-divider-v);
+    }
+
+    /* ===========================================================
+       FRAUD CERTIFICATE — selo ornamental
+       =========================================================== */
+    .certificate {
+      position: relative;
+      background:
+        radial-gradient(1000px 400px at 50% 0%, rgba(184,150,63,0.10), transparent 60%),
+        linear-gradient(180deg, #0a2a20 0%, #134436 100%);
+      border-radius: 24px;
+      overflow: hidden;
+    }
+    .certificate::before,
+    .certificate::after {
+      /* Bordas ornamentais duplas (art déco) */
+      content: '';
+      position: absolute;
+      pointer-events: none;
+      border-radius: 20px;
+    }
+    .certificate::before {
+      inset: 14px;
+      border: 1px solid rgba(212,175,55,0.45);
+    }
+    .certificate::after {
+      inset: 22px;
+      border: 1px solid rgba(212,175,55,0.15);
+    }
+
+    /* Marca d'água sutil */
+    .watermark {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-size: clamp(160px, 22vw, 320px);
+      font-weight: 700;
+      color: rgba(212,175,55,0.035);
+      letter-spacing: 0.04em;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    /* Corners art déco (4 ornamentos) */
+    .deco-corner {
+      position: absolute;
+      width: 40px; height: 40px;
+      border: 2px solid rgba(212,175,55,0.55);
+      pointer-events: none;
+    }
+    .deco-corner.tl { top: 28px; left: 28px; border-right: 0; border-bottom: 0; border-top-left-radius: 4px; }
+    .deco-corner.tr { top: 28px; right: 28px; border-left: 0; border-bottom: 0; border-top-right-radius: 4px; }
+    .deco-corner.bl { bottom: 28px; left: 28px; border-right: 0; border-top: 0; border-bottom-left-radius: 4px; }
+    .deco-corner.br { bottom: 28px; right: 28px; border-left: 0; border-top: 0; border-bottom-right-radius: 4px; }
+
+    /* Divisor deco horizontal com losango */
+    .deco-divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      justify-content: center;
+      margin: 24px 0;
+    }
+    .deco-divider::before,
+    .deco-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--gold-divider);
+      max-width: 140px;
+    }
+    .deco-diamond {
+      width: 10px; height: 10px;
+      transform: rotate(45deg);
+      background: var(--fortuno-gold-intense);
+      box-shadow: 0 0 12px rgba(212,175,55,0.6);
+    }
+
+    /* Bullet shield (selo) */
+    .seal-bullet {
+      display: flex; gap: 14px;
+      padding: 14px 18px;
+      background: linear-gradient(180deg, rgba(7,32,26,0.55), rgba(7,32,26,0.35));
+      border: 1px solid rgba(212,175,55,0.2);
+      border-radius: 12px;
+      transition: border-color var(--duration-base) var(--easing-out), background var(--duration-base) var(--easing-out);
+    }
+    .seal-bullet:hover { border-color: rgba(212,175,55,0.45); background: linear-gradient(180deg, rgba(7,32,26,0.7), rgba(7,32,26,0.5)); }
+    .seal-bullet .num {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--fortuno-gold-soft);
+      min-width: 32px;
+      line-height: 1.2;
+    }
+
+    /* ===========================================================
+       SECURITY PILLARS — glass + highlight central
+       =========================================================== */
+    .pillar {
+      position: relative;
+      background: var(--glass-surface);
+      backdrop-filter: blur(16px) saturate(140%);
+      -webkit-backdrop-filter: blur(16px) saturate(140%);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 32px 28px;
+      transition: transform var(--duration-base) var(--easing-spring),
+                  box-shadow var(--duration-base) var(--easing-out),
+                  border-color var(--duration-base) var(--easing-out);
+    }
+    .pillar:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px -20px rgba(184,150,63,0.4);
+      border-color: rgba(212,175,55,0.45);
+    }
+    .pillar.featured {
+      background:
+        radial-gradient(600px 200px at 50% 0%, rgba(184,150,63,0.16), transparent 70%),
+        var(--glass-surface);
+      border-color: rgba(212,175,55,0.45);
+      box-shadow: 0 30px 60px -30px rgba(184,150,63,0.35), 0 1px 0 rgba(255,255,255,0.06) inset;
+    }
+    .pillar .step-num {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.22em;
+      color: var(--fortuno-gold-soft);
+      text-transform: uppercase;
+    }
+    .pillar .icon-box {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      display: grid; place-items: center;
+      background: radial-gradient(120% 120% at 30% 20%, #1c5b48 0%, #0f3b2e 60%, #06241c 100%);
+      border: 1px solid rgba(212,175,55,0.32);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 6px 14px -6px rgba(0,0,0,0.7);
+      color: var(--fortuno-gold-soft);
+    }
+    .pillar.featured .icon-box {
+      background: radial-gradient(120% 120% at 30% 20%, #f0d27a 0%, #c79b41 45%, #8a6a25 100%);
+      color: var(--fortuno-black);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    /* ===========================================================
+       HOW IT WORKS — timeline horizontal
+       =========================================================== */
+    .timeline-rail {
+      position: absolute;
+      left: 0; right: 0;
+      top: 36px;
+      height: 2px;
+      background: var(--gold-divider);
+      z-index: 0;
+    }
+    .timeline-rail .fill {
+      position: absolute;
+      left: 8%; right: 8%;
+      top: 0; height: 100%;
+      background: linear-gradient(90deg, var(--fortuno-gold-soft), var(--fortuno-gold-intense));
+      box-shadow: 0 0 10px rgba(212,175,55,0.45);
+    }
+    .timeline-step {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+    .timeline-marker {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      margin: 0 auto;
+      background: radial-gradient(120% 120% at 30% 20%, #f0d27a 0%, #c79b41 45%, #8a6a25 100%);
+      color: var(--fortuno-black);
+      display: grid; place-items: center;
+      border: 1px solid rgba(255,255,255,0.35);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.45) inset,
+        0 -1px 0 rgba(0,0,0,0.4) inset,
+        0 0 0 4px rgba(184,150,63,0.18),
+        0 8px 26px -6px rgba(184,150,63,0.55);
+      position: relative;
+    }
+    .timeline-marker .num {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-weight: 800;
+      font-size: 28px;
+      line-height: 1;
+    }
+    .timeline-step:hover .timeline-marker { transform: translateY(-3px); }
+    .timeline-marker { transition: transform var(--duration-base) var(--easing-spring); }
+
+    /* ===========================================================
+       FINAL CTA
+       =========================================================== */
+    .final-cta-wrap {
+      position: relative;
+      background:
+        radial-gradient(700px 400px at 50% 100%, rgba(212,175,55,0.14), transparent 70%),
+        radial-gradient(900px 500px at 20% 0%, rgba(19,68,54,0.7), transparent 60%),
+        linear-gradient(180deg, #07201a 0%, #0a2a20 100%);
+      border-top: 1px solid rgba(212,175,55,0.2);
+      border-bottom: 1px solid rgba(212,175,55,0.2);
+      overflow: hidden;
+    }
+    .final-cta-wrap::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: conic-gradient(from 0deg at 50% 50%,
+        transparent 0deg,
+        rgba(212,175,55,0.04) 70deg,
+        transparent 140deg,
+        rgba(212,175,55,0.03) 220deg,
+        transparent 360deg);
+      pointer-events: none;
+    }
+
+    /* ===========================================================
+       Footer nav
+       =========================================================== */
+    .foot-link {
+      color: rgba(236,232,225,0.7);
+      transition: color var(--duration-fast) var(--easing-out);
+    }
+    .foot-link:hover { color: var(--fortuno-gold-soft); }
+
+    /* ===========================================================
+       Scroll reveal (CSS scroll-driven com fallback)
+       =========================================================== */
+    @supports (animation-timeline: view()) {
+      .reveal {
+        animation: reveal-in linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 20%;
+      }
+      @keyframes reveal-in {
+        from { opacity: 0; transform: translateY(24px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+    }
+
+    /* ===========================================================
+       Reduced motion
+       =========================================================== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition-duration: 1ms !important;
+      }
+      .hero-particles { display: none; }
+    }
+
+    /* ===========================================================
+       Mobile refinements
+       =========================================================== */
+    @media (max-width: 767px) {
+      .timeline-rail { display: none; }
+      .timeline-horizontal {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .timeline-step { display: flex; gap: 18px; text-align: left; }
+      .timeline-marker { margin: 0; width: 56px; height: 56px; flex-shrink: 0; }
+      .timeline-marker .num { font-size: 22px; }
+      .stat-divider { display: none; }
+    }
+
+    /* Focus visible padrão */
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.55);
+    }
+    a, button { outline: none; }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- ============================================================
+       TOPBAR
+       ============================================================ -->
+  <header class="relative z-20 border-b border-fortuno-gold-soft/10 backdrop-blur-md bg-[rgba(7,32,26,0.5)]">
+    <div class="mx-auto max-w-7xl px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl grid place-items-center"
+             style="background: radial-gradient(120% 120% at 30% 20%, #f0d27a 0%, #c79b41 45%, #8a6a25 100%); color: #0b0b0b;">
+          <span class="font-display italic font-extrabold text-lg leading-none">F</span>
+        </div>
+        <span class="font-display text-xl tracking-wide">Fortuno</span>
+      </div>
+      <nav class="hidden md:flex items-center gap-8 text-sm text-fortuno-offwhite/80">
+        <a href="#sorteios" class="hover:text-fortuno-gold-soft transition-colors">Sorteios</a>
+        <a href="#como" class="hover:text-fortuno-gold-soft transition-colors">Como participar</a>
+        <a href="#seguranca" class="hover:text-fortuno-gold-soft transition-colors">Segurança</a>
+        <a href="#" class="hover:text-fortuno-gold-soft transition-colors">Meus números</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a href="#" class="cta-ghost text-sm hidden sm:inline-flex">Entrar</a>
+        <a href="#sorteios" class="cta-primary text-sm">Ver sorteios</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       HERO — HeroFeaturedLottery (vitrine do sorteio em destaque)
+       ============================================================ -->
+  <section class="hero-bg relative overflow-hidden" aria-labelledby="hero-featured-title">
+    <div class="hero-particles" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <div class="relative z-10 mx-auto max-w-7xl px-6 pt-12 md:pt-20 pb-20 md:pb-28">
+
+      <!-- Eyebrow editorial acima do palco -->
+      <div class="mb-6 md:mb-8 flex items-center gap-3 text-[11px] uppercase tracking-[0.28em] text-fortuno-gold-soft">
+        <span class="h-px w-8 bg-fortuno-gold-soft"></span>
+        Sorteio em destaque
+        <span class="h-px flex-1 max-w-[160px] bg-gradient-to-r from-fortuno-gold-soft/45 to-transparent"></span>
+      </div>
+
+      <div class="grid md:grid-cols-[1.7fr_1fr] gap-8 lg:gap-10 items-stretch">
+
+        <!-- COLUNA PRINCIPAL: imagem cinematográfica wide -->
+        <figure class="hero-stage aspect-[4/3] md:aspect-[16/9] lg:aspect-[21/9] order-1 md:order-1 m-0">
+          <!-- IMAGEM REAL (mock): substituir por featuredLottery.images[0].imageUrl em produção -->
+          <img
+            class="hero-image"
+            src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=2000&q=80"
+            alt="Porsche 911 prateado em ângulo dramático, prêmio do sorteio em destaque"
+            loading="eager"
+            decoding="async"
+          />
+          <div class="stage-frame" aria-hidden="true"></div>
+
+          <figcaption class="stage-caption">
+            <span class="badge-live self-start">
+              <span class="dot" aria-hidden="true"></span>
+              Sorteio em destaque
+            </span>
+            <h2 id="hero-featured-title"
+                class="font-display text-fortuno-offwhite leading-[1.0]"
+                style="font-size: clamp(28px, 4.5vw, 56px); letter-spacing: -0.02em;
+                       text-shadow: 0 6px 30px rgba(0,0,0,0.65);">
+              Mega Fortuno
+              <span class="italic text-fortuno-gold-soft">Edição Ouro</span>
+            </h2>
+            <p class="text-fortuno-offwhite/75 text-sm md:text-base max-w-xl"
+               style="text-shadow: 0 2px 12px rgba(0,0,0,0.85);">
+              Concorra a um Porsche 911 zero-quilômetro e mais R$ 240.000 em prêmios paralelos.
+            </p>
+          </figcaption>
+        </figure>
+
+        <!-- COLUNA LATERAL: painel informação + ação -->
+        <aside class="hero-panel order-2 md:order-2 flex flex-col">
+
+          <!-- Headline editorial do sorteio (numeral ouro) -->
+          <div>
+            <span class="text-[10px] uppercase tracking-[0.26em] text-fortuno-offwhite/55">
+              Prêmio total
+            </span>
+            <div class="gold-numeral shimmer mt-2" data-text="R$ 1.240.000"
+                 style="font-size: clamp(40px, 5.5vw, 64px);">
+              R$ 1.240.000
+            </div>
+            <p class="mt-2 text-xs text-fortuno-offwhite/65 leading-relaxed">
+              Auditado, pago via PIX, transferido em minutos.
+            </p>
+          </div>
+
+          <div class="my-6 h-px bg-gradient-to-r from-transparent via-fortuno-gold-soft/35 to-transparent" aria-hidden="true"></div>
+
+          <!-- Countdown clock (CountdownClock primitive) -->
+          <div role="timer" aria-live="polite" aria-atomic="true"
+               aria-label="Tempo restante até o próximo sorteio">
+            <p class="text-[10px] uppercase tracking-[0.26em] text-fortuno-offwhite/55 mb-3">
+              Próximo sorteio em
+            </p>
+            <div class="flex items-center gap-2 md:gap-2.5">
+              <div class="countdown-cell flex-1">
+                <div class="countdown-num">02</div>
+                <div class="countdown-label">dias</div>
+              </div>
+              <span class="text-fortuno-gold-soft/55 font-display italic" aria-hidden="true">:</span>
+              <div class="countdown-cell flex-1">
+                <div class="countdown-num">14</div>
+                <div class="countdown-label">h</div>
+              </div>
+              <span class="text-fortuno-gold-soft/55 font-display italic" aria-hidden="true">:</span>
+              <div class="countdown-cell flex-1">
+                <div class="countdown-num">36</div>
+                <div class="countdown-label">min</div>
+              </div>
+              <span class="text-fortuno-gold-soft/55 font-display italic" aria-hidden="true">:</span>
+              <div class="countdown-cell flex-1">
+                <div class="countdown-num">52</div>
+                <div class="countdown-label">seg</div>
+              </div>
+            </div>
+            <span class="sr-only">2 dias, 14 horas, 36 minutos e 52 segundos</span>
+          </div>
+
+          <!-- Progress bar de bilhetes vendidos -->
+          <div class="mt-7">
+            <div class="flex items-end justify-between text-xs text-fortuno-offwhite/60 mb-2">
+              <div class="flex flex-col gap-1">
+                <span class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55">Bilhetes vendidos</span>
+                <span class="text-fortuno-offwhite/85 font-semibold">
+                  <span class="text-fortuno-gold-soft">1.747</span>
+                  <span class="text-fortuno-offwhite/45">de 2.000</span>
+                </span>
+              </div>
+              <span class="font-display italic font-bold text-fortuno-gold-soft text-2xl leading-none">87%</span>
+            </div>
+            <div class="progress-rail" role="progressbar"
+                 aria-valuenow="87" aria-valuemin="0" aria-valuemax="100"
+                 aria-label="87 por cento dos bilhetes vendidos">
+              <span style="width: 87%;"></span>
+            </div>
+            <!-- Scarcity hint (aparece quando >= 80%) -->
+            <div class="mt-3 scarcity-hint">
+              <span class="pulse-dot" aria-hidden="true"></span>
+              Últimos bilhetes
+            </div>
+          </div>
+
+          <!-- CTAs -->
+          <div class="mt-7 flex flex-col gap-3">
+            <a href="#sorteios" class="cta-primary justify-center w-full"
+               aria-label="Comprar bilhetes do sorteio Mega Fortuno Edição Ouro">
+              <i data-lucide="ticket"></i>
+              <span>Compre já</span>
+              <i data-lucide="arrow-right"></i>
+            </a>
+            <a href="#como" class="cta-ghost justify-center w-full text-sm"
+               style="border-color: rgba(212,175,55,0.45); color: var(--fortuno-gold-soft);">
+              Como funciona
+            </a>
+          </div>
+
+          <!-- Faixa de selos de credibilidade (3 selos glass) -->
+          <div class="mt-6 hero-seals" role="list" aria-label="Selos de credibilidade">
+            <div class="hero-seal" role="listitem">
+              <i data-lucide="badge-check" aria-hidden="true"></i>
+              <span class="seal-label">Sorteio<br/>auditado</span>
+            </div>
+            <div class="hero-seal" role="listitem">
+              <i data-lucide="key-round" aria-hidden="true"></i>
+              <span class="seal-label">PIX<br/>criptografado</span>
+            </div>
+            <div class="hero-seal" role="listitem">
+              <i data-lucide="building-2" aria-hidden="true"></i>
+              <span class="seal-label">CNPJ<br/>verificado</span>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       STATS BAND (novo)
+       ============================================================ -->
+  <section class="stats-strip relative z-10 py-14 md:py-16">
+    <div class="mx-auto max-w-7xl px-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-0 items-center">
+
+        <!-- R$ distribuído -->
+        <div class="flex-1 text-center md:px-6">
+          <div class="stat-num">
+            R$ <span class="stat-count" data-target="12400000" aria-hidden="true"></span>
+            <span class="sr-only">12.400.000</span>
+          </div>
+          <div class="mt-3 text-[11px] uppercase tracking-[0.26em] text-fortuno-offwhite/60">
+            Distribuídos em prêmios
+          </div>
+        </div>
+
+        <div class="stat-divider hidden md:block"></div>
+
+        <div class="flex-1 text-center md:px-6">
+          <div class="stat-num">
+            <span class="stat-count" data-target="248" aria-hidden="true"></span>
+            <span class="sr-only">248</span>
+          </div>
+          <div class="mt-3 text-[11px] uppercase tracking-[0.26em] text-fortuno-offwhite/60">
+            Sorteios realizados
+          </div>
+        </div>
+
+        <div class="stat-divider hidden md:block"></div>
+
+        <div class="flex-1 text-center md:px-6">
+          <div class="stat-num">
+            <span class="stat-count" data-target="15320" aria-hidden="true"></span>+
+            <span class="sr-only">15.320</span>
+          </div>
+          <div class="mt-3 text-[11px] uppercase tracking-[0.26em] text-fortuno-offwhite/60">
+            Ganhadores premiados
+          </div>
+        </div>
+
+        <div class="stat-divider hidden md:block"></div>
+
+        <div class="flex-1 text-center md:px-6">
+          <div class="stat-num">
+            <span class="stat-count" data-target="100" aria-hidden="true"></span>%
+            <span class="sr-only">100%</span>
+          </div>
+          <div class="mt-3 text-[11px] uppercase tracking-[0.26em] text-fortuno-offwhite/60">
+            Auditado e transparente
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CAROUSEL — SORTEIOS ABERTOS
+       ============================================================ -->
+  <section id="sorteios" class="relative py-20 md:py-28">
+    <div class="mx-auto max-w-7xl px-6">
+
+      <!-- Header editorial -->
+      <div class="reveal flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-14">
+        <div>
+          <span class="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.28em] text-fortuno-gold-soft mb-4">
+            <span class="h-px w-8 bg-fortuno-gold-soft"></span>
+            Abertos agora
+          </span>
+          <h2 class="font-display leading-[1.02] text-fortuno-offwhite" style="font-size: clamp(36px, 5vw, 58px);">
+            Sorteios <span class="italic text-fortuno-gold-soft">em andamento</span>
+          </h2>
+          <p class="mt-4 text-fortuno-offwhite/65 max-w-xl">
+            Escolha seu sorteio, selecione a quantidade de bilhetes e finalize via PIX. Confirmação instantânea.
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button class="cta-ghost text-sm" aria-label="Anterior"><i data-lucide="arrow-left"></i></button>
+          <button class="cta-ghost text-sm" aria-label="Próximo"><i data-lucide="arrow-right"></i></button>
+          <a href="#" class="cta-primary text-sm">Ver todos</a>
+        </div>
+      </div>
+
+      <!-- Cards -->
+      <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+
+        <!-- CARD 1 -->
+        <article class="lottery-card group flex flex-col">
+          <div class="relative aspect-[16/10] overflow-hidden" style="border-top-left-radius: 20px; border-top-right-radius: 20px;">
+            <div class="absolute inset-0" style="background: radial-gradient(500px 220px at 50% 100%, rgba(212,175,55,0.25), transparent 70%), linear-gradient(180deg, #0a2a20, #061511);"></div>
+            <div class="absolute inset-0 grid place-items-center">
+              <i data-lucide="trophy" class="w-16 h-16 text-fortuno-gold-soft" style="filter: drop-shadow(0 8px 20px rgba(212,175,55,0.4));"></i>
+            </div>
+            <div class="absolute top-4 left-4">
+              <span class="badge-live"><span class="dot"></span> Aberto</span>
+            </div>
+            <div class="absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] uppercase tracking-[0.22em] bg-black/50 backdrop-blur-sm border border-fortuno-gold-soft/25 text-fortuno-gold-soft">
+              Encerra em 2d
+            </div>
+          </div>
+
+          <div class="relative p-6 flex-1 flex flex-col">
+            <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55 mb-1">Edição Nº 048</div>
+            <h3 class="font-display text-2xl text-fortuno-offwhite mb-3">Mega Fortuno Ouro</h3>
+
+            <div class="mb-4">
+              <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55">Prêmio total</div>
+              <div class="gold-numeral" style="font-size: 34px;">R$ 1.240.000</div>
+            </div>
+
+            <div class="mb-5">
+              <div class="flex items-center justify-between text-xs text-fortuno-offwhite/60 mb-2">
+                <span>Bilhetes</span>
+                <span><span class="text-fortuno-gold-soft font-semibold">34.000</span> / 50.000</span>
+              </div>
+              <div class="progress-rail"><span style="width: 68%;"></span></div>
+              <div class="mt-2 text-[11px] text-fortuno-offwhite/50">
+                <span class="text-fortuno-gold-soft">16.000 restantes</span> · bilhete a partir de R$ 10
+              </div>
+            </div>
+
+            <a href="#" class="cta-primary w-full justify-center mt-auto">
+              Compre já <i data-lucide="arrow-right"></i>
+            </a>
+          </div>
+        </article>
+
+        <!-- CARD 2 -->
+        <article class="lottery-card group flex flex-col">
+          <div class="relative aspect-[16/10] overflow-hidden" style="border-top-left-radius: 20px; border-top-right-radius: 20px;">
+            <div class="absolute inset-0" style="background: radial-gradient(500px 220px at 50% 100%, rgba(212,175,55,0.18), transparent 70%), linear-gradient(180deg, #134436, #0a2a20);"></div>
+            <div class="absolute inset-0 grid place-items-center">
+              <i data-lucide="car" class="w-16 h-16 text-fortuno-gold-soft" style="filter: drop-shadow(0 8px 20px rgba(212,175,55,0.4));"></i>
+            </div>
+            <div class="absolute top-4 left-4">
+              <span class="badge-live"><span class="dot"></span> Aberto</span>
+            </div>
+            <div class="absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] uppercase tracking-[0.22em] bg-black/50 backdrop-blur-sm border border-fortuno-gold-soft/25 text-fortuno-gold-soft">
+              Encerra em 5d
+            </div>
+          </div>
+
+          <div class="relative p-6 flex-1 flex flex-col">
+            <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55 mb-1">Edição Nº 049</div>
+            <h3 class="font-display text-2xl text-fortuno-offwhite mb-3">Garagem Fortuno</h3>
+
+            <div class="mb-4">
+              <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55">Prêmio total</div>
+              <div class="gold-numeral" style="font-size: 34px;">R$ 480.000</div>
+            </div>
+
+            <div class="mb-5">
+              <div class="flex items-center justify-between text-xs text-fortuno-offwhite/60 mb-2">
+                <span>Bilhetes</span>
+                <span><span class="text-fortuno-gold-soft font-semibold">11.200</span> / 30.000</span>
+              </div>
+              <div class="progress-rail"><span style="width: 37%;"></span></div>
+              <div class="mt-2 text-[11px] text-fortuno-offwhite/50">
+                <span class="text-fortuno-gold-soft">18.800 restantes</span> · bilhete a partir de R$ 5
+              </div>
+            </div>
+
+            <a href="#" class="cta-primary w-full justify-center mt-auto">
+              Compre já <i data-lucide="arrow-right"></i>
+            </a>
+          </div>
+        </article>
+
+        <!-- CARD 3 -->
+        <article class="lottery-card group flex flex-col">
+          <div class="relative aspect-[16/10] overflow-hidden" style="border-top-left-radius: 20px; border-top-right-radius: 20px;">
+            <div class="absolute inset-0" style="background: radial-gradient(500px 220px at 50% 100%, rgba(212,175,55,0.22), transparent 70%), linear-gradient(180deg, #0e3327, #081e18);"></div>
+            <div class="absolute inset-0 grid place-items-center">
+              <i data-lucide="gem" class="w-16 h-16 text-fortuno-gold-soft" style="filter: drop-shadow(0 8px 20px rgba(212,175,55,0.4));"></i>
+            </div>
+            <div class="absolute top-4 left-4">
+              <span class="badge-live"><span class="dot"></span> Aberto</span>
+            </div>
+            <div class="absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] uppercase tracking-[0.22em] bg-black/50 backdrop-blur-sm border border-fortuno-gold-soft/25 text-fortuno-gold-soft">
+              Encerra em 7d
+            </div>
+          </div>
+
+          <div class="relative p-6 flex-1 flex flex-col">
+            <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55 mb-1">Edição Nº 050</div>
+            <h3 class="font-display text-2xl text-fortuno-offwhite mb-3">Fortuno Diamante</h3>
+
+            <div class="mb-4">
+              <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55">Prêmio total</div>
+              <div class="gold-numeral" style="font-size: 34px;">R$ 320.000</div>
+            </div>
+
+            <div class="mb-5">
+              <div class="flex items-center justify-between text-xs text-fortuno-offwhite/60 mb-2">
+                <span>Bilhetes</span>
+                <span><span class="text-fortuno-gold-soft font-semibold">4.800</span> / 20.000</span>
+              </div>
+              <div class="progress-rail"><span style="width: 24%;"></span></div>
+              <div class="mt-2 text-[11px] text-fortuno-offwhite/50">
+                <span class="text-fortuno-gold-soft">15.200 restantes</span> · bilhete a partir de R$ 3
+              </div>
+            </div>
+
+            <a href="#" class="cta-primary w-full justify-center mt-auto">
+              Compre já <i data-lucide="arrow-right"></i>
+            </a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FRAUD CERTIFICATE (reformulado como selo oficial)
+       ============================================================ -->
+  <section id="comunicado" class="relative py-12 md:py-16">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="certificate px-8 md:px-14 py-14 md:py-20 relative">
+        <!-- corners -->
+        <div class="deco-corner tl"></div>
+        <div class="deco-corner tr"></div>
+        <div class="deco-corner bl"></div>
+        <div class="deco-corner br"></div>
+
+        <!-- watermark -->
+        <span class="watermark" aria-hidden="true">Fortuno</span>
+
+        <div class="relative z-10 text-center">
+          <span class="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.32em] text-fortuno-gold-soft">
+            <i data-lucide="shield-alert" class="w-4 h-4"></i>
+            Comunicado oficial
+          </span>
+          <div class="deco-divider">
+            <span class="deco-diamond"></span>
+          </div>
+          <h2 class="font-display text-fortuno-offwhite italic" style="font-size: clamp(32px, 4.4vw, 52px); letter-spacing: -0.02em;">
+            Sua sorte é séria.
+          </h2>
+          <p class="mt-4 text-fortuno-offwhite/70 max-w-2xl mx-auto">
+            Alertamos sobre tentativas de fraude em nosso nome. Leia atentamente antes de qualquer contato.
+          </p>
+        </div>
+
+        <!-- bullets como selos -->
+        <div class="relative z-10 mt-12 grid md:grid-cols-2 gap-4 md:gap-5">
+          <div class="seal-bullet">
+            <span class="num">I</span>
+            <p class="text-sm text-fortuno-offwhite/90 leading-relaxed">
+              Nossas comunicações são feitas <strong class="text-fortuno-gold-soft">apenas por vídeo</strong>, nunca por chamada de voz.
+            </p>
+          </div>
+          <div class="seal-bullet">
+            <span class="num">II</span>
+            <p class="text-sm text-fortuno-offwhite/90 leading-relaxed">
+              <strong class="text-fortuno-gold-soft">Não pedimos</strong> nenhum valor referente a impostos para entrega de prêmios.
+            </p>
+          </div>
+          <div class="seal-bullet">
+            <span class="num">III</span>
+            <p class="text-sm text-fortuno-offwhite/90 leading-relaxed">
+              <strong class="text-fortuno-gold-soft">Não enviamos links</strong> para confirmar premiação.
+            </p>
+          </div>
+          <div class="seal-bullet">
+            <span class="num">IV</span>
+            <p class="text-sm text-fortuno-offwhite/90 leading-relaxed">
+              Em caso de dúvidas, consulte sempre nosso <strong class="text-fortuno-gold-soft">site oficial</strong>.
+            </p>
+          </div>
+          <div class="seal-bullet md:col-span-2">
+            <span class="num">V</span>
+            <p class="text-sm text-fortuno-offwhite/90 leading-relaxed">
+              <strong class="text-fortuno-gold-soft">Jamais</strong> solicitamos que você acesse ou compartilhe dados de aplicativos bancários.
+            </p>
+          </div>
+        </div>
+
+        <!-- Divisor -->
+        <div class="deco-divider relative z-10">
+          <span class="deco-diamond"></span>
+        </div>
+
+        <!-- FIQUE LIGADO -->
+        <div class="relative z-10 mt-2">
+          <div class="text-center mb-8">
+            <span class="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] text-fortuno-gold-soft">
+              <i data-lucide="eye" class="w-4 h-4"></i>
+              Fique ligado
+            </span>
+            <h3 class="mt-3 font-display text-2xl md:text-3xl text-fortuno-offwhite">
+              Confirme sempre os dados oficiais
+            </h3>
+          </div>
+
+          <dl class="grid gap-4 md:grid-cols-2 text-sm">
+            <div class="seal-bullet flex-col !items-start gap-2">
+              <dt class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55">Nome do recebedor</dt>
+              <dd class="font-semibold text-fortuno-offwhite">FORTUNO SORTEIOS E PREMIAÇÕES LTDA</dd>
+            </div>
+            <div class="seal-bullet flex-col !items-start gap-2">
+              <dt class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55">CNPJ do recebedor</dt>
+              <dd class="font-semibold text-fortuno-offwhite font-variant-numeric">00.000.000/0001-00</dd>
+            </div>
+            <div class="seal-bullet flex-col !items-start gap-2">
+              <dt class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55">Instituições autorizadas</dt>
+              <dd class="font-semibold text-fortuno-offwhite">MERCADO PAGO · EFÍ · GERENCIANET</dd>
+            </div>
+            <div class="seal-bullet flex-col !items-start gap-2">
+              <dt class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55">Canais oficiais</dt>
+              <dd class="font-semibold text-fortuno-offwhite">
+                <a href="#" class="inline-flex items-center gap-1 hover:text-fortuno-gold-soft transition-colors">
+                  <i data-lucide="instagram" class="w-4 h-4"></i> @fortuno
+                </a>
+                <span class="text-fortuno-offwhite/40"> · </span>
+                <a href="#" class="inline-flex items-center gap-1 hover:text-fortuno-gold-soft transition-colors">
+                  <i data-lucide="globe" class="w-4 h-4"></i> fortuno.com.br
+                </a>
+              </dd>
+            </div>
+          </dl>
+        </div>
+
+        <!-- assinatura final -->
+        <div class="relative z-10 mt-12 text-center">
+          <div class="deco-divider">
+            <span class="deco-diamond"></span>
+          </div>
+          <p class="font-display italic text-fortuno-gold-soft" style="font-size: clamp(20px, 2.2vw, 28px);">
+            Fortuno — sua sorte é séria.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECURITY PILLARS
+       ============================================================ -->
+  <section id="seguranca" class="relative py-20 md:py-28">
+    <div class="mx-auto max-w-7xl px-6">
+
+      <!-- Header -->
+      <div class="text-center mb-16">
+        <span class="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.28em] text-fortuno-gold-soft mb-4">
+          <span class="h-px w-8 bg-fortuno-gold-soft"></span>
+          Confiança desenhada
+          <span class="h-px w-8 bg-fortuno-gold-soft"></span>
+        </span>
+        <h2 class="font-display leading-[1.05] text-fortuno-offwhite" style="font-size: clamp(36px, 5vw, 58px);">
+          Três pilares que <span class="italic text-fortuno-gold-soft">sustentam</span> sua tranquilidade
+        </h2>
+        <p class="mt-5 text-fortuno-offwhite/65 max-w-2xl mx-auto">
+          Segurança não é slogan — é engenharia, processo e auditoria ininterrupta.
+        </p>
+      </div>
+
+      <!-- Pilares: 3 colunas, featured no centro -->
+      <div class="grid md:grid-cols-3 gap-6 md:gap-8 items-stretch">
+
+        <div class="pillar">
+          <div class="flex items-start gap-4 mb-5">
+            <div class="icon-box">
+              <i data-lucide="shield-check" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <div class="step-num">Pilar I</div>
+              <h3 class="font-display text-xl md:text-2xl text-fortuno-offwhite mt-1">Segurança de dados</h3>
+            </div>
+          </div>
+          <p class="text-sm text-fortuno-offwhite/70 leading-relaxed">
+            Criptografia ponta-a-ponta, infraestrutura isolada por tenant e conformidade com LGPD. Seus dados ficam onde devem ficar — com você.
+          </p>
+          <div class="mt-6 flex items-center gap-2 text-xs text-fortuno-gold-soft">
+            <i data-lucide="lock" class="w-4 h-4"></i>
+            TLS 1.3 · AES-256
+          </div>
+        </div>
+
+        <div class="pillar featured md:-mt-4 md:mb-4">
+          <div class="flex items-start gap-4 mb-5">
+            <div class="icon-box">
+              <i data-lucide="banknote" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <div class="step-num">Pilar II</div>
+              <h3 class="font-display text-xl md:text-2xl text-fortuno-offwhite mt-1">Pagamento via PIX</h3>
+            </div>
+          </div>
+          <p class="text-sm text-fortuno-offwhite/75 leading-relaxed">
+            Confirmação instantânea, rastreabilidade total. Você paga direto do seu app bancário — sem cartão, sem intermediário, sem surpresa.
+          </p>
+          <div class="mt-6 flex items-center gap-2 text-xs text-fortuno-gold-soft">
+            <i data-lucide="zap" class="w-4 h-4"></i>
+            Confirmação em segundos
+          </div>
+        </div>
+
+        <div class="pillar">
+          <div class="flex items-start gap-4 mb-5">
+            <div class="icon-box">
+              <i data-lucide="badge-check" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <div class="step-num">Pilar III</div>
+              <h3 class="font-display text-xl md:text-2xl text-fortuno-offwhite mt-1">Sorteio auditado</h3>
+            </div>
+          </div>
+          <p class="text-sm text-fortuno-offwhite/70 leading-relaxed">
+            Cada sorteio é registrado com hash verificável, resultado transparente e reprodutível. Zero opacidade — a sorte é feita sob testemunha.
+          </p>
+          <div class="mt-6 flex items-center gap-2 text-xs text-fortuno-gold-soft">
+            <i data-lucide="file-check-2" class="w-4 h-4"></i>
+            Ata pública de cada edição
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       HOW IT WORKS — timeline horizontal
+       ============================================================ -->
+  <section id="como" class="relative py-20 md:py-28 bg-[rgba(7,32,26,0.35)]">
+    <div class="absolute inset-x-0 top-0 h-px" style="background: var(--gold-divider);"></div>
+    <div class="absolute inset-x-0 bottom-0 h-px" style="background: var(--gold-divider);"></div>
+
+    <div class="mx-auto max-w-7xl px-6">
+
+      <div class="text-center mb-20">
+        <span class="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.28em] text-fortuno-gold-soft mb-4">
+          <span class="h-px w-8 bg-fortuno-gold-soft"></span>
+          Quatro passos
+          <span class="h-px w-8 bg-fortuno-gold-soft"></span>
+        </span>
+        <h2 class="font-display leading-[1.05] text-fortuno-offwhite" style="font-size: clamp(36px, 5vw, 58px);">
+          É <span class="italic text-fortuno-gold-soft">fácil</span> participar
+        </h2>
+        <p class="mt-5 text-fortuno-offwhite/65 max-w-2xl mx-auto">
+          Do primeiro clique ao resultado transparente — sem cadastro longo, sem fricção.
+        </p>
+      </div>
+
+      <!-- timeline -->
+      <div class="relative">
+        <div class="timeline-rail hidden md:block" aria-hidden="true">
+          <div class="fill"></div>
+        </div>
+
+        <div class="timeline-horizontal grid md:grid-cols-4 gap-10 md:gap-8">
+
+          <div class="timeline-step">
+            <div class="timeline-marker">
+              <i data-lucide="search" class="w-7 h-7" style="display:none;"></i>
+              <span class="num">01</span>
+            </div>
+            <div class="md:mt-8">
+              <div class="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.24em] text-fortuno-gold-soft mb-2 justify-center md:flex">
+                <i data-lucide="search" class="w-3.5 h-3.5"></i> Escolha
+              </div>
+              <h3 class="font-display text-xl text-fortuno-offwhite mb-2">Escolha o sorteio</h3>
+              <p class="text-sm text-fortuno-offwhite/65 leading-relaxed">
+                Explore as edições abertas e descubra a que melhor combina com você.
+              </p>
+            </div>
+          </div>
+
+          <div class="timeline-step">
+            <div class="timeline-marker">
+              <span class="num">02</span>
+            </div>
+            <div class="md:mt-8">
+              <div class="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.24em] text-fortuno-gold-soft mb-2">
+                <i data-lucide="ticket" class="w-3.5 h-3.5"></i> Selecione
+              </div>
+              <h3 class="font-display text-xl text-fortuno-offwhite mb-2">Selecione bilhetes</h3>
+              <p class="text-sm text-fortuno-offwhite/65 leading-relaxed">
+                Quanto mais bilhetes, mais chances. Combos turbinam sua sorte e seu ticket médio.
+              </p>
+            </div>
+          </div>
+
+          <div class="timeline-step">
+            <div class="timeline-marker">
+              <span class="num">03</span>
+            </div>
+            <div class="md:mt-8">
+              <div class="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.24em] text-fortuno-gold-soft mb-2">
+                <i data-lucide="qr-code" class="w-3.5 h-3.5"></i> Pague
+              </div>
+              <h3 class="font-display text-xl text-fortuno-offwhite mb-2">Pague via PIX</h3>
+              <p class="text-sm text-fortuno-offwhite/65 leading-relaxed">
+                Confirmação em segundos. Do seu app bancário direto para seu bilhete.
+              </p>
+            </div>
+          </div>
+
+          <div class="timeline-step">
+            <div class="timeline-marker">
+              <span class="num">04</span>
+            </div>
+            <div class="md:mt-8">
+              <div class="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.24em] text-fortuno-gold-soft mb-2">
+                <i data-lucide="trophy" class="w-3.5 h-3.5"></i> Acompanhe
+              </div>
+              <h3 class="font-display text-xl text-fortuno-offwhite mb-2">Acompanhe e ganhe</h3>
+              <p class="text-sm text-fortuno-offwhite/65 leading-relaxed">
+                Veja o resultado auditado em tempo real e confira seus números em Meus Números.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="text-center mt-16">
+        <a href="#sorteios" class="cta-primary text-base">
+          <i data-lucide="ticket"></i>
+          Compre já
+          <i data-lucide="arrow-right"></i>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FINAL CTA
+       ============================================================ -->
+  <section class="final-cta-wrap relative py-24 md:py-32">
+    <div class="mx-auto max-w-5xl px-6 text-center relative z-10">
+
+      <span class="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.32em] text-fortuno-gold-soft mb-6">
+        <i data-lucide="clock" class="w-4 h-4"></i>
+        Próximo sorteio em 2 dias
+      </span>
+
+      <h2 class="font-display leading-[0.98]" style="font-size: clamp(48px, 8vw, 104px); letter-spacing: -0.03em;">
+        <span class="text-fortuno-offwhite">A próxima </span>
+        <span class="gold-numeral shimmer" data-text="sorte" style="font-size: inherit;">sorte</span>
+        <span class="text-fortuno-offwhite"><br/>pode ser a </span>
+        <span class="italic text-fortuno-gold-soft">sua.</span>
+      </h2>
+
+      <p class="mt-8 text-lg md:text-xl text-fortuno-offwhite/75 max-w-2xl mx-auto">
+        Entre, escolha seu sorteio e garanta seus bilhetes em menos de 2 minutos.
+      </p>
+
+      <div class="mt-12 flex flex-wrap justify-center gap-4">
+        <a href="#sorteios" class="cta-primary" style="padding: 18px 36px; font-size: 17px;">
+          <i data-lucide="ticket"></i>
+          Garantir meus bilhetes
+          <i data-lucide="arrow-right"></i>
+        </a>
+        <a href="#como" class="cta-ghost" style="padding: 17px 32px; font-size: 16px;">
+          Como funciona
+        </a>
+      </div>
+
+      <!-- Trust bar -->
+      <div class="mt-14 flex flex-wrap justify-center items-center gap-x-10 gap-y-4 text-xs text-fortuno-offwhite/55">
+        <span class="inline-flex items-center gap-2">
+          <i data-lucide="shield-check" class="w-4 h-4 text-fortuno-gold-soft"></i>
+          Auditoria externa
+        </span>
+        <span class="hidden md:inline-block w-1 h-1 rounded-full bg-fortuno-gold-soft/40"></span>
+        <span class="inline-flex items-center gap-2">
+          <i data-lucide="lock" class="w-4 h-4 text-fortuno-gold-soft"></i>
+          Dados criptografados
+        </span>
+        <span class="hidden md:inline-block w-1 h-1 rounded-full bg-fortuno-gold-soft/40"></span>
+        <span class="inline-flex items-center gap-2">
+          <i data-lucide="scale" class="w-4 h-4 text-fortuno-gold-soft"></i>
+          CNPJ 00.000.000/0001-00
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="bg-[#051610] border-t border-fortuno-gold-soft/10">
+    <div class="mx-auto max-w-7xl px-6 py-14">
+      <div class="grid md:grid-cols-4 gap-10 mb-10">
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-9 h-9 rounded-xl grid place-items-center"
+                 style="background: radial-gradient(120% 120% at 30% 20%, #f0d27a 0%, #c79b41 45%, #8a6a25 100%); color: #0b0b0b;">
+              <span class="font-display italic font-extrabold text-lg leading-none">F</span>
+            </div>
+            <span class="font-display text-xl">Fortuno</span>
+          </div>
+          <p class="text-sm text-fortuno-offwhite/55 leading-relaxed">
+            Sorteios premium, auditados e transparentes. Sua sorte é séria.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="text-[10px] uppercase tracking-[0.28em] text-fortuno-gold-soft mb-4">Explore</h4>
+          <ul class="space-y-3 text-sm">
+            <li><a href="#sorteios" class="foot-link">Sorteios abertos</a></li>
+            <li><a href="#como" class="foot-link">Como participar</a></li>
+            <li><a href="#seguranca" class="foot-link">Segurança</a></li>
+            <li><a href="#" class="foot-link">Meus números</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-[10px] uppercase tracking-[0.28em] text-fortuno-gold-soft mb-4">Legal</h4>
+          <ul class="space-y-3 text-sm">
+            <li><a href="#" class="foot-link">Termos de uso</a></li>
+            <li><a href="#" class="foot-link">Política de privacidade</a></li>
+            <li><a href="#comunicado" class="foot-link">Comunicado de segurança</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-[10px] uppercase tracking-[0.28em] text-fortuno-gold-soft mb-4">Canais oficiais</h4>
+          <ul class="space-y-3 text-sm">
+            <li><a href="#" class="foot-link inline-flex items-center gap-2"><i data-lucide="instagram" class="w-4 h-4"></i> @fortuno</a></li>
+            <li><a href="#" class="foot-link inline-flex items-center gap-2"><i data-lucide="globe" class="w-4 h-4"></i> fortuno.com.br</a></li>
+            <li><a href="#" class="foot-link inline-flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> contato@fortuno.com.br</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="h-px" style="background: var(--gold-divider);"></div>
+
+      <div class="mt-8 flex flex-wrap items-center justify-between gap-4 text-xs text-fortuno-offwhite/45">
+        <p>© 2026 FORTUNO SORTEIOS E PREMIAÇÕES LTDA · CNPJ 00.000.000/0001-00</p>
+        <p class="font-display italic text-fortuno-gold-soft/80">Sua sorte é séria.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Inicializa ícones Lucide
+    lucide.createIcons();
+  </script>
+</body>
+</html>

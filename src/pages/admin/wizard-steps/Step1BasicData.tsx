@@ -134,7 +134,7 @@ export const Step1BasicData = ({ draft, setDraft }: Step1Props): JSX.Element => 
       </label>
 
       <label className="md:col-span-2">
-        <span className="text-sm font-semibold">% de comissão por indicação</span>
+        <span className="text-sm font-semibold">% de pontos por indicação</span>
         <input
           type="number"
           min="0"

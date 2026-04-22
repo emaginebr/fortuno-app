@@ -1,4 +1,4 @@
-import { apiUrl, getHeaders, handleResponse } from './apiHelpers';
+import { apiUrl, getHeaders, handleResponse, safeFetch } from './apiHelpers';
 import type {
   RaffleAwardInfo,
   RaffleAwardInsertInfo,
@@ -7,7 +7,7 @@ import type {
 
 export class RaffleAwardService {
   public async listByRaffle(raffleId: number): Promise<RaffleAwardInfo[]> {
-    const res = await fetch(apiUrl(`/raffle-awards?raffleId=${raffleId}`), {
+    const res = await safeFetch(apiUrl(`/raffle-awards?raffleId=${raffleId}`), {
       method: 'GET',
       headers: getHeaders(false),
     });
@@ -15,7 +15,7 @@ export class RaffleAwardService {
   }
 
   public async create(payload: RaffleAwardInsertInfo): Promise<RaffleAwardInfo> {
-    const res = await fetch(apiUrl('/raffle-awards'), {
+    const res = await safeFetch(apiUrl('/raffle-awards'), {
       method: 'POST',
       headers: getHeaders(true),
       body: JSON.stringify(payload),
@@ -24,7 +24,7 @@ export class RaffleAwardService {
   }
 
   public async update(payload: RaffleAwardUpdateInfo): Promise<RaffleAwardInfo> {
-    const res = await fetch(apiUrl(`/raffle-awards/${payload.raffleAwardId}`), {
+    const res = await safeFetch(apiUrl(`/raffle-awards/${payload.raffleAwardId}`), {
       method: 'PUT',
       headers: getHeaders(true),
       body: JSON.stringify(payload),
@@ -33,7 +33,7 @@ export class RaffleAwardService {
   }
 
   public async remove(raffleAwardId: number): Promise<void> {
-    const res = await fetch(apiUrl(`/raffle-awards/${raffleAwardId}`), {
+    const res = await safeFetch(apiUrl(`/raffle-awards/${raffleAwardId}`), {
       method: 'DELETE',
       headers: getHeaders(true),
     });

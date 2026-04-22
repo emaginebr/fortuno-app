@@ -1,4 +1,4 @@
-import { apiUrl, getHeaders, handleResponse } from './apiHelpers';
+import { apiUrl, getHeaders, handleResponse, safeFetch } from './apiHelpers';
 import type {
   LotteryComboInfo,
   LotteryComboInsertInfo,
@@ -7,7 +7,7 @@ import type {
 
 export class LotteryComboService {
   public async listByLottery(lotteryId: number): Promise<LotteryComboInfo[]> {
-    const res = await fetch(apiUrl(`/lottery-combos/lottery/${lotteryId}`), {
+    const res = await safeFetch(apiUrl(`/lottery-combos/lottery/${lotteryId}`), {
       method: 'GET',
       headers: getHeaders(false),
     });
@@ -15,7 +15,7 @@ export class LotteryComboService {
   }
 
   public async create(payload: LotteryComboInsertInfo): Promise<LotteryComboInfo> {
-    const res = await fetch(apiUrl('/lottery-combos'), {
+    const res = await safeFetch(apiUrl('/lottery-combos'), {
       method: 'POST',
       headers: getHeaders(true),
       body: JSON.stringify(payload),
@@ -24,7 +24,7 @@ export class LotteryComboService {
   }
 
   public async update(payload: LotteryComboUpdateInfo): Promise<LotteryComboInfo> {
-    const res = await fetch(apiUrl(`/lottery-combos/${payload.lotteryComboId}`), {
+    const res = await safeFetch(apiUrl(`/lottery-combos/${payload.lotteryComboId}`), {
       method: 'PUT',
       headers: getHeaders(true),
       body: JSON.stringify(payload),
@@ -33,7 +33,7 @@ export class LotteryComboService {
   }
 
   public async remove(lotteryComboId: number): Promise<void> {
-    const res = await fetch(apiUrl(`/lottery-combos/${lotteryComboId}`), {
+    const res = await safeFetch(apiUrl(`/lottery-combos/${lotteryComboId}`), {
       method: 'DELETE',
       headers: getHeaders(true),
     });

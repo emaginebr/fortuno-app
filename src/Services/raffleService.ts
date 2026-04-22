@@ -1,4 +1,4 @@
-import { apiUrl, getHeaders, handleResponse } from './apiHelpers';
+import { apiUrl, getHeaders, handleResponse, safeFetch } from './apiHelpers';
 import type {
   RaffleInfo,
   RaffleInsertInfo,
@@ -8,7 +8,7 @@ import type {
 
 export class RaffleService {
   public async getById(raffleId: number): Promise<RaffleInfo> {
-    const res = await fetch(apiUrl(`/raffles/${raffleId}`), {
+    const res = await safeFetch(apiUrl(`/raffles/${raffleId}`), {
       method: 'GET',
       headers: getHeaders(false),
     });
@@ -16,7 +16,7 @@ export class RaffleService {
   }
 
   public async listByLottery(lotteryId: number): Promise<RaffleInfo[]> {
-    const res = await fetch(apiUrl(`/raffles/lottery/${lotteryId}`), {
+    const res = await safeFetch(apiUrl(`/raffles/lottery/${lotteryId}`), {
       method: 'GET',
       headers: getHeaders(false),
     });
@@ -24,7 +24,7 @@ export class RaffleService {
   }
 
   public async create(payload: RaffleInsertInfo): Promise<RaffleInfo> {
-    const res = await fetch(apiUrl('/raffles'), {
+    const res = await safeFetch(apiUrl('/raffles'), {
       method: 'POST',
       headers: getHeaders(true),
       body: JSON.stringify(payload),
@@ -32,8 +32,16 @@ export class RaffleService {
     return handleResponse<RaffleInfo>(res);
   }
 
+  public async remove(raffleId: number): Promise<void> {
+    const res = await safeFetch(apiUrl(`/raffles/${raffleId}`), {
+      method: 'DELETE',
+      headers: getHeaders(true),
+    });
+    await handleResponse<void>(res);
+  }
+
   public async close(raffleId: number): Promise<void> {
-    const res = await fetch(apiUrl(`/raffles/${raffleId}/close`), {
+    const res = await safeFetch(apiUrl(`/raffles/${raffleId}/close`), {
       method: 'POST',
       headers: getHeaders(true),
     });
@@ -44,7 +52,7 @@ export class RaffleService {
     raffleId: number,
     payload: RaffleWinnersPreviewRequest,
   ): Promise<RaffleWinnerPreviewRow[]> {
-    const res = await fetch(apiUrl(`/raffles/${raffleId}/winners/preview`), {
+    const res = await safeFetch(apiUrl(`/raffles/${raffleId}/winners/preview`), {
       method: 'POST',
       headers: getHeaders(true),
       body: JSON.stringify(payload),
@@ -56,7 +64,7 @@ export class RaffleService {
     raffleId: number,
     payload: RaffleWinnersPreviewRequest,
   ): Promise<void> {
-    const res = await fetch(apiUrl(`/raffles/${raffleId}/winners/confirm`), {
+    const res = await safeFetch(apiUrl(`/raffles/${raffleId}/winners/confirm`), {
       method: 'POST',
       headers: getHeaders(true),
       body: JSON.stringify(payload),

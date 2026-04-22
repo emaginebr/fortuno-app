@@ -1,4 +1,4 @@
-import { apiUrl, getHeaders, handleResponse } from './apiHelpers';
+import { apiUrl, getHeaders, handleResponse, safeFetch } from './apiHelpers';
 import type {
   LotteryImageInfo,
   LotteryImageInsertInfo,
@@ -7,7 +7,7 @@ import type {
 
 export class LotteryImageService {
   public async listByLottery(lotteryId: number): Promise<LotteryImageInfo[]> {
-    const res = await fetch(apiUrl(`/lottery-images/lottery/${lotteryId}`), {
+    const res = await safeFetch(apiUrl(`/lottery-images/lottery/${lotteryId}`), {
       method: 'GET',
       headers: getHeaders(false),
     });
@@ -15,7 +15,7 @@ export class LotteryImageService {
   }
 
   public async create(payload: LotteryImageInsertInfo): Promise<LotteryImageInfo> {
-    const res = await fetch(apiUrl('/lottery-images'), {
+    const res = await safeFetch(apiUrl('/lottery-images'), {
       method: 'POST',
       headers: getHeaders(true),
       body: JSON.stringify(payload),
@@ -24,7 +24,7 @@ export class LotteryImageService {
   }
 
   public async update(payload: LotteryImageUpdateInfo): Promise<LotteryImageInfo> {
-    const res = await fetch(apiUrl(`/lottery-images/${payload.lotteryImageId}`), {
+    const res = await safeFetch(apiUrl(`/lottery-images/${payload.lotteryImageId}`), {
       method: 'PUT',
       headers: getHeaders(true),
       body: JSON.stringify(payload),
@@ -33,7 +33,7 @@ export class LotteryImageService {
   }
 
   public async remove(lotteryImageId: number): Promise<void> {
-    const res = await fetch(apiUrl(`/lottery-images/${lotteryImageId}`), {
+    const res = await safeFetch(apiUrl(`/lottery-images/${lotteryImageId}`), {
       method: 'DELETE',
       headers: getHeaders(true),
     });

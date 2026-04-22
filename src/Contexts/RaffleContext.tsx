@@ -11,6 +11,7 @@ export interface RaffleContextType {
   loadByLottery: (lotteryId: number) => Promise<void>;
   loadById: (raffleId: number) => Promise<RaffleInfo | null>;
   create: (payload: RaffleInsertInfo) => Promise<RaffleInfo | null>;
+  remove: (raffleId: number) => Promise<boolean>;
   close: (raffleId: number) => Promise<boolean>;
   clearError: () => void;
 }
@@ -81,6 +82,21 @@ export const RaffleProvider = ({ children }: { children: ReactNode }): JSX.Eleme
     [fail],
   );
 
+  const remove = useCallback(
+    async (raffleId: number): Promise<boolean> => {
+      try {
+        await raffleService.remove(raffleId);
+        setRaffles((prev) => prev.filter((r) => r.raffleId !== raffleId));
+        toast.success('Sorteio removido.');
+        return true;
+      } catch (err) {
+        fail(err, 'Falha ao remover sorteio.');
+        return false;
+      }
+    },
+    [fail],
+  );
+
   const close = useCallback(
     async (raffleId: number): Promise<boolean> => {
       try {
@@ -107,6 +123,7 @@ export const RaffleProvider = ({ children }: { children: ReactNode }): JSX.Eleme
         loadByLottery,
         loadById,
         create,
+        remove,
         close,
         clearError,
       }}

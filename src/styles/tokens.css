@@ -44,6 +44,311 @@
   --shadow-md: 0 4px 12px rgba(11, 11, 11, 0.08);
   --shadow-lg: 0 10px 30px rgba(11, 11, 11, 0.12);
   --shadow-gold: 0 0 0 3px rgba(212, 175, 55, 0.25);
+
+  /* ===========================================================
+     Wizard Editorial Casino Noir — tokens semânticos novos
+     =========================================================== */
+
+  /* --- Backgrounds compostos --- */
+  --noir-bg-page:
+    radial-gradient(1200px 600px at 80% -10%, rgba(212, 175, 55, 0.1), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(19, 68, 54, 0.55), transparent 55%),
+    linear-gradient(180deg, #07201a 0%, #0a2a20 60%, #081e18 100%);
+
+  --noir-glass-surface: linear-gradient(
+    180deg,
+    rgba(236, 232, 225, 0.06),
+    rgba(236, 232, 225, 0.02)
+  );
+  --noir-glass-border: rgba(212, 175, 55, 0.22);
+
+  /* --- Trilha vertical --- */
+  --rail-track: linear-gradient(180deg, rgba(236, 232, 225, 0.1), rgba(236, 232, 225, 0.04));
+  --rail-fill: linear-gradient(
+    180deg,
+    var(--fortuno-gold-soft),
+    var(--fortuno-gold-intense) 60%,
+    var(--fortuno-green-elegant)
+  );
+
+  /* --- Marcadores (metal escovado) --- */
+  --marker-metal-pending: radial-gradient(120% 120% at 30% 20%, #20493b 0%, #0e3327 55%, #07201a 100%);
+  --marker-metal-active: radial-gradient(120% 120% at 30% 20%, #f0d27a 0%, #c79b41 45%, #8a6a25 100%);
+  --marker-metal-done: radial-gradient(120% 120% at 30% 20%, #1c5b48 0%, #0f3b2e 60%, #06241c 100%);
+
+  /* --- Sombras especiais --- */
+  --shadow-noir-card:
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 30px 60px -30px rgba(0, 0, 0, 0.7),
+    0 12px 24px -12px rgba(0, 0, 0, 0.45);
+  --shadow-noir-marker:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.5) inset,
+    0 6px 14px -6px rgba(0, 0, 0, 0.7);
+  --shadow-noir-marker-on:
+    0 1px 0 rgba(255, 255, 255, 0.45) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.4) inset,
+    0 0 0 4px rgba(184, 150, 63, 0.18),
+    0 8px 26px -6px rgba(184, 150, 63, 0.55);
+  --shadow-gold-glow:
+    0 0 0 3px rgba(212, 175, 55, 0.18),
+    0 0 24px -6px rgba(212, 175, 55, 0.55);
+  --shadow-gold-focus: 0 0 0 3px rgba(212, 175, 55, 0.55);
+
+  /* --- Divisor ouro --- */
+  --gold-divider: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.55), transparent);
+
+  /* --- Animação --- */
+  --duration-fast: 160ms;
+  --duration-base: 240ms;
+  --duration-slow: 420ms;
+  --easing-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ===========================================================
+     HOME — Editorial Casino Noir (tokens semânticos adicionais)
+     =========================================================== */
+
+  /* --- Fundo cinematográfico do hero --- */
+  --noir-bg-hero:
+    radial-gradient(800px 400px at 50% 100%, rgba(184, 150, 63, 0.18), transparent 65%),
+    radial-gradient(1400px 800px at 80% 0%, rgba(212, 175, 55, 0.08), transparent 60%),
+    linear-gradient(180deg, #061d17 0%, #0a2a20 55%, #07201a 100%);
+
+  /* --- Superfície "passe de cassino" (cards de loteria) --- */
+  --metal-casino-card:
+    radial-gradient(140% 120% at 20% 0%, rgba(184, 150, 63, 0.14) 0%, transparent 45%),
+    linear-gradient(180deg, rgba(19, 68, 54, 0.75) 0%, rgba(7, 32, 26, 0.85) 100%);
+
+  /* --- Sombra "card elevado" (hover do lottery card) --- */
+  --shadow-noir-card-hover:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 40px 80px -30px rgba(0, 0, 0, 0.85),
+    0 18px 36px -12px rgba(184, 150, 63, 0.35);
+
+  /* --- Divisor ouro vertical (stats band) --- */
+  --gold-divider-v: linear-gradient(180deg, transparent, rgba(212, 175, 55, 0.55), transparent);
+
+  /* --- Fundo do "fraud certificate" (selo oficial) --- */
+  --noir-certificate-bg:
+    radial-gradient(1000px 400px at 50% 0%, rgba(184, 150, 63, 0.1), transparent 60%),
+    linear-gradient(180deg, #0a2a20 0%, #134436 100%);
+
+  /* --- Bordas ornamentais art déco do certificate --- */
+  --certificate-border-outer: rgba(212, 175, 55, 0.45);
+  --certificate-border-inner: rgba(212, 175, 55, 0.15);
+
+  /* --- Fundo do final CTA --- */
+  --noir-bg-final-cta:
+    radial-gradient(700px 400px at 50% 100%, rgba(212, 175, 55, 0.14), transparent 70%),
+    radial-gradient(900px 500px at 20% 0%, rgba(19, 68, 54, 0.7), transparent 60%),
+    linear-gradient(180deg, #07201a 0%, #0a2a20 100%);
+
+  /* --- Stats band --- */
+  --stats-band-bg:
+    linear-gradient(180deg, rgba(11, 11, 11, 0.2), rgba(11, 11, 11, 0)),
+    linear-gradient(
+      90deg,
+      rgba(212, 175, 55, 0.05),
+      rgba(212, 175, 55, 0.1) 50%,
+      rgba(212, 175, 55, 0.05)
+    );
+
+  /* --- Badge "ABERTO" live --- */
+  --badge-live-bg: rgba(212, 175, 55, 0.12);
+  --badge-live-border: rgba(212, 175, 55, 0.45);
+  --badge-live-dot: #e7c05c;
+
+  /* ===========================================================
+     HERO FEATURED LOTTERY — vitrine cinematográfica do sorteio
+     =========================================================== */
+
+  /* --- Palco (wrapper da imagem wide) --- */
+  --hero-stage-bg: #050f0c;
+  --hero-stage-border: rgba(212, 175, 55, 0.32);
+  --hero-stage-frame: rgba(212, 175, 55, 0.22);
+  --shadow-hero-stage:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 50px 100px -40px rgba(0, 0, 0, 0.85),
+    0 24px 48px -18px rgba(0, 0, 0, 0.6);
+
+  /* --- Tratamento cinematográfico --- */
+  --hero-stage-overlay:
+    linear-gradient(
+      180deg,
+      rgba(7, 32, 26, 0.1) 0%,
+      rgba(6, 21, 17, 0.05) 35%,
+      rgba(6, 21, 17, 0.55) 70%,
+      rgba(5, 15, 12, 0.92) 100%
+    ),
+    radial-gradient(120% 90% at 50% 50%, transparent 50%, rgba(0, 0, 0, 0.55) 100%);
+
+  --hero-stage-grain: radial-gradient(rgba(236, 232, 225, 0.6) 1px, transparent 1px);
+
+  /* --- Painel lateral de informação/ação --- */
+  --hero-panel-bg:
+    linear-gradient(180deg, rgba(19, 68, 54, 0.55), rgba(7, 32, 26, 0.65)),
+    radial-gradient(120% 100% at 0% 0%, rgba(212, 175, 55, 0.08), transparent 55%);
+  --hero-panel-border: rgba(212, 175, 55, 0.28);
+  --shadow-hero-panel:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 30px 60px -30px rgba(0, 0, 0, 0.7);
+
+  /* --- Selos de credibilidade --- */
+  --hero-seal-bg: linear-gradient(180deg, rgba(7, 32, 26, 0.55), rgba(7, 32, 26, 0.3));
+  --hero-seal-bg-hover: linear-gradient(180deg, rgba(7, 32, 26, 0.7), rgba(7, 32, 26, 0.45));
+  --hero-seal-border: rgba(212, 175, 55, 0.28);
+  --hero-seal-border-hover: rgba(212, 175, 55, 0.55);
+
+  /* --- Scarcity hint --- */
+  --scarcity-color: #f0d27a;
+  --scarcity-pulse-rgb: 240, 210, 122;
+
+  /* --- Fallback hero --- */
+  --hero-fallback-bg:
+    radial-gradient(600px 300px at 50% 100%, rgba(212, 175, 55, 0.12), transparent 70%),
+    linear-gradient(180deg, rgba(19, 68, 54, 0.6), rgba(7, 32, 26, 0.85));
+  --hero-fallback-border: rgba(212, 175, 55, 0.35);
+
+  /* ===========================================================
+     DASHBOARD v2 — Editorial Casino Noir (variante light body · COMPACT)
+     Anexar APÓS os blocos do wizard e da home.
+     =========================================================== */
+
+  /* --- Superfície base do corpo do dashboard (CLARA) --- */
+  --dash-bg-page:
+    radial-gradient(1000px 500px at 80% -10%, rgba(184, 150, 63, 0.06), transparent 65%),
+    radial-gradient(800px 500px at -10% 110%, rgba(19, 68, 54, 0.04), transparent 55%),
+    linear-gradient(180deg, #f7f3ec 0%, #f1ece3 60%, #ece8e1 100%);
+
+  /* --- Header escuro compacto --- */
+  --dash-header-bg:
+    radial-gradient(900px 300px at 85% 0%, rgba(212, 175, 55, 0.14), transparent 60%),
+    radial-gradient(700px 400px at 15% 110%, rgba(184, 150, 63, 0.1), transparent 65%),
+    linear-gradient(180deg, #061d17 0%, #0a2a20 55%, #07201a 100%);
+
+  /* --- Footer band COMPACTA (1 linha desktop) --- */
+  --dash-footer-band-bg: linear-gradient(180deg, #0a2a20 0%, #0f3a2d 100%);
+
+  /* --- Cards "papel" sobre fundo claro --- */
+  --card-paper-bg: #ffffff;
+  --card-paper-border: rgba(11, 11, 11, 0.08);
+  --card-paper-border-hover: rgba(184, 150, 63, 0.45);
+  --shadow-paper:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 10px 20px -16px rgba(10, 42, 32, 0.18),
+    0 3px 6px -3px rgba(184, 150, 63, 0.08);
+  --shadow-paper-hover:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 18px 34px -20px rgba(10, 42, 32, 0.26),
+    0 6px 12px -4px rgba(184, 150, 63, 0.28);
+
+  /* --- Linha ouro 1px no topo de cada card --- */
+  --card-gold-bar: linear-gradient(
+    90deg,
+    rgba(212, 175, 55, 0) 0%,
+    rgba(212, 175, 55, 0.85) 30%,
+    rgba(19, 68, 54, 0.85) 70%,
+    rgba(212, 175, 55, 0) 100%
+  );
+
+  /* --- Divisor ouro suave (stat card interno) --- */
+  --gold-divider-soft: linear-gradient(
+    90deg,
+    transparent,
+    rgba(184, 150, 63, 0.28),
+    transparent
+  );
+
+  /* --- HeaderChip (ReferralChip + PointsChip) --- */
+  --chip-glass-bg: linear-gradient(
+    180deg,
+    rgba(236, 232, 225, 0.1),
+    rgba(236, 232, 225, 0.04)
+  );
+  --chip-glass-border: rgba(212, 175, 55, 0.32);
+  --chip-glass-border-hover: rgba(212, 175, 55, 0.55);
+
+  /* --- Ícone leading (32px) dentro do chip --- */
+  --chip-lead-bg: rgba(212, 175, 55, 0.12);
+  --chip-lead-border: rgba(212, 175, 55, 0.32);
+
+  /* --- Botão de ação do chip --- */
+  --chip-action-bg: rgba(212, 175, 55, 0.12);
+  --chip-action-border: rgba(212, 175, 55, 0.4);
+  --chip-action-bg-hover: var(--fortuno-gold-soft);
+  --chip-action-fg-hover: var(--fortuno-black);
+
+  /* --- Avatar ring conic-gradient ouro --- */
+  --avatar-ring: conic-gradient(
+    from 220deg,
+    rgba(212, 175, 55, 0) 0deg,
+    rgba(212, 175, 55, 0.75) 120deg,
+    rgba(184, 150, 63, 0.6) 220deg,
+    rgba(212, 175, 55, 0) 360deg
+  );
+
+  /* --- Stat numeral (light bg) --- */
+  --stat-numeral-gradient: linear-gradient(
+    180deg,
+    var(--fortuno-gold-soft) 0%,
+    var(--fortuno-gold-intense) 55%,
+    var(--fortuno-green-elegant) 130%
+  );
+
+  /* ===========================================================
+     TOPBAR GLOBAL (Header.tsx) + USER MENU DROPDOWN (v2.1)
+     =========================================================== */
+
+  /* Topbar base — faixa escura sticky */
+  --topbar-bg: linear-gradient(180deg, #061d17 0%, #0a2a20 100%);
+
+  /* Divisor ouro inferior */
+  --topbar-border-bottom: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(212, 175, 55, 0.55) 20%,
+    rgba(212, 175, 55, 0.75) 50%,
+    rgba(212, 175, 55, 0.55) 80%,
+    transparent 100%
+  );
+
+  /* Nav item ativo */
+  --nav-item-active-bg: rgba(212, 175, 55, 0.1);
+  --nav-item-active-border: rgba(212, 175, 55, 0.35);
+
+  /* Botão trigger do UserMenu */
+  --user-trigger-bg: rgba(236, 232, 225, 0.04);
+  --user-trigger-bg-hover: rgba(212, 175, 55, 0.1);
+  --user-trigger-border: rgba(212, 175, 55, 0.28);
+  --user-trigger-border-hover: rgba(212, 175, 55, 0.55);
+
+  /* Dropdown do UserMenu */
+  --dropdown-bg: #fbf7ee;
+  --dropdown-border: rgba(184, 150, 63, 0.45);
+  --dropdown-shadow:
+    0 2px 0 rgba(255, 255, 255, 0.6) inset,
+    0 30px 60px -20px rgba(10, 42, 32, 0.35),
+    0 12px 24px -8px rgba(184, 150, 63, 0.22),
+    0 0 0 1px rgba(184, 150, 63, 0.08);
+
+  --dropdown-divider: linear-gradient(
+    90deg,
+    transparent,
+    rgba(184, 150, 63, 0.35) 15%,
+    rgba(184, 150, 63, 0.55) 50%,
+    rgba(184, 150, 63, 0.35) 85%,
+    transparent
+  );
+
+  --dropdown-item-bg-hover: rgba(184, 150, 63, 0.1);
+  --dropdown-item-fg: rgba(11, 11, 11, 0.88);
+  --dropdown-item-fg-hover: #0b0b0b;
+
+  /* Item "Sair" — cobre queimado, NÃO vermelho */
+  --dropdown-danger-fg: #8a5a2b;
+  --dropdown-danger-fg-hover: #6e4421;
+  --dropdown-danger-bg-hover: rgba(138, 90, 43, 0.08);
 }
 
 .dark {

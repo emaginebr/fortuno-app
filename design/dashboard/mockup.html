@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fortuno — Dashboard (Editorial Casino Noir · variante compact light body)</title>
+
+  <!-- Tailwind CDN para preview standalone -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fonts: Inter + Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            fortuno: {
+              green: { deep: '#0a2a20', elegant: '#134436' },
+              gold:  { intense: '#b8963f', soft: '#d4af37' },
+              black: '#0b0b0b',
+              offwhite: '#ece8e1',
+              paper: '#f7f3ec',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['"Playfair Display"', 'Georgia', 'serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* ===========================================================
+       Dashboard — Editorial Casino Noir (variante LIGHT BODY · COMPACT)
+       Iteração V2: densificado. Meta — cabe em viewport 1080px no desktop.
+       Reutiliza tokens do wizard/home + novo HeaderChip unificado.
+       =========================================================== */
+    :root {
+      --fortuno-green-deep:    #0a2a20;
+      --fortuno-green-elegant: #134436;
+      --fortuno-gold-intense:  #b8963f;
+      --fortuno-gold-soft:     #d4af37;
+      --fortuno-black:         #0b0b0b;
+      --fortuno-offwhite:      #ece8e1;
+
+      /* Superfície clara do corpo */
+      --dash-bg-page:
+        radial-gradient(1000px 500px at 80% -10%, rgba(184,150,63,0.06), transparent 65%),
+        radial-gradient(800px 500px at -10% 110%, rgba(19,68,54,0.04), transparent 55%),
+        linear-gradient(180deg, #f7f3ec 0%, #f1ece3 60%, #ece8e1 100%);
+
+      /* Header escuro */
+      --dash-header-bg:
+        radial-gradient(900px 300px at 85% 0%, rgba(212,175,55,0.14), transparent 60%),
+        radial-gradient(700px 400px at 15% 110%, rgba(184,150,63,0.10), transparent 65%),
+        linear-gradient(180deg, #061d17 0%, #0a2a20 55%, #07201a 100%);
+
+      /* Band COMPACTA de fechamento — mais verde-elegant, menos gradiente */
+      --dash-footer-band-bg:
+        linear-gradient(180deg, #0a2a20 0%, #0f3a2d 100%);
+
+      /* Divisor ouro */
+      --gold-divider: linear-gradient(90deg, transparent, rgba(212,175,55,0.55), transparent);
+      --gold-divider-soft: linear-gradient(90deg, transparent, rgba(184,150,63,0.28), transparent);
+
+      /* Card "papel" sobre fundo claro */
+      --card-paper-border: rgba(11,11,11,0.08);
+      --card-paper-border-hover: rgba(184,150,63,0.45);
+      --shadow-paper:
+        0 1px 0 rgba(255,255,255,0.8) inset,
+        0 10px 20px -16px rgba(10,42,32,0.18),
+        0 3px 6px -3px rgba(184,150,63,0.08);
+      --shadow-paper-hover:
+        0 1px 0 rgba(255,255,255,0.9) inset,
+        0 18px 34px -20px rgba(10,42,32,0.26),
+        0 6px 12px -4px rgba(184,150,63,0.28);
+
+      /* Linha ouro no topo do card (1px gradient) */
+      --card-gold-bar: linear-gradient(90deg,
+        rgba(212,175,55,0) 0%,
+        rgba(212,175,55,0.85) 30%,
+        rgba(19,68,54,0.85) 70%,
+        rgba(212,175,55,0) 100%);
+
+      /* HeaderChip unificado — usado pelo ReferralChip e PointsChip no header escuro */
+      --chip-glass-bg:
+        linear-gradient(180deg, rgba(236,232,225,0.10), rgba(236,232,225,0.04));
+      --chip-glass-border: rgba(212,175,55,0.32);
+      --chip-glass-border-hover: rgba(212,175,55,0.55);
+
+      /* ============================================================
+         TOPBAR GLOBAL (Header.tsx) — corresponde ao Header global do site.
+         Fica ACIMA do header escuro do dashboard.
+         ============================================================ */
+      --topbar-bg:
+        linear-gradient(180deg, #061d17 0%, #0a2a20 100%);
+      --topbar-border-bottom: linear-gradient(90deg,
+        transparent 0%,
+        rgba(212,175,55,0.55) 20%,
+        rgba(212,175,55,0.75) 50%,
+        rgba(212,175,55,0.55) 80%,
+        transparent 100%);
+
+      /* Nav item ativo: underline ouro fino + chip suave */
+      --nav-item-active-bg: rgba(212,175,55,0.10);
+      --nav-item-active-border: rgba(212,175,55,0.35);
+
+      /* Botão usuário no topbar */
+      --user-trigger-bg:        rgba(236,232,225,0.04);
+      --user-trigger-bg-hover:  rgba(212,175,55,0.10);
+      --user-trigger-border:    rgba(212,175,55,0.28);
+      --user-trigger-border-hover: rgba(212,175,55,0.55);
+
+      /* ============================================================
+         DROPDOWN do UserMenu — papel off-white com borda ouro
+         ============================================================ */
+      --dropdown-bg:      #fbf7ee;          /* paper mais claro que offwhite */
+      --dropdown-border:  rgba(184,150,63,0.45);
+      --dropdown-shadow:
+        0 2px 0 rgba(255,255,255,0.6) inset,
+        0 30px 60px -20px rgba(10,42,32,0.35),
+        0 12px 24px -8px rgba(184,150,63,0.22),
+        0 0 0 1px rgba(184,150,63,0.08);
+
+      /* Divisor ouro interno ao dropdown */
+      --dropdown-divider: linear-gradient(90deg,
+        transparent,
+        rgba(184,150,63,0.35) 15%,
+        rgba(184,150,63,0.55) 50%,
+        rgba(184,150,63,0.35) 85%,
+        transparent);
+
+      /* Item linha do dropdown */
+      --dropdown-item-bg-hover: rgba(184,150,63,0.10);
+      --dropdown-item-fg:       rgba(11,11,11,0.88);
+      --dropdown-item-fg-hover: #0b0b0b;
+
+      /* Item "Sair" — perigo sutil em tom cobre */
+      --dropdown-danger-fg:       #8a5a2b;   /* ouro-cobre queimado, não vermelho berrante */
+      --dropdown-danger-fg-hover: #6e4421;
+      --dropdown-danger-bg-hover: rgba(138,90,43,0.08);
+
+      /* Avatar ring (mais discreto agora que o avatar é menor) */
+      --avatar-ring: conic-gradient(from 220deg,
+        rgba(212,175,55,0) 0deg,
+        rgba(212,175,55,0.75) 120deg,
+        rgba(184,150,63,0.6) 220deg,
+        rgba(212,175,55,0) 360deg);
+
+      --duration-fast: 160ms;
+      --duration-base: 240ms;
+      --duration-slow: 420ms;
+      --easing-out:    cubic-bezier(0.22, 1, 0.36, 1);
+      --easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--dash-bg-page);
+      color: var(--fortuno-black);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      pointer-events: none;
+      opacity: 0.04;
+      mix-blend-mode: multiply;
+      background-image: radial-gradient(rgba(10,42,32,0.5) 1px, transparent 1px);
+      background-size: 3px 3px;
+      z-index: 0;
+    }
+
+    .font-display { font-family: 'Playfair Display', Georgia, serif; letter-spacing: -0.01em; }
+
+    /* ===========================================================
+       HEADER ESCURO — COMPACTO
+       =========================================================== */
+    .dash-header {
+      background: var(--dash-header-bg);
+      color: var(--fortuno-offwhite);
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .dash-header::after {
+      content: '';
+      position: absolute; left: 0; right: 0; bottom: 0;
+      height: 1px;
+      background: var(--gold-divider);
+      opacity: 0.65;
+    }
+
+    /* Avatar COMPACTO — 52px no desktop (antes 68px) */
+    .avatar-frame {
+      position: relative;
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      isolation: isolate;
+      flex-shrink: 0;
+    }
+    .avatar-frame::before {
+      content: '';
+      position: absolute; inset: -2px;
+      border-radius: 50%;
+      background: var(--avatar-ring);
+      animation: avatar-breath 6s ease-in-out infinite;
+      z-index: -1;
+    }
+    .avatar-frame .avatar-core {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #1c5b48, #0a2a20);
+      border: 2px solid rgba(212,175,55,0.32);
+      display: grid; place-items: center;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-style: italic;
+      color: var(--fortuno-gold-soft);
+      font-size: 20px;
+      letter-spacing: -0.02em;
+    }
+    @keyframes avatar-breath {
+      0%, 100% { transform: rotate(0deg) scale(1); opacity: 0.75; }
+      50%      { transform: rotate(180deg) scale(1.03); opacity: 0.95; }
+    }
+
+    /* ===========================================================
+       HEADER CHIP unificado (usado por ReferralChip e PointsChip)
+       =========================================================== */
+    .header-chip {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px 8px 14px;
+      border-radius: 14px;
+      background: var(--chip-glass-bg);
+      border: 1px solid var(--chip-glass-border);
+      backdrop-filter: blur(10px) saturate(140%);
+      -webkit-backdrop-filter: blur(10px) saturate(140%);
+      transition: border-color var(--duration-base) var(--easing-out),
+                  background var(--duration-base) var(--easing-out);
+      min-height: 56px;
+    }
+    .header-chip:hover { border-color: var(--chip-glass-border-hover); }
+
+    .header-chip .chip-lead {
+      width: 32px; height: 32px;
+      border-radius: 10px;
+      background: rgba(212,175,55,0.12);
+      border: 1px solid rgba(212,175,55,0.32);
+      color: var(--fortuno-gold-soft);
+      display: grid; place-items: center;
+      flex-shrink: 0;
+    }
+    .header-chip .chip-lead i { width: 16px; height: 16px; }
+
+    .header-chip .chip-label {
+      display: block;
+      font-size: 9px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: rgba(236,232,225,0.65);
+      line-height: 1;
+    }
+    .header-chip .chip-value {
+      display: block;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: 22px;
+      line-height: 1.05;
+      color: var(--fortuno-gold-soft);
+      font-variant-numeric: tabular-nums;
+      margin-top: 3px;
+    }
+    .header-chip .chip-value .chip-value-unit {
+      font-size: 11px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 600;
+      font-style: normal;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(212,175,55,0.75);
+      margin-left: 4px;
+      vertical-align: baseline;
+    }
+    .header-chip .chip-action {
+      display: inline-flex;
+      align-items: center; justify-content: center;
+      gap: 4px;
+      padding: 0 10px;
+      height: 32px;
+      min-width: 44px;
+      border-radius: 999px;
+      background: rgba(212,175,55,0.12);
+      border: 1px solid rgba(212,175,55,0.40);
+      color: var(--fortuno-gold-soft);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      transition: background var(--duration-fast) var(--easing-out),
+                  color var(--duration-fast) var(--easing-out),
+                  transform var(--duration-fast) var(--easing-out);
+      flex-shrink: 0;
+    }
+    .header-chip .chip-action:hover {
+      background: var(--fortuno-gold-soft);
+      color: var(--fortuno-black);
+      transform: translateY(-1px);
+    }
+    .header-chip .chip-action:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.55);
+    }
+    .header-chip .chip-action i { width: 13px; height: 13px; }
+
+    /* Botão "copiar" compacto para o ReferralChip (icon-only) */
+    .header-chip .chip-copy {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: rgba(212,175,55,0.12);
+      border: 1px solid rgba(212,175,55,0.40);
+      color: var(--fortuno-gold-soft);
+      transition: background var(--duration-fast) var(--easing-out),
+                  transform var(--duration-fast) var(--easing-out),
+                  color var(--duration-fast) var(--easing-out);
+      flex-shrink: 0;
+    }
+    .header-chip .chip-copy:hover {
+      background: var(--fortuno-gold-soft);
+      color: var(--fortuno-black);
+      transform: rotate(8deg) scale(1.08);
+    }
+    .header-chip .chip-copy:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.55);
+    }
+    .header-chip .chip-copy i { width: 14px; height: 14px; }
+
+    /* ===========================================================
+       LINKED STAT CARD — card inteiro clickable
+       =========================================================== */
+    .linked-stat {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 18px 20px 16px;
+      background: #ffffff;
+      border: 1px solid var(--card-paper-border);
+      border-radius: 16px;
+      box-shadow: var(--shadow-paper);
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      transition: transform var(--duration-base) var(--easing-spring),
+                  border-color var(--duration-base) var(--easing-out),
+                  box-shadow var(--duration-base) var(--easing-out);
+      min-height: 148px;
+    }
+    .linked-stat::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--card-gold-bar);
+      opacity: 0.8;
+    }
+    .linked-stat:hover {
+      transform: translateY(-2px);
+      border-color: rgba(184,150,63,0.45);
+      box-shadow: var(--shadow-paper-hover);
+    }
+    .linked-stat:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.55), var(--shadow-paper-hover);
+      border-color: rgba(184,150,63,0.55);
+    }
+    .linked-stat .stat-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .linked-stat .stat-icon {
+      width: 34px; height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(180deg, #faf3e1, #f0e3b8);
+      color: var(--fortuno-gold-intense);
+      display: grid; place-items: center;
+      border: 1px solid rgba(184,150,63,0.25);
+      flex-shrink: 0;
+    }
+    .linked-stat .stat-icon i { width: 17px; height: 17px; }
+    .linked-stat .stat-label {
+      font-size: 10px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: rgba(11,11,11,0.58);
+      font-weight: 600;
+    }
+    .linked-stat .stat-numeral {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-weight: 800;
+      font-size: 44px;
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+      background: linear-gradient(180deg,
+        var(--fortuno-gold-soft) 0%,
+        var(--fortuno-gold-intense) 55%,
+        var(--fortuno-green-elegant) 130%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-variant-numeric: tabular-nums;
+    }
+    /* Divisor ouro fino entre numeral e CTA */
+    .linked-stat .stat-divider {
+      height: 1px;
+      background: var(--gold-divider-soft);
+      margin: 4px 0 2px;
+    }
+    .linked-stat .stat-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--fortuno-gold-intense);
+      transition: transform var(--duration-base) var(--easing-spring),
+                  color var(--duration-base) var(--easing-out);
+    }
+    .linked-stat .stat-cta i { width: 13px; height: 13px; }
+    .linked-stat:hover .stat-cta {
+      color: var(--fortuno-green-elegant);
+    }
+    .linked-stat:hover .stat-cta .stat-cta-arrow {
+      transform: translateX(3px);
+    }
+    .linked-stat .stat-cta-arrow {
+      display: inline-flex;
+      transition: transform var(--duration-base) var(--easing-spring);
+    }
+
+    /* ===========================================================
+       LOTTERY ROW — mais compacto
+       =========================================================== */
+    .lottery-row {
+      display: grid;
+      grid-template-columns: 40px 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: #ffffff;
+      border: 1px solid rgba(11,11,11,0.06);
+      transition: border-color var(--duration-base) var(--easing-out),
+                  background var(--duration-base) var(--easing-out),
+                  transform var(--duration-fast) var(--easing-out),
+                  box-shadow var(--duration-base) var(--easing-out);
+    }
+    .lottery-row:hover {
+      border-color: rgba(184,150,63,0.45);
+      background: #fffdf6;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px -10px rgba(10,42,32,0.18);
+    }
+    .lottery-row .row-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background:
+        radial-gradient(120% 120% at 30% 20%, #1c5b48 0%, #0f3b2e 60%, #06241c 100%);
+      color: var(--fortuno-gold-soft);
+      display: grid; place-items: center;
+      border: 1px solid rgba(212,175,55,0.32);
+    }
+    .lottery-row .row-icon i { width: 18px; height: 18px; }
+
+    /* ===========================================================
+       CTAs — reuse wizard/home
+       =========================================================== */
+    .cta-primary {
+      background: var(--fortuno-gold-intense);
+      color: var(--fortuno-black);
+      border-radius: 999px;
+      padding: 10px 20px;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      box-shadow:
+        0 8px 22px -6px rgba(212,175,55,0.45),
+        0 1px 0 rgba(255,255,255,0.35) inset;
+      transition: background var(--duration-fast) var(--easing-out),
+                  transform var(--duration-fast) var(--easing-out),
+                  box-shadow var(--duration-base) var(--easing-out);
+      display: inline-flex; align-items: center; gap: 8px;
+      min-height: 40px;
+    }
+    .cta-primary:hover {
+      background: var(--fortuno-gold-soft);
+      transform: translateY(-1px);
+      box-shadow:
+        0 10px 28px -6px rgba(212,175,55,0.7),
+        0 1px 0 rgba(255,255,255,0.4) inset;
+    }
+    .cta-primary:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(212,175,55,0.55); }
+    .cta-primary i { width: 15px; height: 15px; }
+
+    .cta-ghost-light {
+      background: transparent;
+      color: var(--fortuno-green-elegant);
+      border: 1px solid rgba(19,68,54,0.25);
+      border-radius: 999px;
+      padding: 9px 18px;
+      font-weight: 600;
+      font-size: 12px;
+      transition: background var(--duration-fast) var(--easing-out),
+                  border-color var(--duration-fast) var(--easing-out);
+      display: inline-flex; align-items: center; gap: 6px;
+      min-height: 40px;
+    }
+    .cta-ghost-light:hover {
+      background: rgba(212,175,55,0.08);
+      border-color: var(--fortuno-gold-intense);
+    }
+    .cta-ghost-light:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(212,175,55,0.55); }
+    .cta-ghost-light i { width: 13px; height: 13px; }
+
+    /* ===========================================================
+       Micro elements
+       =========================================================== */
+    .eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: rgba(11,11,11,0.55);
+      font-weight: 600;
+    }
+    .eyebrow.on-dark { color: rgba(236,232,225,0.60); }
+    .eyebrow.gold { color: var(--fortuno-gold-intense); }
+
+    /* ===========================================================
+       FOOTER BAND — COMPACTA (1 linha em desktop)
+       =========================================================== */
+    .dash-footer-band {
+      background: var(--dash-footer-band-bg);
+      color: var(--fortuno-offwhite);
+      position: relative;
+      overflow: hidden;
+    }
+    .dash-footer-band::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--gold-divider);
+      opacity: 0.55;
+    }
+    .footer-ornament {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: rgba(212,175,55,0.55);
+    }
+    .footer-ornament::before,
+    .footer-ornament::after {
+      content: '';
+      width: 18px;
+      height: 1px;
+      background: rgba(212,175,55,0.35);
+    }
+    .footer-ornament .deco-diamond {
+      width: 6px; height: 6px;
+      background: var(--fortuno-gold-soft);
+      transform: rotate(45deg);
+      box-shadow: 0 0 0 1px rgba(212,175,55,0.20);
+    }
+    .footer-link {
+      color: rgba(236,232,225,0.70);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 6px;
+      border-radius: 6px;
+      transition: color var(--duration-fast) var(--easing-out);
+    }
+    .footer-link i { width: 13px; height: 13px; }
+    .footer-link:hover { color: var(--fortuno-gold-soft); }
+    .footer-link:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(212,175,55,0.55);
+    }
+
+    /* ===========================================================
+       COPY TOAST (feedback do referral)
+       =========================================================== */
+    .copy-flash {
+      position: absolute;
+      top: 100%;
+      right: 10px;
+      margin-top: 6px;
+      padding: 4px 10px;
+      background: rgba(11,11,11,0.92);
+      color: var(--fortuno-gold-soft);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border-radius: 999px;
+      border: 1px solid rgba(212,175,55,0.45);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--duration-base) var(--easing-out),
+                  transform var(--duration-base) var(--easing-spring);
+    }
+    .header-chip.copied .copy-flash {
+      opacity: 1;
+      transform: translateY(2px);
+    }
+
+    /* ===========================================================
+       TOPBAR GLOBAL (corresponde a src/components/layout/Header.tsx)
+       =========================================================== */
+    .site-topbar {
+      background: var(--topbar-bg);
+      color: var(--fortuno-offwhite);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      isolation: isolate;
+    }
+    .site-topbar::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 1px;
+      background: var(--topbar-border-bottom);
+      opacity: 0.85;
+    }
+
+    /* Wordmark Playfair com ponto ouro no "i" de Fortuno */
+    .site-wordmark {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: 0.01em;
+      color: var(--fortuno-offwhite);
+      display: inline-flex;
+      align-items: center;
+      line-height: 1;
+      user-select: none;
+    }
+    .site-wordmark .dot-gold {
+      display: inline-block;
+      width: 6px; height: 6px;
+      background: var(--fortuno-gold-soft);
+      border-radius: 50%;
+      margin-left: 1px;
+      transform: translateY(-11px);
+      box-shadow: 0 0 8px rgba(212,175,55,0.45);
+    }
+
+    /* Nav pública */
+    .site-nav-link {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      color: rgba(236,232,225,0.78);
+      border-radius: 10px;
+      transition: color var(--duration-fast) var(--easing-out),
+                  background var(--duration-fast) var(--easing-out);
+    }
+    .site-nav-link:hover {
+      color: var(--fortuno-gold-soft);
+    }
+    .site-nav-link:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(212,175,55,0.55);
+    }
+    .site-nav-link.is-active {
+      color: var(--fortuno-gold-soft);
+      background: var(--nav-item-active-bg);
+      border: 1px solid var(--nav-item-active-border);
+      padding: 7px 13px;
+    }
+    .site-nav-link.is-active::after {
+      content: '';
+      position: absolute;
+      left: 50%; bottom: -6px;
+      transform: translateX(-50%);
+      width: 18px; height: 2px;
+      background: var(--fortuno-gold-soft);
+      border-radius: 2px;
+      box-shadow: 0 0 6px rgba(212,175,55,0.6);
+    }
+
+    /* Botão de usuário (trigger) */
+    .user-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 12px 5px 5px;
+      background: var(--user-trigger-bg);
+      border: 1px solid var(--user-trigger-border);
+      border-radius: 999px;
+      color: var(--fortuno-offwhite);
+      transition: background var(--duration-fast) var(--easing-out),
+                  border-color var(--duration-fast) var(--easing-out);
+      min-height: 44px;
+    }
+    .user-trigger:hover {
+      background: var(--user-trigger-bg-hover);
+      border-color: var(--user-trigger-border-hover);
+    }
+    .user-trigger:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.55);
+      border-color: var(--user-trigger-border-hover);
+    }
+    .user-trigger[aria-expanded='true'] {
+      background: var(--user-trigger-bg-hover);
+      border-color: var(--user-trigger-border-hover);
+    }
+    .user-trigger .user-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #1c5b48, #0a2a20);
+      border: 1.5px solid rgba(212,175,55,0.45);
+      display: grid; place-items: center;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-style: italic;
+      color: var(--fortuno-gold-soft);
+      font-size: 14px;
+      letter-spacing: -0.02em;
+      flex-shrink: 0;
+    }
+    .user-trigger .user-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--fortuno-offwhite);
+      letter-spacing: 0.01em;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .user-trigger .user-chevron {
+      width: 15px; height: 15px;
+      color: rgba(212,175,55,0.75);
+      transition: transform var(--duration-base) var(--easing-out);
+    }
+    .user-trigger[aria-expanded='true'] .user-chevron {
+      transform: rotate(180deg);
+      color: var(--fortuno-gold-soft);
+    }
+
+    /* ===========================================================
+       USER MENU DROPDOWN — "Editorial Casino Noir" premium
+       =========================================================== */
+    .user-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      width: 256px;
+      background: var(--dropdown-bg);
+      border: 1px solid var(--dropdown-border);
+      border-radius: 16px;
+      box-shadow: var(--dropdown-shadow);
+      overflow: hidden;
+      transform-origin: top right;
+      z-index: 50;
+      animation: user-menu-open 180ms var(--easing-out) both;
+    }
+    /* Ornamento ouro no topo (1px) — mesma linguagem do card-gold-bar */
+    .user-menu::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--card-gold-bar);
+      opacity: 0.95;
+    }
+    @keyframes user-menu-open {
+      from { opacity: 0; transform: scale(0.96) translateY(-6px); }
+      to   { opacity: 1; transform: scale(1)    translateY(0); }
+    }
+
+    /* Mini-card identitário do topo do dropdown */
+    .user-menu-identity {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: center;
+      padding: 18px 18px 16px;
+      position: relative;
+    }
+    .user-menu-identity::after {
+      content: '';
+      position: absolute;
+      left: 18px; right: 18px; bottom: 0;
+      height: 1px;
+      background: var(--dropdown-divider);
+    }
+    .user-menu-identity .identity-avatar {
+      position: relative;
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      isolation: isolate;
+      flex-shrink: 0;
+    }
+    .user-menu-identity .identity-avatar::before {
+      content: '';
+      position: absolute; inset: -2px;
+      border-radius: 50%;
+      background: var(--avatar-ring);
+      z-index: -1;
+      opacity: 0.9;
+    }
+    .user-menu-identity .identity-avatar-core {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #1c5b48, #0a2a20);
+      border: 2px solid rgba(212,175,55,0.45);
+      display: grid; place-items: center;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-style: italic;
+      color: var(--fortuno-gold-soft);
+      font-size: 22px;
+      letter-spacing: -0.02em;
+    }
+    .user-menu-identity .identity-info { min-width: 0; }
+    .user-menu-identity .identity-eyebrow {
+      font-size: 9px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--fortuno-gold-intense);
+      font-weight: 600;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .user-menu-identity .identity-name {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 1.15;
+      color: var(--fortuno-black);
+      letter-spacing: -0.01em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .user-menu-identity .identity-email {
+      font-size: 11px;
+      color: rgba(11,11,11,0.55);
+      margin-top: 2px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Lista de itens */
+    .user-menu-list {
+      display: flex;
+      flex-direction: column;
+      padding: 8px;
+    }
+    .user-menu-item {
+      display: grid;
+      grid-template-columns: 32px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      color: var(--dropdown-item-fg);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      transition: background var(--duration-fast) var(--easing-out),
+                  color var(--duration-fast) var(--easing-out),
+                  transform var(--duration-fast) var(--easing-out);
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      background: transparent;
+      border: none;
+      min-height: 40px;
+    }
+    .user-menu-item:hover,
+    .user-menu-item:focus-visible {
+      background: var(--dropdown-item-bg-hover);
+      color: var(--dropdown-item-fg-hover);
+      outline: none;
+    }
+    .user-menu-item:focus-visible {
+      box-shadow: 0 0 0 2px rgba(212,175,55,0.55);
+    }
+    .user-menu-item .item-icon {
+      display: grid;
+      place-items: center;
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: rgba(184,150,63,0.10);
+      border: 1px solid rgba(184,150,63,0.25);
+      color: var(--fortuno-gold-intense);
+      transition: transform var(--duration-fast) var(--easing-spring),
+                  background var(--duration-fast) var(--easing-out);
+    }
+    .user-menu-item .item-icon i {
+      width: 15px; height: 15px;
+    }
+    .user-menu-item:hover .item-icon {
+      transform: translateX(2px);
+      background: rgba(184,150,63,0.20);
+    }
+    .user-menu-item .item-chevron {
+      width: 13px; height: 13px;
+      color: rgba(11,11,11,0.25);
+      transition: transform var(--duration-fast) var(--easing-spring),
+                  color var(--duration-fast) var(--easing-out);
+    }
+    .user-menu-item:hover .item-chevron {
+      transform: translateX(3px);
+      color: var(--fortuno-gold-intense);
+    }
+
+    /* Divisor interno entre ações e logout */
+    .user-menu-divider {
+      height: 1px;
+      background: var(--dropdown-divider);
+      margin: 6px 10px;
+    }
+
+    /* Item logout (variante perigo-sutil em cobre) */
+    .user-menu-item.is-danger {
+      color: var(--dropdown-danger-fg);
+    }
+    .user-menu-item.is-danger .item-icon {
+      background: rgba(138,90,43,0.10);
+      border-color: rgba(138,90,43,0.30);
+      color: var(--dropdown-danger-fg);
+    }
+    .user-menu-item.is-danger:hover,
+    .user-menu-item.is-danger:focus-visible {
+      background: var(--dropdown-danger-bg-hover);
+      color: var(--dropdown-danger-fg-hover);
+    }
+    .user-menu-item.is-danger:hover .item-icon {
+      background: rgba(138,90,43,0.18);
+      color: var(--dropdown-danger-fg-hover);
+    }
+    .user-menu-item.is-danger .item-chevron {
+      color: rgba(138,90,43,0.35);
+    }
+    .user-menu-item.is-danger:hover .item-chevron {
+      color: var(--dropdown-danger-fg-hover);
+    }
+
+    /* ===========================================================
+       Reduced motion
+       =========================================================== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition-duration: 1ms !important;
+      }
+    }
+
+    /* ===========================================================
+       Responsividade
+       =========================================================== */
+    @media (max-width: 1023px) {
+      .header-grid {
+        grid-template-columns: auto 1fr !important;
+      }
+      .header-chips {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+    }
+    @media (max-width: 639px) {
+      .header-chips {
+        grid-template-columns: 1fr;
+      }
+      .linked-stat { min-height: 132px; }
+      .footer-grid { grid-template-columns: 1fr !important; }
+      .footer-ornament { display: none; }
+
+      /* Dropdown vira quase full-width em mobile (ancorado à direita, com respiro) */
+      .user-menu {
+        width: calc(100vw - 24px);
+        max-width: 340px;
+        right: 0;
+      }
+      .user-trigger .user-name { display: none; }
+      .user-trigger { padding: 5px 10px 5px 5px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =====================================================
+       0. TOPBAR GLOBAL — corresponde a src/components/layout/Header.tsx
+       Fica ACIMA do header escuro do dashboard.
+       Renderiza em TODAS as rotas autenticadas (via AuthenticatedShell).
+       ===================================================== -->
+  <div class="site-topbar">
+    <div class="relative z-10 mx-auto max-w-7xl px-6 flex items-center justify-between gap-4"
+         style="height: 64px;">
+
+      <!-- Esquerda: Wordmark Fortuno -->
+      <a href="/" class="site-wordmark" aria-label="Fortuno — ir para a home">
+        Fortuno<span class="dot-gold" aria-hidden="true"></span>
+      </a>
+
+      <!-- Centro: Nav pública (desktop ≥768px) -->
+      <nav class="hidden md:flex items-center gap-1" aria-label="Menu principal">
+        <a href="/sorteios" class="site-nav-link is-active">Sorteios</a>
+        <a href="/meus-numeros" class="site-nav-link">Meus Números</a>
+        <a href="/quem-somos" class="site-nav-link">Quem Somos</a>
+        <a href="/fale-conosco" class="site-nav-link">Fale Conosco</a>
+      </nav>
+
+      <!-- Direita: Botão hambúrguer (mobile) + Botão de usuário -->
+      <div class="flex items-center gap-2">
+        <!-- Hambúrguer mobile (esconde em ≥md) -->
+        <button
+          type="button"
+          class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-full
+                 border border-[color:var(--user-trigger-border)] bg-[color:var(--user-trigger-bg)]
+                 text-fortuno-gold-soft hover:border-[color:var(--user-trigger-border-hover)]
+                 hover:bg-[color:var(--user-trigger-bg-hover)] transition-colors"
+          aria-label="Abrir menu de navegação"
+          aria-expanded="false"
+        >
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+
+        <!-- Botão de usuário (trigger do UserMenu) — RENDERIZADO EM ESTADO ABERTO no mockup -->
+        <div class="relative">
+          <button
+            type="button"
+            class="user-trigger"
+            id="userMenuTrigger"
+            aria-haspopup="menu"
+            aria-expanded="true"
+            aria-controls="userMenu"
+            aria-label="Menu da minha conta"
+          >
+            <span class="user-avatar" aria-hidden="true">RL</span>
+            <span class="user-name">Rodrigo</span>
+            <i data-lucide="chevron-down" class="user-chevron" aria-hidden="true"></i>
+          </button>
+
+          <!-- DROPDOWN — mostrado aberto para preview do design -->
+          <div
+            class="user-menu"
+            id="userMenu"
+            role="menu"
+            aria-labelledby="userMenuTrigger"
+          >
+            <!-- Mini-card identitário -->
+            <div class="user-menu-identity">
+              <div class="identity-avatar" aria-hidden="true">
+                <div class="identity-avatar-core">RL</div>
+              </div>
+              <div class="identity-info">
+                <div class="identity-eyebrow">Conta Fortuno</div>
+                <div class="identity-name">Rodrigo Landim</div>
+                <div class="identity-email">rodrigo@emagine.com.br</div>
+              </div>
+            </div>
+
+            <!-- Itens de ação -->
+            <div class="user-menu-list">
+              <a href="/conta/dados" class="user-menu-item" role="menuitem" tabindex="-1">
+                <span class="item-icon" aria-hidden="true">
+                  <i data-lucide="user-cog"></i>
+                </span>
+                <span>Alterar dados</span>
+                <i data-lucide="chevron-right" class="item-chevron" aria-hidden="true"></i>
+              </a>
+
+              <a href="/conta/alterar-senha" class="user-menu-item" role="menuitem" tabindex="-1">
+                <span class="item-icon" aria-hidden="true">
+                  <i data-lucide="key-round"></i>
+                </span>
+                <span>Trocar senha</span>
+                <i data-lucide="chevron-right" class="item-chevron" aria-hidden="true"></i>
+              </a>
+
+              <div class="user-menu-divider" role="separator" aria-hidden="true"></div>
+
+              <button
+                type="button"
+                class="user-menu-item is-danger"
+                role="menuitem"
+                tabindex="-1"
+                onclick="handleLogout(event)"
+              >
+                <span class="item-icon" aria-hidden="true">
+                  <i data-lucide="log-out"></i>
+                </span>
+                <span>Sair</span>
+                <i data-lucide="chevron-right" class="item-chevron" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- =====================================================
+       1. HEADER ESCURO — COMPACTO
+       Saudação + avatar + ReferralChip + PointsChip
+       ===================================================== -->
+  <header class="dash-header" aria-labelledby="dash-greeting">
+    <div class="relative z-10 mx-auto max-w-7xl px-6 pt-6 pb-6 md:pt-8 md:pb-8">
+      <div class="header-grid grid lg:grid-cols-[auto_1fr_auto_auto] items-center gap-5"
+           style="grid-template-columns: auto 1fr auto auto;">
+
+        <!-- Avatar compacto + saudação -->
+        <div class="avatar-frame" aria-hidden="true">
+          <div class="avatar-core">RL</div>
+        </div>
+
+        <div class="min-w-0">
+          <span class="eyebrow on-dark gold">Painel Fortuno</span>
+          <h1 id="dash-greeting"
+              class="font-display text-fortuno-offwhite leading-tight mt-0.5
+                     text-[clamp(20px,2.4vw,28px)] tracking-[-0.01em]">
+            Olá, <span class="italic text-fortuno-gold-soft">Rodrigo</span>.
+          </h1>
+        </div>
+
+        <!-- Chips: ReferralChip + PointsChip (desktop: lado a lado; mobile: empilham) -->
+        <div class="header-chips contents lg:contents">
+          <!-- ReferralChip -->
+          <div class="relative header-chip" id="referralChip" role="group" aria-labelledby="ref-label">
+            <div class="chip-lead" aria-hidden="true"><i data-lucide="hash"></i></div>
+            <div class="flex flex-col min-w-0">
+              <span id="ref-label" class="chip-label">Código de indicação</span>
+              <span class="chip-value" aria-live="polite">FORT-R0D1G0</span>
+            </div>
+            <button
+              type="button"
+              class="chip-copy"
+              aria-label="Copiar código de indicação FORT-R0D1G0"
+              onclick="handleCopy(this)"
+            >
+              <i data-lucide="copy"></i>
+            </button>
+            <span class="copy-flash" role="status" aria-live="polite">Copiado</span>
+          </div>
+
+          <!-- PointsChip -->
+          <div class="header-chip" role="group" aria-labelledby="pts-label">
+            <div class="chip-lead" aria-hidden="true"><i data-lucide="sparkles"></i></div>
+            <div class="flex flex-col min-w-0">
+              <span id="pts-label" class="chip-label">Total de pontos</span>
+              <span class="chip-value" aria-label="1.247 pontos acumulados">
+                1.247<span class="chip-value-unit">pts</span>
+              </span>
+            </div>
+            <a href="/meus-pontos" class="chip-action" aria-label="Ver extrato de pontos">
+              Extrato
+              <i data-lucide="arrow-right"></i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- =====================================================
+       2. CORPO CLARO — Trio de stats + Loterias que administro
+       ===================================================== -->
+  <main class="relative z-10 mx-auto max-w-7xl px-6 py-8 md:py-10">
+
+    <!-- ==== 2.1 Trio de stats linkáveis ==== -->
+    <section aria-labelledby="stats-title">
+      <h2 id="stats-title" class="sr-only">Resumo da sua conta</h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+        <!-- Bilhetes comprados -->
+        <a href="/meus-numeros" class="linked-stat" aria-labelledby="stat-tickets-label stat-tickets-value">
+          <div class="stat-head">
+            <div class="stat-icon" aria-hidden="true"><i data-lucide="ticket"></i></div>
+            <span class="text-[10px] text-fortuno-black/40 tracking-[0.22em] uppercase">01</span>
+          </div>
+          <span id="stat-tickets-label" class="stat-label">Bilhetes comprados</span>
+          <span id="stat-tickets-value" class="stat-numeral">47</span>
+          <div class="stat-divider"></div>
+          <span class="stat-cta">
+            Ver meus números
+            <span class="stat-cta-arrow" aria-hidden="true"><i data-lucide="arrow-right"></i></span>
+          </span>
+        </a>
+
+        <!-- Loterias participadas -->
+        <a href="/meus-sorteios" class="linked-stat" aria-labelledby="stat-lotteries-label stat-lotteries-value">
+          <div class="stat-head">
+            <div class="stat-icon" aria-hidden="true"><i data-lucide="trophy"></i></div>
+            <span class="text-[10px] text-fortuno-black/40 tracking-[0.22em] uppercase">02</span>
+          </div>
+          <span id="stat-lotteries-label" class="stat-label">Loterias participadas</span>
+          <span id="stat-lotteries-value" class="stat-numeral">5</span>
+          <div class="stat-divider"></div>
+          <span class="stat-cta">
+            Ver meus sorteios
+            <span class="stat-cta-arrow" aria-hidden="true"><i data-lucide="arrow-right"></i></span>
+          </span>
+        </a>
+
+        <!-- Indicações -->
+        <a href="/meus-pontos" class="linked-stat" aria-labelledby="stat-referrals-label stat-referrals-value">
+          <div class="stat-head">
+            <div class="stat-icon" aria-hidden="true"><i data-lucide="users"></i></div>
+            <span class="text-[10px] text-fortuno-black/40 tracking-[0.22em] uppercase">03</span>
+          </div>
+          <span id="stat-referrals-label" class="stat-label">Indicações</span>
+          <span id="stat-referrals-value" class="stat-numeral">23</span>
+          <div class="stat-divider"></div>
+          <span class="stat-cta">
+            Ver meu extrato de pontos
+            <span class="stat-cta-arrow" aria-hidden="true"><i data-lucide="arrow-right"></i></span>
+          </span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ==== 2.2 Loterias que administro (condicional — só aparece se > 0) ==== -->
+    <section aria-labelledby="my-lotteries-title" class="mt-8 md:mt-10">
+      <header class="flex items-start md:items-center justify-between gap-3 flex-col md:flex-row mb-4">
+        <div class="flex items-baseline gap-3 flex-wrap">
+          <h2 id="my-lotteries-title" class="font-display text-fortuno-black text-[clamp(20px,2.2vw,26px)] leading-tight">
+            Loterias que você <span class="italic">administra</span>
+          </h2>
+          <span class="text-xs text-fortuno-black/50">
+            · <strong class="font-semibold text-fortuno-black/80">3</strong> ativas
+          </span>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <a href="/meus-sorteios" class="cta-ghost-light">
+            Ver todas
+            <i data-lucide="arrow-right"></i>
+          </a>
+          <a href="/meus-sorteios/novo" class="cta-primary">
+            <i data-lucide="plus"></i>
+            Novo sorteio
+          </a>
+        </div>
+      </header>
+
+      <!-- Lista (preview de até 3) -->
+      <ul class="flex flex-col gap-2.5" role="list">
+        <li class="lottery-row">
+          <div class="row-icon" aria-hidden="true"><i data-lucide="trophy"></i></div>
+          <div class="min-w-0">
+            <p class="font-semibold text-fortuno-black truncate text-sm">Porsche Mega Edição #012</p>
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-fortuno-black/60 mt-0.5">
+              <span class="inline-flex items-center gap-1">
+                <i data-lucide="coins" class="w-3 h-3 text-fortuno-gold-intense"></i>
+                R$ 720.000,00
+              </span>
+              <span class="inline-flex items-center gap-1">
+                <i data-lucide="ticket" class="w-3 h-3 text-fortuno-gold-intense"></i>
+                1.420 / 2.000
+              </span>
+              <span class="inline-flex items-center gap-1 text-fortuno-green-elegant font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full bg-fortuno-gold-soft inline-block"></span>
+                Aberto
+              </span>
+            </div>
+          </div>
+          <a href="#" class="cta-ghost-light">
+            Gerenciar
+            <i data-lucide="settings-2"></i>
+          </a>
+        </li>
+
+        <li class="lottery-row">
+          <div class="row-icon" aria-hidden="true"><i data-lucide="car"></i></div>
+          <div class="min-w-0">
+            <p class="font-semibold text-fortuno-black truncate text-sm">Garage Edition · Civic Type R</p>
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-fortuno-black/60 mt-0.5">
+              <span class="inline-flex items-center gap-1">
+                <i data-lucide="coins" class="w-3 h-3 text-fortuno-gold-intense"></i>
+                R$ 280.000,00
+              </span>
+              <span class="inline-flex items-center gap-1">
+                <i data-lucide="ticket" class="w-3 h-3 text-fortuno-gold-intense"></i>
+                860 / 1.200
+              </span>
+              <span class="inline-flex items-center gap-1 text-fortuno-green-elegant font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full bg-fortuno-gold-soft inline-block"></span>
+                Aberto
+              </span>
+            </div>
+          </div>
+          <a href="#" class="cta-ghost-light">
+            Gerenciar
+            <i data-lucide="settings-2"></i>
+          </a>
+        </li>
+
+        <li class="lottery-row">
+          <div class="row-icon" aria-hidden="true"><i data-lucide="gem"></i></div>
+          <div class="min-w-0">
+            <p class="font-semibold text-fortuno-black truncate text-sm">Diamante Fortuno 2026 · Edição de Inverno</p>
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-fortuno-black/60 mt-0.5">
+              <span class="inline-flex items-center gap-1">
+                <i data-lucide="coins" class="w-3 h-3 text-fortuno-gold-intense"></i>
+                R$ 150.000,00
+              </span>
+              <span class="inline-flex items-center gap-1">
+                <i data-lucide="ticket" class="w-3 h-3 text-fortuno-gold-intense"></i>
+                420 / 1.000
+              </span>
+              <span class="inline-flex items-center gap-1 text-fortuno-black/55">
+                <i data-lucide="clock" class="w-3 h-3"></i>
+                Agendado · 12/05
+              </span>
+            </div>
+          </div>
+          <a href="#" class="cta-ghost-light">
+            Gerenciar
+            <i data-lucide="settings-2"></i>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+  </main>
+
+  <!-- =====================================================
+       3. FOOTER BAND — COMPACTA
+       1 linha em desktop (~72px); 2 linhas em mobile.
+       ===================================================== -->
+  <footer class="dash-footer-band" aria-labelledby="footer-title">
+    <h2 id="footer-title" class="sr-only">Rodapé Fortuno</h2>
+    <div class="relative z-10 mx-auto max-w-7xl px-6 py-4 md:py-5">
+      <div class="footer-grid grid md:grid-cols-[auto_1fr_auto] items-center gap-3 md:gap-6">
+        <!-- Ornamento + tagline -->
+        <div class="flex items-center gap-3">
+          <span class="footer-ornament" aria-hidden="true">
+            <span class="deco-diamond"></span>
+          </span>
+          <p class="font-display text-fortuno-offwhite text-sm md:text-base leading-tight">
+            Fortuno — <span class="italic text-fortuno-gold-soft">sua sorte é séria.</span>
+          </p>
+        </div>
+
+        <span aria-hidden="true" class="hidden md:block h-5 w-px bg-fortuno-offwhite/15 justify-self-center"></span>
+
+        <!-- Links de suporte/contato -->
+        <nav aria-label="Rodapé — suporte e contato" class="flex flex-wrap items-center gap-x-4 gap-y-1 md:justify-end">
+          <a href="/suporte" class="footer-link">
+            <i data-lucide="life-buoy"></i>
+            Suporte
+          </a>
+          <a href="/#como" class="footer-link">
+            <i data-lucide="info"></i>
+            Como funciona
+          </a>
+          <a href="mailto:contato@fortuno.com.br" class="footer-link">
+            <i data-lucide="mail"></i>
+            contato@fortuno.com.br
+          </a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =====================================================
+       Scripts
+       ===================================================== -->
+  <script>
+    if (window.lucide) window.lucide.createIcons();
+
+    // ============================================================
+    // USER MENU (topbar global) — abre/fecha com:
+    // - clique no trigger
+    // - clique fora
+    // - Escape
+    // - clique em item
+    // Observação: no mockup, o menu já começa ABERTO para facilitar
+    // o preview do design. A implementação React deve iniciar fechado.
+    // ============================================================
+    (function initUserMenu() {
+      const trigger = document.getElementById('userMenuTrigger');
+      const menu    = document.getElementById('userMenu');
+      if (!trigger || !menu) return;
+
+      const items = menu.querySelectorAll('[role="menuitem"]');
+      let open = trigger.getAttribute('aria-expanded') === 'true';
+
+      const setState = (nextOpen) => {
+        open = nextOpen;
+        trigger.setAttribute('aria-expanded', String(open));
+        menu.style.display = open ? '' : 'none';
+        if (open) {
+          items.forEach((it) => it.setAttribute('tabindex', '-1'));
+          items[0] && items[0].focus();
+        } else {
+          trigger.focus();
+        }
+      };
+
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setState(!open);
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!open) return;
+        if (menu.contains(e.target) || trigger.contains(e.target)) return;
+        setState(false);
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (!open) return;
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          setState(false);
+          return;
+        }
+        // Setas ↑/↓ navegam entre itens
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+          const current = document.activeElement;
+          const arr = Array.from(items);
+          const idx = arr.indexOf(current);
+          if (idx === -1) return;
+          e.preventDefault();
+          const next = e.key === 'ArrowDown'
+            ? arr[(idx + 1) % arr.length]
+            : arr[(idx - 1 + arr.length) % arr.length];
+          next.focus();
+        }
+      });
+
+      // Fechar ao clicar em item (exceto logout, que chama handleLogout)
+      items.forEach((it) => {
+        it.addEventListener('click', () => {
+          setState(false);
+        });
+      });
+    })();
+
+    function handleLogout(e) {
+      e.preventDefault();
+      // Em produção (React): await logout(); navigate('/');
+      // Mockup: só fecha o menu e mostra um flash no console.
+      console.info('[mockup] logout solicitado');
+      const trigger = document.getElementById('userMenuTrigger');
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+      const menu = document.getElementById('userMenu');
+      if (menu) menu.style.display = 'none';
+    }
+
+    // Copy referral code — feedback visual
+    function handleCopy(btn) {
+      const chip = btn.closest('.header-chip');
+      const codeEl = chip && chip.querySelector('.chip-value');
+      const code = codeEl ? codeEl.textContent.trim() : '';
+      if (!code) return;
+
+      const done = () => {
+        chip.classList.add('copied');
+        btn.innerHTML = '<i data-lucide="check"></i>';
+        if (window.lucide) window.lucide.createIcons({ icons: { check: {} } });
+        setTimeout(() => {
+          chip.classList.remove('copied');
+          btn.innerHTML = '<i data-lucide="copy"></i>';
+          if (window.lucide) window.lucide.createIcons();
+        }, 2000);
+      };
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(done).catch(done);
+      } else {
+        done();
+      }
+    }
+  </script>
+</body>
+</html>

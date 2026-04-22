@@ -3,16 +3,19 @@ export interface LotteryImageInfo {
   lotteryId: number;
   imageUrl: string;
   description: string;
-  order: number;
+  displayOrder: number;
+  createdAt?: string;
 }
 
 export interface LotteryImageInsertInfo {
   lotteryId: number;
-  imageUrl: string;
+  imageBase64: string;
   description: string;
-  order: number;
+  displayOrder: number;
 }
 
-export interface LotteryImageUpdateInfo extends LotteryImageInsertInfo {
+export interface LotteryImageUpdateInfo {
   lotteryImageId: number;
+  description: string;
+  displayOrder: number;
 }

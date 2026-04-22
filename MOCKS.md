@@ -17,13 +17,6 @@ Registro vivo dos endpoints que o frontend consome em modo MOCK até que o backe
 
 ## Lista ativa
 
-### `lotteryService.listOpen`
-
-- **Arquivo**: `src/Services/lotteryService.ts`
-- **Rota esperada**: `GET /lotteries/open` (lista pública de loterias em status `Open`)
-- **Descrição**: a Bruno collection atual só expõe `GET /lotteries/store/{storeId}` (autenticado). Enquanto o endpoint público não existir, o frontend chama `list-by-store` passando `VITE_FORTUNO_STORE_ID` e filtra por `status === LotteryStatus.Open` no cliente.
-- **Item de acompanhamento**: pendente de abertura.
-
 ### `ticketService.simulatePayment`
 
 - **Arquivo**: `src/Services/ticketService.ts`
@@ -35,5 +28,47 @@ Registro vivo dos endpoints que o frontend consome em modo MOCK até que o backe
 
 - **Arquivo**: `src/pages/dashboard/DashboardPage.tsx`
 - **Rota esperada**: `GET /lotteries/my-owned` (lista de loterias do usuário logado como dono)
-- **Descrição**: não há endpoint explícito para filtrar loterias por `createdByUserId` na Bruno collection. Enquanto não houver, o bloco "Loterias que administro" é oculto (condição baseada em lista vazia).
+- **Descrição**: não há endpoint explícito para filtrar loterias por `createdByUserId` na Bruno collection. Enquanto não houver, o bloco "Loterias que administro" é oculto (condição baseada em lista vazia). Na v2 do dashboard, a seção é totalmente condicional: quando `myLotteries.length === 0`, NÃO renderiza nada (sem empty state).
+- **Item de acompanhamento**: pendente de abertura.
+
+### Dashboard — `panel.totalPoints` (chip de pontos no header)
+
+- **Arquivo**: `src/pages/dashboard/DashboardPage.tsx` (cálculo do `totalPoints` passado ao `HeaderChip variant="points"` em `src/components/dashboard/HeaderChip.tsx`) — referência em `design/dashboard/spec.md §4.3` e `§8.2`.
+- **Rota esperada**: `GET /referral/panel` deve incluir `totalPoints: number` (saldo INTEIRO de pontos do usuário, NÃO em BRL). Alternativa: criar endpoint dedicado `GET /points/balance` retornando `{ totalPoints: number, currency: 'pts' }` e expor via novo hook `usePoints()`. Decisão fica com o time de backend; o frontend consome o que vier.
+- **Descrição**: o chip "Total de pontos" no header escuro do dashboard exibe esse número formatado em pt-BR (ex.: 1.247 pts) e leva o usuário para `/meus-pontos` via CTA "Extrato". Enquanto o backend não expor o campo, a página trunca `panel.totalToReceive` (BRL) para um inteiro >= 0 como fallback determinístico — o chip continua aparecendo, com semântica equivalente à v1 sem mudar o `useReferral`/`referralService`.
+- **Item de acompanhamento**: pendente de abertura.
+
+### Home — `StatsBand` (indicadores da plataforma)
+
+- **Arquivo**: `src/components/home/StatsBand.tsx` (constante `DEFAULT_STATS`)
+- **Rota esperada**: `GET /stats/public` (distribuído em prêmios, sorteios realizados, ganhadores, % auditoria)
+- **Descrição**: banda de 4 números da home hoje exibe valores hardcoded (`R$ 12.400.000`, `248`, `15.320+`, `100%`). Quando o endpoint existir, alimentar via `useEffect` + estado local no componente.
+- **Item de acompanhamento**: pendente de abertura.
+
+### Home — Bilhetes vendidos (Hero + LotteryCardPremium)
+
+- **Arquivo**: `src/components/home/HeroFeaturedLottery.tsx`, `src/components/home/LotteryCardPremium.tsx`
+- **Rota esperada**: `GET /lottery/{id}/ticketStats` (contagem de bilhetes vendidos por loteria)
+- **Descrição**: `totalTickets` deriva do range `ticketNumEnd - ticketNumIni + 1` (já disponível), mas `soldTickets` não existe. No hero, usamos uma estimativa determinística `floor(total * 0.87)` para exibir o scarcity hint. Nos cards premium, `soldTickets = 0` até o endpoint chegar.
+- **Item de acompanhamento**: pendente de abertura.
+
+### Home — Sorteio em destaque (`isFeatured`)
+
+- **Arquivo**: `src/pages/public/HomePage.tsx` (`useMemo` de `featuredLottery`)
+- **Rota esperada**: `GET /lotteries` passar a expor `isFeatured: boolean` em `LotteryInfo`
+- **Descrição**: hoje a home escolhe o sorteio com maior `totalPrizeValue` dos `openLotteries` como destaque. Quando o backend expuser o flag, o `useMemo` passará a priorizar `openLotteries.find(l => l.isFeatured === true)`.
+- **Item de acompanhamento**: pendente de abertura.
+
+### Home — `subtitle` curto do sorteio em destaque
+
+- **Arquivo**: `src/components/home/HeroFeaturedLottery.tsx`
+- **Rota esperada**: backend incluir `subtitle: string | null` em `LotteryInfo` (descrição editorial curta, separada da `descriptionMd` markdown).
+- **Descrição**: enquanto não existir, derivamos um excerpt dos primeiros 140 caracteres de `descriptionMd`. Substituir por `featuredLottery.subtitle ?? excerpt` quando o campo chegar.
+- **Item de acompanhamento**: pendente de abertura.
+
+### Home — Imagem de fallback do hero
+
+- **Arquivo**: `public/images/hero-fallback.jpg` (asset estático pendente)
+- **Rota esperada**: admin cadastrar imagens reais por sorteio (campo `images[0].imageUrl` já existe em `LotteryInfo`).
+- **Descrição**: quando um sorteio em destaque não tem imagem, o `HeroFeaturedLottery` aponta para `/images/hero-fallback.jpg`. O asset deve ser fornecido pelo time de design — enquanto não existir, uma URL quebrada fica como placeholder.
 - **Item de acompanhamento**: pendente de abertura.

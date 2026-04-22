@@ -1,8 +1,21 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
+import {
+  Info,
+  Hash,
+  PenLine,
+  Image as ImageIcon,
+  Puzzle,
+  Dices,
+  Trophy,
+  Zap,
+} from 'lucide-react';
 import { useLottery } from '@/hooks/useLottery';
-import { WizardShell, type WizardStepMeta } from '@/components/wizard/WizardShell';
+import {
+  VerticalWizardShell,
+  type WizardStepMeta,
+} from '@/components/wizard/VerticalWizardShell';
 import {
   Step1BasicData,
   emptyDraft,
@@ -18,14 +31,70 @@ import { Step7Awards } from './wizard-steps/Step7Awards';
 import { Step8Activate } from './wizard-steps/Step8Activate';
 
 const STEPS: WizardStepMeta[] = [
-  { index: 0, key: 'basic', title: 'Dados básicos' },
-  { index: 1, key: 'number', title: 'Numeração' },
-  { index: 2, key: 'desc', title: 'Descrições' },
-  { index: 3, key: 'images', title: 'Imagens' },
-  { index: 4, key: 'combos', title: 'Combos' },
-  { index: 5, key: 'raffles', title: 'Sorteios' },
-  { index: 6, key: 'awards', title: 'Prêmios' },
-  { index: 7, key: 'activate', title: 'Ativar' },
+  {
+    index: 0,
+    key: 'basic',
+    title: 'Dados básicos',
+    icon: Info,
+    subtitle: 'Nome, loja e período do sorteio. É por aqui que tudo começa.',
+    estimatedMinutes: 2,
+  },
+  {
+    index: 1,
+    key: 'number',
+    title: 'Numeração',
+    icon: Hash,
+    subtitle: 'Defina como os bilhetes serão numerados — formato, quantidade e dígitos.',
+    estimatedMinutes: 2,
+  },
+  {
+    index: 2,
+    key: 'desc',
+    title: 'Descrições',
+    icon: PenLine,
+    subtitle: 'Conte a história do prêmio. Copy curta vende, copy rica encanta.',
+    estimatedMinutes: 3,
+  },
+  {
+    index: 3,
+    key: 'images',
+    title: 'Imagens',
+    icon: ImageIcon,
+    subtitle: 'Capa, galeria e detalhes. Imagem em alta resolução converte mais.',
+    estimatedMinutes: 2,
+  },
+  {
+    index: 4,
+    key: 'combos',
+    title: 'Combos',
+    icon: Puzzle,
+    subtitle: 'Pacotes promocionais de bilhetes para impulsionar o ticket médio.',
+    estimatedMinutes: 2,
+  },
+  {
+    index: 5,
+    key: 'raffles',
+    title: 'Sorteios',
+    icon: Dices,
+    subtitle: 'Datas, turnos e mecânica de extração dos números vencedores.',
+    estimatedMinutes: 2,
+  },
+  {
+    index: 6,
+    key: 'awards',
+    title: 'Prêmios',
+    icon: Trophy,
+    subtitle: 'O que está em jogo. Valor, descrição e regras de entrega.',
+    estimatedMinutes: 2,
+  },
+  {
+    index: 7,
+    key: 'activate',
+    title: 'Ativar',
+    icon: Zap,
+    subtitle: 'Revisão final. Ao publicar, o sorteio fica visível ao público.',
+    estimatedMinutes: 1,
+  },
 ];
 
 const STORAGE_KEY = (id: string): string => `fortuno:wizard:${id}`;
@@ -79,8 +148,13 @@ export const LotteryWizardPage = (): JSX.Element => {
     if (currentIndex === 0) {
       setBusy(true);
       const storeId = Number(import.meta.env.VITE_FORTUNO_STORE_ID || 1);
+      // API exige descriptionMd/rulesMd/privacyPolicyMd não-vazios; etapa 3 substitui placeholders.
       const payload = {
         ...draft,
+        descriptionMd: draft.descriptionMd || 'Descrição será definida na etapa 3.',
+        rulesMd: draft.rulesMd || 'Regras serão definidas na etapa 3.',
+        privacyPolicyMd:
+          draft.privacyPolicyMd || 'Política de privacidade será definida na etapa 3.',
         storeId,
       };
       let result = currentLottery;
@@ -122,6 +196,9 @@ export const LotteryWizardPage = (): JSX.Element => {
 
   const lotteryIdForChildSteps = draft.lotteryId;
 
+  // Step 1 libera as etapas 4–8 (conforme spec §2: maxUnlockedIndex)
+  const maxUnlockedIndex = draft.lotteryId ? STEPS.length - 1 : currentIndex;
+
   const renderStep = (): JSX.Element => {
     switch (currentIndex) {
       case 0:
@@ -134,31 +211,39 @@ export const LotteryWizardPage = (): JSX.Element => {
         return lotteryIdForChildSteps ? (
           <Step4Images lotteryId={lotteryIdForChildSteps} />
         ) : (
-          <p>Finalize a etapa 1 para liberar o cadastro de imagens.</p>
+          <p className="text-fortuno-offwhite/70">
+            Finalize a etapa 1 para liberar o cadastro de imagens.
+          </p>
         );
       case 4:
         return lotteryIdForChildSteps ? (
           <Step5Combos lotteryId={lotteryIdForChildSteps} />
         ) : (
-          <p>Finalize a etapa 1 para liberar os combos.</p>
+          <p className="text-fortuno-offwhite/70">
+            Finalize a etapa 1 para liberar os combos.
+          </p>
         );
       case 5:
         return lotteryIdForChildSteps ? (
           <Step6Raffles lotteryId={lotteryIdForChildSteps} />
         ) : (
-          <p>Finalize a etapa 1 para liberar os sorteios.</p>
+          <p className="text-fortuno-offwhite/70">
+            Finalize a etapa 1 para liberar os sorteios.
+          </p>
         );
       case 6:
         return lotteryIdForChildSteps ? (
           <Step7Awards lotteryId={lotteryIdForChildSteps} />
         ) : (
-          <p>Finalize a etapa 1 para liberar os prêmios.</p>
+          <p className="text-fortuno-offwhite/70">
+            Finalize a etapa 1 para liberar os prêmios.
+          </p>
         );
       case 7:
         return lotteryIdForChildSteps ? (
           <Step8Activate lotteryId={lotteryIdForChildSteps} />
         ) : (
-          <p>Finalize a etapa 1 antes de ativar.</p>
+          <p className="text-fortuno-offwhite/70">Finalize a etapa 1 antes de ativar.</p>
         );
       default:
         return <></>;
@@ -166,16 +251,18 @@ export const LotteryWizardPage = (): JSX.Element => {
   };
 
   return (
-    <WizardShell
+    <VerticalWizardShell
       steps={STEPS}
       currentIndex={currentIndex}
+      maxUnlockedIndex={maxUnlockedIndex}
       onPrev={goPrev}
       onNext={() => void goNext()}
       onJump={goJump}
       busy={busy}
-      nextLabel={currentIndex === STEPS.length - 1 ? 'Ativar sorteio' : 'Próximo'}
+      nextLabel="Próximo"
+      finalLabel="Ativar sorteio"
     >
       {renderStep()}
-    </WizardShell>
+    </VerticalWizardShell>
   );
 };

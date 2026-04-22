@@ -15,7 +15,9 @@ export const pickCombo = (
   quantity: number,
   combos: LotteryComboInfo[],
 ): LotteryComboInfo | null =>
-  combos.find((c) => quantity >= c.quantityStart && quantity <= c.quantityEnd) ?? null;
+  combos.find(
+    (c) => quantity >= c.quantityStart && (c.quantityEnd === 0 || quantity <= c.quantityEnd),
+  ) ?? null;
 
 export const computePrice = (
   quantity: number,
@@ -46,8 +48,12 @@ export const ComboSelector = ({
   const currentCombo = pickCombo(quantity, sorted);
   const pricing = computePrice(quantity, currentCombo, ticketPrice);
 
+  const unlimited = maxQty <= 0;
+  const effectiveMax = unlimited ? Number.MAX_SAFE_INTEGER : maxQty;
+  const sliderMax = unlimited ? 500 : Math.min(maxQty, 500);
+
   const handleChange = (q: number): void => {
-    const clamped = Math.max(minQty, Math.min(maxQty, q));
+    const clamped = Math.max(minQty, Math.min(effectiveMax, q));
     setQuantity(clamped);
     onChange?.(clamped, pickCombo(clamped, sorted), computePrice(clamped, pickCombo(clamped, sorted), ticketPrice).total);
   };
@@ -75,7 +81,9 @@ export const ComboSelector = ({
               >
                 <span className="font-display text-xl text-fortuno-black">{combo.name}</span>
                 <span className="mt-1 text-sm text-fortuno-black/60">
-                  De {combo.quantityStart} a {combo.quantityEnd} bilhetes
+                  {combo.quantityEnd === 0
+                    ? `A partir de ${combo.quantityStart} bilhetes`
+                    : `De ${combo.quantityStart} a ${combo.quantityEnd} bilhetes`}
                 </span>
                 <span className="mt-3 inline-flex items-center rounded-full bg-fortuno-gold-intense/15 px-3 py-1 text-sm font-semibold text-fortuno-black">
                   {combo.discountLabel}
@@ -96,7 +104,7 @@ export const ComboSelector = ({
             type="number"
             inputMode="numeric"
             min={minQty}
-            max={maxQty}
+            {...(unlimited ? {} : { max: maxQty })}
             value={quantity}
             onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(Number(e.target.value))}
             className="w-24 rounded-md border border-fortuno-black/20 px-3 py-2 font-mono focus:border-fortuno-gold-intense focus:outline-none"
@@ -104,7 +112,7 @@ export const ComboSelector = ({
           <input
             type="range"
             min={minQty}
-            max={Math.min(maxQty, 500)}
+            max={sliderMax}
             value={quantity}
             onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(Number(e.target.value))}
             className="flex-1 accent-fortuno-gold-intense"

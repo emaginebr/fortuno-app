@@ -94,6 +94,42 @@ export const getHeaders = (authenticated = false): HeadersInit => {
 };
 
 /**
+ * Wrapper fino em cima de `fetch` que converte erros de rede
+ * (API desligada, CORS bloqueando, DNS falhando, timeout) em
+ * `ApiError(status=0)` com mensagem amigável em PT-BR.
+ *
+ * TODO service DEVE usar `safeFetch` em vez de `fetch` — garante que
+ * `TypeError: Failed to fetch` nunca vaze como exceção genérica,
+ * o que faria `handleError` dos Contexts cair no fallback genérico.
+ */
+export const safeFetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+  const method = (init?.method ?? 'GET').toUpperCase();
+  const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
+  const startedAt = performance.now();
+  console.log(`[api] → ${method} ${url}`);
+
+  try {
+    const res = await fetch(input, init);
+    const elapsed = Math.round(performance.now() - startedAt);
+    const tag = res.ok ? 'log' : 'warn';
+    console[tag](`[api] ← ${res.status} ${method} ${url} (${elapsed}ms)`);
+    return res;
+  } catch (err) {
+    const elapsed = Math.round(performance.now() - startedAt);
+    console.error(`[api] ✕ ${method} ${url} (${elapsed}ms)`, err);
+
+    if (err instanceof UnauthenticatedError || err instanceof ApiError) {
+      throw err;
+    }
+    throw new ApiError(
+      'Servidor indisponível. Verifique sua conexão ou tente novamente mais tarde.',
+      0,
+      [err instanceof Error ? err.message : String(err)],
+    );
+  }
+};
+
+/**
  * Processa resposta HTTP da API Fortuno.
  * - Quando `sucesso=false`, lança ApiError com mensagens concatenadas.
  * - Quando payload não tem wrapper `ApiResponseGeneric`, retorna body como T.

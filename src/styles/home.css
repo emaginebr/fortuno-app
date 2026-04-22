@@ -1,0 +1,914 @@
+/*
+ * Fortuno — Editorial Casino Noir
+ * Home + Wizard component styles (direção visual compartilhada).
+ * Complementa Tailwind com partes que não são viáveis por utilitárias
+ * (pseudo-elements, gradient text com shimmer, cornos art déco, etc.).
+ */
+
+/* ===========================================================
+   HERO — vitrine cinematográfica
+   =========================================================== */
+.hero-stage {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  border: 1px solid var(--hero-stage-border);
+  background: var(--hero-stage-bg);
+  box-shadow: var(--shadow-hero-stage);
+  isolation: isolate;
+  margin: 0;
+}
+.hero-stage .hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 1.2s var(--easing-out);
+}
+.hero-stage:hover .hero-image {
+  transform: scale(1.02);
+}
+.hero-stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--hero-stage-overlay);
+  pointer-events: none;
+  z-index: 1;
+}
+.hero-stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--hero-stage-grain);
+  background-size: 3px 3px;
+  mix-blend-mode: overlay;
+  opacity: 0.08;
+  pointer-events: none;
+  z-index: 2;
+}
+.hero-stage .stage-frame {
+  position: absolute;
+  inset: 10px;
+  border: 1px solid var(--hero-stage-frame);
+  border-radius: 18px;
+  pointer-events: none;
+  z-index: 3;
+}
+.hero-stage .stage-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 28px 32px 32px;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+@media (min-width: 768px) {
+  .hero-stage .stage-caption {
+    padding: 36px 44px 40px;
+  }
+}
+
+/* --- Painel lateral --- */
+.hero-panel {
+  background: var(--hero-panel-bg);
+  border: 1px solid var(--hero-panel-border);
+  border-radius: 22px;
+  padding: 28px;
+  position: relative;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: var(--shadow-hero-panel);
+}
+@media (min-width: 768px) {
+  .hero-panel {
+    padding: 36px 32px;
+  }
+}
+
+/* --- Selos de credibilidade --- */
+.hero-seals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.hero-seal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 8px;
+  padding: 12px 10px;
+  background: var(--hero-seal-bg);
+  border: 1px solid var(--hero-seal-border);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition:
+    border-color var(--duration-base) var(--easing-out),
+    background var(--duration-base) var(--easing-out),
+    transform var(--duration-base) var(--easing-out);
+}
+.hero-seal:hover {
+  border-color: var(--hero-seal-border-hover);
+  background: var(--hero-seal-bg-hover);
+  transform: translateY(-1px);
+}
+.hero-seal .seal-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(236, 232, 225, 0.78);
+  line-height: 1.25;
+}
+
+/* --- Hero compact variant (used in FinalCta) --- */
+.hero-seals.compact {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.hero-seals.compact .hero-seal {
+  padding: 10px 8px;
+  gap: 6px;
+}
+.hero-seals.compact .hero-seal .seal-label {
+  font-size: 9.5px;
+}
+
+/* --- Scarcity hint --- */
+.scarcity-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--scarcity-color);
+  font-weight: 700;
+}
+.scarcity-hint .pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--scarcity-color);
+  box-shadow: 0 0 0 0 rgba(var(--scarcity-pulse-rgb), 0.7);
+  animation: live-pulse 1.6s ease-in-out infinite;
+}
+
+/* --- Fallback hero --- */
+.hero-fallback {
+  background: var(--hero-fallback-bg);
+  border: 1px dashed var(--hero-fallback-border);
+  border-radius: 24px;
+  padding: 64px 32px;
+  text-align: center;
+}
+
+/* --- Partículas --- */
+.hero-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+.hero-particles span {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.9), rgba(212, 175, 55, 0) 70%);
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: particle-float 14s linear infinite;
+}
+.hero-particles span:nth-child(1) {
+  left: 8%;
+  top: 90%;
+  animation-delay: 0s;
+}
+.hero-particles span:nth-child(2) {
+  left: 18%;
+  top: 85%;
+  animation-delay: -2s;
+  width: 4px;
+  height: 4px;
+}
+.hero-particles span:nth-child(3) {
+  left: 28%;
+  top: 92%;
+  animation-delay: -5s;
+}
+.hero-particles span:nth-child(4) {
+  left: 42%;
+  top: 88%;
+  animation-delay: -8s;
+}
+.hero-particles span:nth-child(5) {
+  left: 58%;
+  top: 95%;
+  animation-delay: -1s;
+  width: 4px;
+  height: 4px;
+}
+.hero-particles span:nth-child(6) {
+  left: 70%;
+  top: 82%;
+  animation-delay: -4s;
+}
+.hero-particles span:nth-child(7) {
+  left: 82%;
+  top: 90%;
+  animation-delay: -7s;
+}
+.hero-particles span:nth-child(8) {
+  left: 92%;
+  top: 86%;
+  animation-delay: -11s;
+}
+
+/* ===========================================================
+   Gold Numeral primitive (editorial ouro com shimmer opcional)
+   =========================================================== */
+.gold-numeral {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 800;
+  line-height: 0.88;
+  letter-spacing: -0.04em;
+  background: linear-gradient(
+    180deg,
+    var(--fortuno-gold-soft) 0%,
+    var(--fortuno-gold-intense) 55%,
+    rgba(184, 150, 63, 0.28) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 4px 80px rgba(184, 150, 63, 0.22);
+}
+.gold-numeral.shimmer {
+  position: relative;
+  isolation: isolate;
+}
+.gold-numeral.shimmer::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.85) 45%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 60%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  mix-blend-mode: screen;
+  animation: numeral-shimmer 4.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ===========================================================
+   CTAs (editorial, coerentes com wizard)
+   =========================================================== */
+.cta-primary {
+  background: var(--fortuno-gold-intense);
+  color: var(--fortuno-black);
+  border-radius: 9999px;
+  padding: 14px 28px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow:
+    0 8px 22px -6px rgba(212, 175, 55, 0.4),
+    0 1px 0 rgba(255, 255, 255, 0.25) inset;
+  transition:
+    background var(--duration-fast) var(--easing-out),
+    transform var(--duration-fast) var(--easing-out),
+    box-shadow var(--duration-base) var(--easing-out);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.cta-primary:hover {
+  background: var(--fortuno-gold-soft);
+  box-shadow:
+    0 10px 28px -6px rgba(212, 175, 55, 0.65),
+    0 1px 0 rgba(255, 255, 255, 0.3) inset;
+  transform: translateY(-1px);
+}
+.cta-primary:active {
+  transform: translateY(0);
+}
+
+.cta-ghost {
+  background: transparent;
+  color: var(--fortuno-offwhite);
+  border: 1px solid rgba(236, 232, 225, 0.22);
+  border-radius: 9999px;
+  padding: 13px 26px;
+  font-weight: 600;
+  transition:
+    background var(--duration-fast) var(--easing-out),
+    border-color var(--duration-fast) var(--easing-out);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.cta-ghost:hover {
+  background: rgba(236, 232, 225, 0.06);
+  border-color: rgba(212, 175, 55, 0.55);
+}
+
+/* ===========================================================
+   LOTTERY CARD premium
+   =========================================================== */
+.lottery-card {
+  position: relative;
+  background: var(--metal-casino-card);
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-noir-card);
+  transition:
+    transform var(--duration-base) var(--easing-spring),
+    box-shadow var(--duration-base) var(--easing-out),
+    border-color var(--duration-base) var(--easing-out);
+}
+.lottery-card::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  border-radius: 14px;
+  pointer-events: none;
+  z-index: 1;
+}
+.lottery-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-noir-card-hover);
+  border-color: rgba(212, 175, 55, 0.6);
+}
+.lottery-card:focus-within {
+  outline: none;
+  box-shadow:
+    0 0 0 3px rgba(212, 175, 55, 0.55),
+    0 30px 60px -30px rgba(0, 0, 0, 0.7);
+}
+
+/* --- Badge "Aberto" --- */
+.badge-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px 5px 10px;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  background: var(--badge-live-bg);
+  border: 1px solid var(--badge-live-border);
+  color: var(--fortuno-gold-soft);
+  backdrop-filter: blur(8px);
+}
+.badge-live .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--badge-live-dot);
+  box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7);
+  animation: live-pulse 1.8s ease-in-out infinite;
+}
+
+/* --- Progress bar --- */
+.progress-rail {
+  height: 5px;
+  width: 100%;
+  background: rgba(236, 232, 225, 0.08);
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+}
+.progress-rail > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--fortuno-gold-soft), var(--fortuno-gold-intense));
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.45);
+  position: relative;
+}
+.progress-rail > span::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -40%;
+  width: 30%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+  animation: progress-shimmer 2.4s ease-in-out infinite;
+}
+
+/* ===========================================================
+   COUNTDOWN
+   =========================================================== */
+.countdown-cell {
+  background: rgba(7, 32, 26, 0.55);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 12px;
+  padding: 12px 16px;
+  min-width: 72px;
+  text-align: center;
+  position: relative;
+}
+.countdown-cell::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 50%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.15), transparent);
+}
+.countdown-num {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-size: 34px;
+  line-height: 1;
+  color: var(--fortuno-gold-soft);
+  font-variant-numeric: tabular-nums;
+}
+.countdown-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: rgba(236, 232, 225, 0.55);
+  margin-top: 6px;
+}
+
+/* ===========================================================
+   STATS BAND
+   =========================================================== */
+.stats-strip {
+  background: var(--stats-band-bg);
+  border-top: 1px solid rgba(212, 175, 55, 0.15);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  position: relative;
+}
+.stat-num {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1;
+  font-size: clamp(36px, 5.5vw, 64px);
+  letter-spacing: -0.02em;
+  background: linear-gradient(180deg, var(--fortuno-gold-soft), var(--fortuno-gold-intense));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-variant-numeric: tabular-nums;
+}
+.stat-divider {
+  width: 1px;
+  align-self: stretch;
+  background: var(--gold-divider-v);
+}
+
+/* ===========================================================
+   FRAUD CERTIFICATE — selo ornamental
+   =========================================================== */
+.certificate {
+  position: relative;
+  background: var(--noir-certificate-bg);
+  border-radius: 24px;
+  overflow: hidden;
+}
+.certificate::before,
+.certificate::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  border-radius: 20px;
+}
+.certificate::before {
+  inset: 14px;
+  border: 1px solid var(--certificate-border-outer);
+}
+.certificate::after {
+  inset: 22px;
+  border: 1px solid var(--certificate-border-inner);
+}
+
+.watermark {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(160px, 22vw, 320px);
+  font-weight: 700;
+  color: rgba(212, 175, 55, 0.035);
+  letter-spacing: 0.04em;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.deco-corner {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(212, 175, 55, 0.55);
+  pointer-events: none;
+}
+.deco-corner.tl {
+  top: 28px;
+  left: 28px;
+  border-right: 0;
+  border-bottom: 0;
+  border-top-left-radius: 4px;
+}
+.deco-corner.tr {
+  top: 28px;
+  right: 28px;
+  border-left: 0;
+  border-bottom: 0;
+  border-top-right-radius: 4px;
+}
+.deco-corner.bl {
+  bottom: 28px;
+  left: 28px;
+  border-right: 0;
+  border-top: 0;
+  border-bottom-left-radius: 4px;
+}
+.deco-corner.br {
+  bottom: 28px;
+  right: 28px;
+  border-left: 0;
+  border-top: 0;
+  border-bottom-right-radius: 4px;
+}
+
+.deco-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: center;
+  margin: 24px 0;
+}
+.deco-divider::before,
+.deco-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--gold-divider);
+  max-width: 140px;
+}
+.deco-diamond {
+  width: 10px;
+  height: 10px;
+  transform: rotate(45deg);
+  background: var(--fortuno-gold-intense);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
+}
+
+.seal-bullet {
+  display: flex;
+  gap: 14px;
+  padding: 14px 18px;
+  background: linear-gradient(180deg, rgba(7, 32, 26, 0.55), rgba(7, 32, 26, 0.35));
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 12px;
+  transition:
+    border-color var(--duration-base) var(--easing-out),
+    background var(--duration-base) var(--easing-out);
+}
+.seal-bullet:hover {
+  border-color: rgba(212, 175, 55, 0.45);
+  background: linear-gradient(180deg, rgba(7, 32, 26, 0.7), rgba(7, 32, 26, 0.5));
+}
+.seal-bullet .num {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--fortuno-gold-soft);
+  min-width: 32px;
+  line-height: 1.2;
+}
+
+/* ===========================================================
+   SECURITY PILLARS
+   =========================================================== */
+.pillar {
+  position: relative;
+  background: var(--noir-glass-surface);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid var(--noir-glass-border);
+  border-radius: 24px;
+  padding: 32px 28px;
+  transition:
+    transform var(--duration-base) var(--easing-spring),
+    box-shadow var(--duration-base) var(--easing-out),
+    border-color var(--duration-base) var(--easing-out);
+}
+.pillar:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -20px rgba(184, 150, 63, 0.4);
+  border-color: rgba(212, 175, 55, 0.45);
+}
+.pillar.featured {
+  background:
+    radial-gradient(600px 200px at 50% 0%, rgba(184, 150, 63, 0.16), transparent 70%),
+    var(--noir-glass-surface);
+  border-color: rgba(212, 175, 55, 0.45);
+  box-shadow:
+    0 30px 60px -30px rgba(184, 150, 63, 0.35),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+.pillar .step-num {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.22em;
+  color: var(--fortuno-gold-soft);
+  text-transform: uppercase;
+}
+.pillar .icon-box {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: var(--marker-metal-done);
+  border: 1px solid rgba(212, 175, 55, 0.32);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 6px 14px -6px rgba(0, 0, 0, 0.7);
+  color: var(--fortuno-gold-soft);
+  flex-shrink: 0;
+}
+.pillar.featured .icon-box {
+  background: var(--marker-metal-active);
+  color: var(--fortuno-black);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* ===========================================================
+   HOW IT WORKS — timeline
+   =========================================================== */
+.timeline-rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 36px;
+  height: 2px;
+  background: var(--gold-divider);
+  z-index: 0;
+}
+.timeline-rail .fill {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--fortuno-gold-soft), var(--fortuno-gold-intense));
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.45);
+}
+.timeline-step {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+.timeline-marker {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  margin: 0 auto;
+  background: var(--marker-metal-active);
+  color: var(--fortuno-black);
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: var(--shadow-noir-marker-on);
+  position: relative;
+  transition: transform var(--duration-base) var(--easing-spring);
+}
+.timeline-marker .num {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: 28px;
+  line-height: 1;
+}
+.timeline-step:hover .timeline-marker {
+  transform: translateY(-3px);
+}
+
+@media (max-width: 767px) {
+  .timeline-rail {
+    display: none;
+  }
+  .timeline-horizontal {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .timeline-step {
+    display: flex;
+    gap: 18px;
+    text-align: left;
+  }
+  .timeline-marker {
+    margin: 0;
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+  }
+  .timeline-marker .num {
+    font-size: 22px;
+  }
+  .stat-divider {
+    display: none;
+  }
+}
+
+/* ===========================================================
+   FINAL CTA
+   =========================================================== */
+.final-cta-wrap {
+  position: relative;
+  background: var(--noir-bg-final-cta);
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  overflow: hidden;
+}
+.final-cta-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    rgba(212, 175, 55, 0.04) 70deg,
+    transparent 140deg,
+    rgba(212, 175, 55, 0.03) 220deg,
+    transparent 360deg
+  );
+  pointer-events: none;
+}
+
+/* ===========================================================
+   Wizard vertical — rail + markers (tokens compostos)
+   =========================================================== */
+.wizard-rail-track {
+  position: absolute;
+  left: 27px;
+  top: 28px;
+  bottom: 28px;
+  width: 2px;
+  background: var(--rail-track);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.wizard-rail-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  background: var(--rail-fill);
+  border-radius: 9999px;
+  transition: height var(--duration-slow) var(--easing-out);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.45);
+}
+.wizard-rail-fill::after {
+  content: '';
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  top: -16px;
+  height: 16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.55));
+  filter: blur(2px);
+  animation: rail-pulse 2.4s ease-in-out infinite;
+}
+
+.wizard-step-marker {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: var(--marker-metal-pending);
+  border: 1px solid rgba(236, 232, 225, 0.1);
+  color: rgba(236, 232, 225, 0.55);
+  box-shadow: var(--shadow-noir-marker);
+  transition:
+    transform var(--duration-base) var(--easing-spring),
+    box-shadow var(--duration-base) var(--easing-out),
+    background var(--duration-base) var(--easing-out),
+    color var(--duration-base) var(--easing-out);
+}
+.wizard-step-item[data-state='active'] .wizard-step-marker {
+  background: var(--marker-metal-active);
+  color: var(--fortuno-black);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: var(--shadow-noir-marker-on);
+  animation: marker-breath 2.6s ease-in-out infinite;
+}
+.wizard-step-item[data-state='done'] .wizard-step-marker {
+  background: var(--marker-metal-done);
+  color: var(--fortuno-gold-soft);
+  border-color: rgba(212, 175, 55, 0.45);
+}
+.wizard-step-item[data-state='done'] .wizard-step-marker .check-icon {
+  animation: check-pop var(--duration-slow) var(--easing-spring);
+}
+.wizard-step-item[aria-disabled='true'] {
+  cursor: not-allowed;
+}
+.wizard-step-item[aria-disabled='true'] .wizard-step-marker {
+  opacity: 0.42;
+  filter: saturate(0.6);
+}
+.wizard-step-item:not([aria-disabled='true']):hover .wizard-step-marker {
+  transform: translateY(-2px);
+}
+.wizard-step-item:focus-visible {
+  outline: none;
+}
+.wizard-step-item:focus-visible .wizard-step-marker {
+  box-shadow:
+    0 0 0 3px rgba(212, 175, 55, 0.55),
+    0 6px 14px -6px rgba(0, 0, 0, 0.7);
+}
+.wizard-step-label {
+  transition:
+    color var(--duration-base) var(--easing-out),
+    transform var(--duration-base) var(--easing-out);
+}
+.wizard-step-item:not([aria-disabled='true']):hover .wizard-step-label {
+  transform: translateX(2px);
+}
+
+/* --- Campos do wizard editorial --- */
+.field-input {
+  background: rgba(7, 32, 26, 0.55);
+  border: 1px solid rgba(236, 232, 225, 0.12);
+  color: var(--fortuno-offwhite);
+  transition:
+    border-color var(--duration-fast) var(--easing-out),
+    box-shadow var(--duration-fast) var(--easing-out);
+}
+.field-input::placeholder {
+  color: rgba(236, 232, 225, 0.35);
+}
+.field-input:focus {
+  outline: none;
+  border-color: var(--fortuno-gold-soft);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.25);
+}
+
+/* ===========================================================
+   Scroll reveal (CSS scroll-driven com fallback estático)
+   =========================================================== */
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: reveal-in linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 20%;
+  }
+  @keyframes reveal-in {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* ===========================================================
+   Reduced motion — desligar animações decorativas da home
+   (a regra global em index.css cuida das transições;
+    aqui eliminamos elementos puramente decorativos)
+   =========================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .hero-particles {
+    display: none;
+  }
+}

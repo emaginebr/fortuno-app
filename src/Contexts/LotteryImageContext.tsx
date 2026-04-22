@@ -35,7 +35,7 @@ export const LotteryImageProvider = ({ children }: { children: ReactNode }): JSX
       setLoading(true);
       try {
         const list = await lotteryImageService.listByLottery(lotteryId);
-        setImages([...list].sort((a, b) => a.order - b.order));
+        setImages([...list].sort((a, b) => a.displayOrder - b.displayOrder));
         setError(null);
       } catch (err) {
         fail(err, 'Falha ao carregar imagens.');
@@ -50,7 +50,7 @@ export const LotteryImageProvider = ({ children }: { children: ReactNode }): JSX
     async (payload: LotteryImageInsertInfo): Promise<LotteryImageInfo | null> => {
       try {
         const created = await lotteryImageService.create(payload);
-        setImages((prev) => [...prev, created].sort((a, b) => a.order - b.order));
+        setImages((prev) => [...prev, created].sort((a, b) => a.displayOrder - b.displayOrder));
         toast.success('Imagem adicionada.');
         return created;
       } catch (err) {
@@ -68,7 +68,7 @@ export const LotteryImageProvider = ({ children }: { children: ReactNode }): JSX
         setImages((prev) =>
           prev
             .map((i) => (i.lotteryImageId === updated.lotteryImageId ? updated : i))
-            .sort((a, b) => a.order - b.order),
+            .sort((a, b) => a.displayOrder - b.displayOrder),
         );
         return updated;
       } catch (err) {

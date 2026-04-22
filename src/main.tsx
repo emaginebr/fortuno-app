@@ -1,6 +1,6 @@
-import './styles/index.css';
 import 'nauth-react/styles';
 import 'keen-slider/keen-slider.min.css';
+import './styles/index.css';
 import '@/i18n';
 
 import React from 'react';

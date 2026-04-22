@@ -4,6 +4,7 @@ import {
   UnauthenticatedError,
   handleResponse,
   ApiError,
+  safeFetch,
 } from '../apiHelpers';
 
 describe('apiHelpers.getHeaders', () => {
@@ -68,6 +69,30 @@ describe('apiHelpers.handleResponse', () => {
   it('lança UnauthenticatedError em 401', async () => {
     const fakeResponse = new Response(null, { status: 401 });
     await expect(handleResponse(fakeResponse)).rejects.toThrow(UnauthenticatedError);
+  });
+});
+
+describe('apiHelpers.safeFetch', () => {
+  const originalFetch = globalThis.fetch;
+  afterEach(() => {
+    globalThis.fetch = originalFetch;
+  });
+
+  it('delega ao fetch nativo em sucesso', async () => {
+    globalThis.fetch = vi.fn(async () => new Response('ok', { status: 200 })) as typeof fetch;
+    const res = await safeFetch('https://example.test/ping');
+    expect(res.status).toBe(200);
+  });
+
+  it('converte TypeError de rede em ApiError com status 0 e mensagem em PT-BR', async () => {
+    globalThis.fetch = vi.fn(async () => {
+      throw new TypeError('Failed to fetch');
+    }) as typeof fetch;
+
+    await expect(safeFetch('https://example.test/ping')).rejects.toSatisfy((err: unknown) => {
+      if (!(err instanceof ApiError)) return false;
+      return err.status === 0 && err.message.toLowerCase().includes('servidor indispon');
+    });
   });
 });
 

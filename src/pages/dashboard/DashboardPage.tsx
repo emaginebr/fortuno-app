@@ -1,134 +1,120 @@
 import { useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useUser } from 'nauth-react';
 import { useReferral } from '@/hooks/useReferral';
 import { useTicket } from '@/hooks/useTicket';
 import { useLottery } from '@/hooks/useLottery';
-import { CopyableCode } from '@/components/common/CopyableCode';
-import { formatBRL } from '@/utils/currency';
+import { useMyLotteriesActions } from '@/hooks/useMyLotteriesActions';
+import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
+import { LinkedStatGrid } from '@/components/dashboard/LinkedStatGrid';
+import { MyLotteriesPreview } from '@/components/dashboard/MyLotteriesPreview';
+import { ConfirmModal } from '@/components/common/ConfirmModal';
 
 export const DashboardPage = (): JSX.Element => {
+  const { t } = useTranslation();
   const { user } = useUser();
   const { referralCode, panel, loadPanel } = useReferral();
   const { tickets, loadMine } = useTicket();
-  const { myLotteries } = useLottery();
+  const { myLotteries, loadByStore } = useLottery();
+
+  const storeId = Number(import.meta.env.VITE_FORTUNO_STORE_ID || 1);
+
+  const {
+    busy,
+    cancelId,
+    cancelReason,
+    setCancelReason,
+    deleteId,
+    handlePublish,
+    handleRevertToDraft,
+    handleClose,
+    openCancel,
+    closeCancel,
+    confirmCancel,
+    openDelete,
+    closeDelete,
+    confirmDelete,
+  } = useMyLotteriesActions(storeId);
 
   useEffect(() => {
     void loadPanel();
     void loadMine();
-  }, [loadPanel, loadMine]);
+    void loadByStore(storeId);
+  }, [loadPanel, loadMine, loadByStore, storeId]);
 
   const lotteryCount = useMemo(
-    () => new Set(tickets.map((t) => t.lotteryId)).size,
+    () => new Set(tickets.map((ticket) => ticket.lotteryId)).size,
     [tickets],
   );
 
+  // MOCK: aguarda `panel.totalPoints` no backend — ver MOCKS.md.
+  // Enquanto o backend não expõe o campo inteiro, truncamos `totalToReceive`
+  // (BRL) para um saldo determinístico >= 0. Valor semântico: saldo em pts.
+  const totalPoints = Math.max(0, Math.floor(panel?.totalToReceive ?? 0));
+
   return (
-    <main className="mx-auto max-w-7xl px-4 py-10">
-      <section className="rounded-2xl bg-fortuno-green-deep p-8 text-fortuno-offwhite shadow-lg">
-        <h1 className="font-display text-3xl">
-          Olá{user?.name ? `, ${user.name.split(' ')[0]}` : ''}!
-        </h1>
-        <p className="mt-2 text-fortuno-offwhite/80">
-          Que bom te ver por aqui. Aqui está seu painel Fortuno.
-        </p>
+    <div className="min-h-screen bg-dash-page text-fortuno-black flex flex-col">
+      <DashboardHeader
+        user={user}
+        referralCode={referralCode}
+        totalPoints={totalPoints}
+      />
 
-        {referralCode ? (
-          <div className="mt-6 max-w-xl">
-            <p className="text-xs uppercase tracking-wider text-fortuno-gold-soft">
-              Seu código de indicação
-            </p>
-            <div className="mt-2">
-              <CopyableCode value={referralCode} />
-            </div>
-          </div>
-        ) : null}
-      </section>
-
-      <section className="mt-8 grid gap-4 md:grid-cols-3">
-        <StatCard label="Bilhetes comprados" value={tickets.length} />
-        <StatCard label="Loterias em que participa" value={lotteryCount} />
-        <StatCard
-          label="Total de indicações"
-          value={panel?.totalPurchases ?? 0}
-          footer={panel ? `${formatBRL(panel.totalToReceive)} a receber` : undefined}
+      <div className="relative z-10 mx-auto max-w-7xl w-full px-6 py-8 md:py-10 flex-1">
+        <LinkedStatGrid
+          ticketsCount={tickets.length}
+          lotteriesPlaying={lotteryCount}
+          referrals={panel?.totalPurchases ?? 0}
         />
-      </section>
 
-      {myLotteries.length > 0 ? (
-        <section className="mt-10">
-          <div className="flex items-center justify-between">
-            <h2 className="font-display text-2xl text-fortuno-black">Loterias que administro</h2>
-            <Link to="/meus-sorteios/novo" className="btn-primary">
-              Crie seu sorteio
-            </Link>
-          </div>
-          <ul className="mt-4 divide-y rounded-xl border bg-white">
-            {myLotteries.map((lottery) => (
-              <li key={lottery.lotteryId} className="flex items-center justify-between p-4">
-                <div>
-                  <p className="font-semibold">{lottery.name}</p>
-                  <p className="text-xs text-fortuno-black/60">
-                    Prêmio: {formatBRL(lottery.totalPrizeValue)}
-                  </p>
-                </div>
-                <Link
-                  to={`/meus-sorteios/${lottery.lotteryId}/editar`}
-                  className="btn-secondary"
-                >
-                  Gerenciar
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : (
-        <section className="mt-10 rounded-xl border border-dashed p-8 text-center">
-          <p className="text-fortuno-black/70">
-            Você ainda não administra nenhuma loteria.
-          </p>
-          <Link to="/meus-sorteios/novo" className="btn-primary mt-4">
-            Crie seu sorteio
-          </Link>
-        </section>
-      )}
+        {myLotteries.length > 0 && (
+          <MyLotteriesPreview
+            lotteries={myLotteries}
+            max={3}
+            className="mt-8 md:mt-10"
+            onPublish={handlePublish}
+            onRevertToDraft={handleRevertToDraft}
+            onClose={handleClose}
+            onCancel={openCancel}
+            onDelete={openDelete}
+            busy={busy}
+          />
+        )}
+      </div>
 
-      <section className="mt-10 grid gap-4 md:grid-cols-2">
-        <Link
-          to="/meus-numeros"
-          className="rounded-xl bg-white p-6 shadow-sm transition hover:shadow-md"
-        >
-          <h3 className="font-display text-xl text-fortuno-gold-intense">Meus Números</h3>
-          <p className="mt-1 text-sm text-fortuno-black/70">
-            Veja todos os bilhetes que você comprou.
-          </p>
-        </Link>
-        <Link
-          to="/meus-pontos"
-          className="rounded-xl bg-white p-6 shadow-sm transition hover:shadow-md"
-        >
-          <h3 className="font-display text-xl text-fortuno-gold-intense">Meus Pontos</h3>
-          <p className="mt-1 text-sm text-fortuno-black/70">
-            Acompanhe suas indicações e comissões.
-          </p>
-        </Link>
-      </section>
-    </main>
+      <ConfirmModal
+        open={cancelId !== null}
+        title={t('dashboard.cancelLotteryTitle')}
+        message={t('dashboard.cancelLotteryMessage')}
+        confirmLabel={t('dashboard.cancelLotteryConfirm')}
+        variant="danger"
+        busy={busy}
+        onCancel={closeCancel}
+        onConfirm={() => {
+          void confirmCancel();
+        }}
+      >
+        <textarea
+          value={cancelReason}
+          onChange={(e) => setCancelReason(e.target.value)}
+          placeholder={t('dashboard.cancelLotteryReasonPlaceholder')}
+          className="w-full rounded-md border border-fortuno-black/20 p-3 focus-visible:outline-none focus-visible:shadow-gold-focus"
+          rows={4}
+        />
+      </ConfirmModal>
+
+      <ConfirmModal
+        open={deleteId !== null}
+        title={t('dashboard.deleteLotteryTitle')}
+        message={t('dashboard.deleteLotteryMessage')}
+        confirmLabel={t('dashboard.deleteLotteryConfirm')}
+        variant="danger"
+        busy={busy}
+        onCancel={closeDelete}
+        onConfirm={() => {
+          void confirmDelete();
+        }}
+      />
+    </div>
   );
 };
-
-interface StatCardProps {
-  label: string;
-  value: number;
-  footer?: string;
-}
-
-const StatCard = ({ label, value, footer }: StatCardProps): JSX.Element => (
-  <div className="rounded-xl bg-white p-6 shadow-sm">
-    <p className="text-xs uppercase tracking-wider text-fortuno-black/60">{label}</p>
-    <p className="mt-2 font-display text-4xl text-fortuno-gold-intense">
-      {value.toLocaleString('pt-BR')}
-    </p>
-    {footer ? <p className="mt-2 text-xs text-fortuno-black/50">{footer}</p> : null}
-  </div>
-);

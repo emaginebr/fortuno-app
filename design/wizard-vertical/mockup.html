@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fortuno — Wizard Vertical (Editorial Casino Noir)</title>
+
+  <!-- Tailwind CDN para preview standalone -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fonts: Inter + Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: ['class'],
+      theme: {
+        extend: {
+          colors: {
+            fortuno: {
+              green: { deep: '#0a2a20', elegant: '#134436' },
+              gold:  { intense: '#b8963f', soft: '#d4af37' },
+              black: '#0b0b0b',
+              offwhite: '#ece8e1',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['"Playfair Display"', 'Georgia', 'serif'],
+          },
+          boxShadow: {
+            'gold-glow':       '0 0 0 3px rgba(212,175,55,0.18), 0 0 24px -6px rgba(212,175,55,0.55)',
+            'gold-ring':       '0 0 0 2px rgba(212,175,55,0.55)',
+            'noir-card':       '0 1px 0 rgba(255,255,255,0.04) inset, 0 30px 60px -30px rgba(0,0,0,0.7), 0 12px 24px -12px rgba(0,0,0,0.45)',
+            'noir-marker':     '0 1px 0 rgba(255,255,255,0.06) inset, 0 -1px 0 rgba(0,0,0,0.5) inset, 0 6px 14px -6px rgba(0,0,0,0.7)',
+            'noir-marker-on':  '0 1px 0 rgba(255,255,255,0.18) inset, 0 -1px 0 rgba(0,0,0,0.5) inset, 0 0 0 4px rgba(184,150,63,0.18), 0 8px 26px -6px rgba(184,150,63,0.55)',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* ===========================================================
+       Editorial Casino Noir — tokens locais ao mockup
+       =========================================================== */
+    :root {
+      --fortuno-green-deep:    #0a2a20;
+      --fortuno-green-elegant: #134436;
+      --fortuno-gold-intense:  #b8963f;
+      --fortuno-gold-soft:     #d4af37;
+      --fortuno-black:         #0b0b0b;
+      --fortuno-offwhite:      #ece8e1;
+
+      --noir-bg-grad: radial-gradient(1200px 600px at 80% -10%, rgba(212,175,55,0.10), transparent 60%),
+                      radial-gradient(900px 500px at -10% 110%, rgba(19,68,54,0.55), transparent 55%),
+                      linear-gradient(180deg, #07201a 0%, #0a2a20 60%, #081e18 100%);
+
+      --rail-track: linear-gradient(180deg, rgba(236,232,225,0.10), rgba(236,232,225,0.04));
+      --rail-fill:  linear-gradient(180deg, var(--fortuno-gold-soft), var(--fortuno-gold-intense) 60%, var(--fortuno-green-elegant));
+
+      --glass-surface: linear-gradient(180deg, rgba(236,232,225,0.06), rgba(236,232,225,0.02));
+      --glass-border:  rgba(212,175,55,0.22);
+
+      --metal-marker:  radial-gradient(120% 120% at 30% 20%, #20493b 0%, #0e3327 55%, #07201a 100%);
+      --metal-marker-active: radial-gradient(120% 120% at 30% 20%, #f0d27a 0%, #c79b41 45%, #8a6a25 100%);
+      --metal-marker-done:   radial-gradient(120% 120% at 30% 20%, #1c5b48 0%, #0f3b2e 60%, #06241c 100%);
+
+      --duration-fast: 160ms;
+      --duration-base: 240ms;
+      --duration-slow: 420ms;
+      --easing-out:    cubic-bezier(0.22, 1, 0.36, 1);
+      --easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--noir-bg-grad);
+      color: var(--fortuno-offwhite);
+      min-height: 100vh;
+    }
+
+    /* Subtle grain texture for noir depth */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      pointer-events: none;
+      opacity: 0.06;
+      mix-blend-mode: overlay;
+      background-image:
+        radial-gradient(rgba(236,232,225,0.6) 1px, transparent 1px);
+      background-size: 3px 3px;
+      z-index: 0;
+    }
+
+    .font-display { font-family: 'Playfair Display', Georgia, serif; letter-spacing: -0.01em; }
+
+    /* ===========================================================
+       VERTICAL RAIL — track + fill animado
+       =========================================================== */
+    .rail-track {
+      position: absolute;
+      left: 27px;          /* alinhado ao centro do marker (56/2 - 1) */
+      top: 28px;
+      bottom: 28px;
+      width: 2px;
+      background: var(--rail-track);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .rail-fill {
+      position: absolute;
+      left: 0; top: 0; right: 0;
+      background: var(--rail-fill);
+      border-radius: 999px;
+      transition: height var(--duration-slow) var(--easing-out);
+      box-shadow: 0 0 12px rgba(212,175,55,0.45);
+    }
+    .rail-fill::after {
+      /* shimmer descendente sutil */
+      content: '';
+      position: absolute; left: -1px; right: -1px; top: -16px;
+      height: 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0.55));
+      filter: blur(2px);
+      animation: rail-pulse 2.4s ease-in-out infinite;
+    }
+    @keyframes rail-pulse {
+      0%, 100% { opacity: 0.0; transform: translateY(0); }
+      50%      { opacity: 0.9; transform: translateY(8px); }
+    }
+
+    /* ===========================================================
+       MARKER (metal escovado skeuo sutil)
+       =========================================================== */
+    .step-marker {
+      position: relative;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      background: var(--metal-marker);
+      border: 1px solid rgba(236,232,225,0.10);
+      color: rgba(236,232,225,0.55);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 -1px 0 rgba(0,0,0,0.5) inset, 0 6px 14px -6px rgba(0,0,0,0.7);
+      transition: transform var(--duration-base) var(--easing-spring),
+                  box-shadow var(--duration-base) var(--easing-out),
+                  background var(--duration-base) var(--easing-out),
+                  color var(--duration-base) var(--easing-out);
+    }
+    .step-item:hover:not([aria-disabled="true"]) .step-marker {
+      transform: translateY(-2px);
+    }
+    .step-item:focus-visible .step-marker {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.55), 0 6px 14px -6px rgba(0,0,0,0.7);
+    }
+
+    /* Estado: ativa */
+    .step-item[aria-current="step"] .step-marker {
+      background: var(--metal-marker-active);
+      color: var(--fortuno-black);
+      border-color: rgba(255,255,255,0.35);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.45) inset, 0 -1px 0 rgba(0,0,0,0.4) inset, 0 0 0 4px rgba(184,150,63,0.18), 0 8px 26px -6px rgba(184,150,63,0.55);
+      animation: marker-breath 2.6s ease-in-out infinite;
+    }
+    @keyframes marker-breath {
+      0%, 100% { box-shadow: 0 1px 0 rgba(255,255,255,0.45) inset, 0 -1px 0 rgba(0,0,0,0.4) inset, 0 0 0 4px rgba(184,150,63,0.18), 0 8px 26px -6px rgba(184,150,63,0.55); }
+      50%      { box-shadow: 0 1px 0 rgba(255,255,255,0.45) inset, 0 -1px 0 rgba(0,0,0,0.4) inset, 0 0 0 6px rgba(184,150,63,0.10), 0 10px 32px -6px rgba(184,150,63,0.65); }
+    }
+
+    /* Estado: concluída */
+    .step-item[data-state="done"] .step-marker {
+      background: var(--metal-marker-done);
+      color: var(--fortuno-gold-soft);
+      border-color: rgba(212,175,55,0.45);
+    }
+    .step-item[data-state="done"] .step-marker .check-icon {
+      animation: check-pop var(--duration-slow) var(--easing-spring);
+    }
+    @keyframes check-pop {
+      0%   { transform: scale(0.4); opacity: 0; }
+      60%  { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Estado: bloqueada */
+    .step-item[aria-disabled="true"] {
+      cursor: not-allowed;
+    }
+    .step-item[aria-disabled="true"] .step-marker {
+      opacity: 0.42;
+      filter: saturate(0.6);
+    }
+
+    /* Step label tipográfico */
+    .step-label {
+      transition: color var(--duration-base) var(--easing-out),
+                  transform var(--duration-base) var(--easing-out);
+    }
+    .step-item:hover:not([aria-disabled="true"]) .step-label {
+      transform: translateX(2px);
+    }
+
+    /* ===========================================================
+       Editorial header da etapa
+       =========================================================== */
+    .step-numeral {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(96px, 14vw, 168px);
+      line-height: 0.85;
+      font-weight: 800;
+      font-style: italic;
+      letter-spacing: -0.04em;
+      background: linear-gradient(180deg, var(--fortuno-gold-soft) 0%, var(--fortuno-gold-intense) 55%, rgba(184,150,63,0.25) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 4px 60px rgba(184,150,63,0.18);
+    }
+
+    .glass-panel {
+      background: var(--glass-surface);
+      backdrop-filter: blur(16px) saturate(140%);
+      -webkit-backdrop-filter: blur(16px) saturate(140%);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 30px 60px -30px rgba(0,0,0,0.7), 0 12px 24px -12px rgba(0,0,0,0.45);
+    }
+
+    .gold-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(212,175,55,0.55), transparent);
+    }
+
+    /* Inputs do formulário placeholder */
+    .field-input {
+      background: rgba(7, 32, 26, 0.55);
+      border: 1px solid rgba(236,232,225,0.12);
+      color: var(--fortuno-offwhite);
+      transition: border-color var(--duration-fast) var(--easing-out),
+                  box-shadow var(--duration-fast) var(--easing-out);
+    }
+    .field-input::placeholder { color: rgba(236,232,225,0.35); }
+    .field-input:focus {
+      outline: none;
+      border-color: var(--fortuno-gold-soft);
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.25);
+    }
+
+    /* CTA primário (compatível com .btn-primary do projeto) */
+    .cta-primary {
+      background: var(--fortuno-gold-intense);
+      color: var(--fortuno-black);
+      transition: background var(--duration-fast) var(--easing-out), transform var(--duration-fast) var(--easing-out), box-shadow var(--duration-base) var(--easing-out);
+    }
+    .cta-primary:hover { background: var(--fortuno-gold-soft); box-shadow: 0 8px 22px -6px rgba(212,175,55,0.55); }
+    .cta-primary:active { transform: translateY(1px); }
+    .cta-primary:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(212,175,55,0.55); }
+
+    .cta-secondary {
+      background: transparent;
+      color: var(--fortuno-offwhite);
+      border: 1px solid rgba(236,232,225,0.18);
+      transition: background var(--duration-fast) var(--easing-out), border-color var(--duration-fast) var(--easing-out);
+    }
+    .cta-secondary:hover { background: rgba(236,232,225,0.06); border-color: rgba(236,232,225,0.32); }
+    .cta-secondary:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(212,175,55,0.55); }
+
+    /* Footer fixo */
+    .wizard-footer {
+      backdrop-filter: blur(14px) saturate(140%);
+      -webkit-backdrop-filter: blur(14px) saturate(140%);
+      background: linear-gradient(180deg, rgba(7,32,26,0.55), rgba(7,32,26,0.85));
+      border-top: 1px solid rgba(212,175,55,0.18);
+    }
+
+    /* Progress bar mini do footer */
+    .footer-progress {
+      width: 140px;
+      height: 4px;
+      background: rgba(236,232,225,0.10);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+    .footer-progress > span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--fortuno-gold-soft), var(--fortuno-gold-intense));
+      transition: width var(--duration-slow) var(--easing-out);
+      box-shadow: 0 0 10px rgba(212,175,55,0.45);
+    }
+
+    /* Mobile horizontal compact stepper */
+    .mobile-rail {
+      background: linear-gradient(180deg, rgba(7,32,26,0.85), rgba(7,32,26,0.55));
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(212,175,55,0.18);
+    }
+
+    /* ===========================================================
+       Reduced motion
+       =========================================================== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition-duration: 1ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ============================================================
+       MOBILE HEADER (visível < md)
+       ============================================================ -->
+  <header class="mobile-rail md:hidden sticky top-0 z-30 px-4 py-3">
+    <div class="flex items-center justify-between mb-3">
+      <span class="text-xs uppercase tracking-[0.2em] text-fortuno-offwhite/60">Sorteio</span>
+      <span class="text-xs font-mono text-fortuno-gold-soft">2 / 8</span>
+    </div>
+    <ol class="flex gap-1.5" aria-label="Etapas do wizard (compacto)">
+      <li class="h-1.5 flex-1 rounded-full bg-fortuno-gold-intense" aria-label="Concluída"></li>
+      <li class="h-1.5 flex-1 rounded-full bg-fortuno-gold-soft animate-pulse" aria-current="step" aria-label="Atual"></li>
+      <li class="h-1.5 flex-1 rounded-full bg-fortuno-offwhite/15"></li>
+      <li class="h-1.5 flex-1 rounded-full bg-fortuno-offwhite/15"></li>
+      <li class="h-1.5 flex-1 rounded-full bg-fortuno-offwhite/15"></li>
+      <li class="h-1.5 flex-1 rounded-full bg-fortuno-offwhite/15"></li>
+      <li class="h-1.5 flex-1 rounded-full bg-fortuno-offwhite/15"></li>
+      <li class="h-1.5 flex-1 rounded-full bg-fortuno-offwhite/15"></li>
+    </ol>
+  </header>
+
+  <!-- ============================================================
+       LAYOUT PRINCIPAL
+       ============================================================ -->
+  <div class="relative z-10 mx-auto max-w-[1240px] px-4 md:px-8 py-8 md:py-12">
+
+    <!-- BREADCRUMB / TÍTULO MESTRE -->
+    <div class="hidden md:flex items-center gap-3 mb-8">
+      <span class="text-xs uppercase tracking-[0.32em] text-fortuno-gold-soft/80">Fortuno · Painel</span>
+      <span class="h-px w-12 bg-fortuno-gold-soft/40"></span>
+      <span class="text-xs uppercase tracking-[0.2em] text-fortuno-offwhite/55">Meus sorteios / Novo</span>
+    </div>
+
+    <div class="grid md:grid-cols-[300px_1fr] gap-8 lg:gap-12 items-start">
+
+      <!-- =========================================================
+           STEPPER VERTICAL (sticky, md+)
+           ========================================================= -->
+      <aside class="hidden md:block sticky top-8 self-start">
+        <div class="glass-panel rounded-3xl p-6 pr-4">
+          <h2 class="font-display text-2xl text-fortuno-offwhite mb-1">Composição do sorteio</h2>
+          <p class="text-xs text-fortuno-offwhite/55 mb-6">Cada etapa libera a próxima.</p>
+
+          <div class="relative">
+            <!-- Trilha vertical -->
+            <div class="rail-track" aria-hidden="true">
+              <div class="rail-fill" style="height: 18%;"></div>
+            </div>
+
+            <ol class="flex flex-col gap-5" aria-label="Etapas do wizard">
+
+              <!-- STEP 1 — DONE -->
+              <li>
+                <button type="button" class="step-item w-full flex items-center gap-4 text-left group" data-state="done" aria-label="Etapa 1: Dados básicos (concluída). Voltar para esta etapa.">
+                  <span class="step-marker">
+                    <i data-lucide="check" class="check-icon w-6 h-6"></i>
+                  </span>
+                  <span class="flex-1 min-w-0">
+                    <span class="block text-[10px] uppercase tracking-[0.22em] text-fortuno-gold-soft/80">Etapa 01</span>
+                    <span class="step-label block text-[15px] font-semibold text-fortuno-offwhite">Dados básicos</span>
+                  </span>
+                </button>
+              </li>
+
+              <!-- STEP 2 — ACTIVE -->
+              <li>
+                <button type="button" class="step-item w-full flex items-center gap-4 text-left" aria-current="step" aria-label="Etapa 2: Numeração (atual).">
+                  <span class="step-marker">
+                    <i data-lucide="hash" class="w-6 h-6"></i>
+                  </span>
+                  <span class="flex-1 min-w-0">
+                    <span class="block text-[10px] uppercase tracking-[0.22em] text-fortuno-gold-soft">Etapa 02 · agora</span>
+                    <span class="step-label block text-[15px] font-semibold text-fortuno-offwhite">Numeração</span>
+                  </span>
+                </button>
+              </li>
+
+              <!-- STEP 3 — PENDING (acessível) -->
+              <li>
+                <button type="button" class="step-item w-full flex items-center gap-4 text-left" aria-label="Etapa 3: Descrições (pendente).">
+                  <span class="step-marker">
+                    <i data-lucide="pen-line" class="w-5 h-5"></i>
+                  </span>
+                  <span class="flex-1 min-w-0">
+                    <span class="block text-[10px] uppercase tracking-[0.22em] text-fortuno-offwhite/45">Etapa 03</span>
+                    <span class="step-label block text-[15px] font-medium text-fortuno-offwhite/75">Descrições</span>
+                  </span>
+                </button>
+              </li>
+
+              <!-- STEP 4 — LOCKED -->
+              <li>
+                <span class="step-item w-full flex items-center gap-4 text-left" aria-disabled="true" aria-label="Etapa 4: Imagens (bloqueada). Conclua a anterior.">
+                  <span class="step-marker">
+                    <i data-lucide="image" class="w-5 h-5"></i>
+                  </span>
+                  <span class="flex-1 min-w-0 flex items-center gap-2">
+                    <span class="flex-1">
+                      <span class="block text-[10px] uppercase tracking-[0.22em] text-fortuno-offwhite/30">Etapa 04</span>
+                      <span class="step-label block text-[15px] font-medium text-fortuno-offwhite/45">Imagens</span>
+                    </span>
+                    <i data-lucide="lock" class="w-3.5 h-3.5 text-fortuno-offwhite/35"></i>
+                  </span>
+                </span>
+              </li>
+
+              <!-- STEP 5 -->
+              <li>
+                <span class="step-item w-full flex items-center gap-4 text-left" aria-disabled="true" aria-label="Etapa 5: Combos (bloqueada).">
+                  <span class="step-marker">
+                    <i data-lucide="puzzle" class="w-5 h-5"></i>
+                  </span>
+                  <span class="flex-1 min-w-0 flex items-center gap-2">
+                    <span class="flex-1">
+                      <span class="block text-[10px] uppercase tracking-[0.22em] text-fortuno-offwhite/30">Etapa 05</span>
+                      <span class="step-label block text-[15px] font-medium text-fortuno-offwhite/45">Combos</span>
+                    </span>
+                    <i data-lucide="lock" class="w-3.5 h-3.5 text-fortuno-offwhite/35"></i>
+                  </span>
+                </span>
+              </li>
+
+              <!-- STEP 6 -->
+              <li>
+                <span class="step-item w-full flex items-center gap-4 text-left" aria-disabled="true" aria-label="Etapa 6: Sorteios (bloqueada).">
+                  <span class="step-marker">
+                    <i data-lucide="dices" class="w-5 h-5"></i>
+                  </span>
+                  <span class="flex-1 min-w-0 flex items-center gap-2">
+                    <span class="flex-1">
+                      <span class="block text-[10px] uppercase tracking-[0.22em] text-fortuno-offwhite/30">Etapa 06</span>
+                      <span class="step-label block text-[15px] font-medium text-fortuno-offwhite/45">Sorteios</span>
+                    </span>
+                    <i data-lucide="lock" class="w-3.5 h-3.5 text-fortuno-offwhite/35"></i>
+                  </span>
+                </span>
+              </li>
+
+              <!-- STEP 7 -->
+              <li>
+                <span class="step-item w-full flex items-center gap-4 text-left" aria-disabled="true" aria-label="Etapa 7: Prêmios (bloqueada).">
+                  <span class="step-marker">
+                    <i data-lucide="trophy" class="w-5 h-5"></i>
+                  </span>
+                  <span class="flex-1 min-w-0 flex items-center gap-2">
+                    <span class="flex-1">
+                      <span class="block text-[10px] uppercase tracking-[0.22em] text-fortuno-offwhite/30">Etapa 07</span>
+                      <span class="step-label block text-[15px] font-medium text-fortuno-offwhite/45">Prêmios</span>
+                    </span>
+                    <i data-lucide="lock" class="w-3.5 h-3.5 text-fortuno-offwhite/35"></i>
+                  </span>
+                </span>
+              </li>
+
+              <!-- STEP 8 -->
+              <li>
+                <span class="step-item w-full flex items-center gap-4 text-left" aria-disabled="true" aria-label="Etapa 8: Ativar (bloqueada).">
+                  <span class="step-marker">
+                    <i data-lucide="zap" class="w-5 h-5"></i>
+                  </span>
+                  <span class="flex-1 min-w-0 flex items-center gap-2">
+                    <span class="flex-1">
+                      <span class="block text-[10px] uppercase tracking-[0.22em] text-fortuno-offwhite/30">Etapa 08</span>
+                      <span class="step-label block text-[15px] font-medium text-fortuno-offwhite/45">Ativar</span>
+                    </span>
+                    <i data-lucide="lock" class="w-3.5 h-3.5 text-fortuno-offwhite/35"></i>
+                  </span>
+                </span>
+              </li>
+            </ol>
+          </div>
+
+          <!-- Hint de teclado -->
+          <div class="mt-6 pt-5 border-t border-fortuno-gold-soft/15">
+            <p class="text-[11px] text-fortuno-offwhite/45 leading-relaxed">
+              <span class="text-fortuno-gold-soft/80">Atalhos:</span>
+              <kbd class="px-1.5 py-0.5 rounded bg-white/10 text-fortuno-offwhite/85 text-[10px] font-mono">Alt</kbd>
+              +
+              <kbd class="px-1.5 py-0.5 rounded bg-white/10 text-fortuno-offwhite/85 text-[10px] font-mono">←</kbd>
+              <kbd class="px-1.5 py-0.5 rounded bg-white/10 text-fortuno-offwhite/85 text-[10px] font-mono">→</kbd>
+              navegar etapas
+            </p>
+          </div>
+        </div>
+      </aside>
+
+      <!-- =========================================================
+           CONTEÚDO DA ETAPA ATIVA — wrapper editorial
+           ========================================================= -->
+      <main class="min-w-0">
+        <article class="glass-panel rounded-3xl overflow-hidden">
+
+          <!-- Header editorial -->
+          <header class="relative px-6 md:px-12 pt-10 md:pt-14 pb-8">
+            <!-- Ornamento topo -->
+            <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-fortuno-gold-soft/60 to-transparent"></div>
+
+            <div class="flex items-start gap-6 md:gap-10">
+              <span class="step-numeral select-none" aria-hidden="true">02</span>
+
+              <div class="flex-1 pt-2 md:pt-4">
+                <span class="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] text-fortuno-gold-soft mb-3">
+                  <span class="h-px w-6 bg-fortuno-gold-soft"></span>
+                  Etapa ativa
+                </span>
+                <h1 class="font-display text-4xl md:text-5xl text-fortuno-offwhite leading-[1.05] mb-3">
+                  Numeração da cartela
+                </h1>
+                <p class="text-fortuno-offwhite/65 text-base md:text-lg max-w-prose leading-relaxed">
+                  Defina como os bilhetes serão numerados — quantidade, formato e regras de venda.
+                  Esta decisão impacta diretamente os combos e o teto de prêmios.
+                </p>
+              </div>
+            </div>
+
+            <!-- Meta strip -->
+            <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+              <span class="inline-flex items-center gap-2 text-fortuno-offwhite/65">
+                <i data-lucide="clock" class="w-4 h-4 text-fortuno-gold-soft"></i>
+                <span>≈ 2 min</span>
+              </span>
+              <span class="inline-flex items-center gap-2 text-fortuno-offwhite/65">
+                <i data-lucide="save" class="w-4 h-4 text-fortuno-gold-soft"></i>
+                <span>Salvo automaticamente</span>
+              </span>
+              <span class="inline-flex items-center gap-2 text-fortuno-offwhite/65">
+                <i data-lucide="lightbulb" class="w-4 h-4 text-fortuno-gold-soft"></i>
+                <span>Você poderá rever antes de ativar</span>
+              </span>
+            </div>
+          </header>
+
+          <div class="gold-divider mx-6 md:mx-12"></div>
+
+          <!-- Form placeholder -->
+          <section class="px-6 md:px-12 py-10 md:py-12">
+            <div class="grid md:grid-cols-2 gap-6 md:gap-8">
+
+              <div class="md:col-span-2">
+                <label for="f-format" class="block text-sm font-medium text-fortuno-offwhite mb-2">
+                  Formato dos números
+                  <span class="text-fortuno-gold-soft" aria-hidden="true">*</span>
+                </label>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <label class="cursor-pointer">
+                    <input type="radio" name="format" class="sr-only peer" checked />
+                    <div class="field-input rounded-xl p-4 peer-checked:border-fortuno-gold-soft peer-checked:shadow-[0_0_0_3px_rgba(212,175,55,0.18)]">
+                      <div class="flex items-center justify-between mb-1">
+                        <span class="font-semibold text-fortuno-offwhite">Sequencial</span>
+                        <i data-lucide="check-circle-2" class="w-4 h-4 text-fortuno-gold-soft"></i>
+                      </div>
+                      <p class="text-xs text-fortuno-offwhite/55">001, 002, 003 …</p>
+                    </div>
+                  </label>
+                  <label class="cursor-pointer">
+                    <input type="radio" name="format" class="sr-only peer" />
+                    <div class="field-input rounded-xl p-4 peer-checked:border-fortuno-gold-soft peer-checked:shadow-[0_0_0_3px_rgba(212,175,55,0.18)]">
+                      <div class="flex items-center justify-between mb-1">
+                        <span class="font-semibold text-fortuno-offwhite">Aleatório</span>
+                      </div>
+                      <p class="text-xs text-fortuno-offwhite/55">Números embaralhados</p>
+                    </div>
+                  </label>
+                  <label class="cursor-pointer">
+                    <input type="radio" name="format" class="sr-only peer" />
+                    <div class="field-input rounded-xl p-4 peer-checked:border-fortuno-gold-soft peer-checked:shadow-[0_0_0_3px_rgba(212,175,55,0.18)]">
+                      <div class="flex items-center justify-between mb-1">
+                        <span class="font-semibold text-fortuno-offwhite">Personalizado</span>
+                      </div>
+                      <p class="text-xs text-fortuno-offwhite/55">Você define o range</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label for="f-qty" class="block text-sm font-medium text-fortuno-offwhite mb-2">
+                  Quantidade total
+                  <span class="text-fortuno-gold-soft" aria-hidden="true">*</span>
+                </label>
+                <input id="f-qty" type="number" inputmode="numeric" placeholder="Ex.: 1000"
+                       class="field-input w-full rounded-xl px-4 py-3 text-base font-medium" />
+                <p class="mt-2 text-xs text-fortuno-offwhite/55">Entre 50 e 100.000 bilhetes.</p>
+              </div>
+
+              <div>
+                <label for="f-digits" class="block text-sm font-medium text-fortuno-offwhite mb-2">
+                  Casas decimais visíveis
+                </label>
+                <select id="f-digits" class="field-input w-full rounded-xl px-4 py-3 text-base">
+                  <option>3 dígitos (001)</option>
+                  <option>4 dígitos (0001)</option>
+                  <option>5 dígitos (00001)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Hint card -->
+            <aside class="mt-8 rounded-2xl border border-fortuno-gold-soft/25 bg-fortuno-gold-soft/[0.04] p-5 flex gap-4">
+              <i data-lucide="sparkles" class="w-5 h-5 text-fortuno-gold-soft flex-shrink-0 mt-0.5"></i>
+              <div>
+                <p class="text-sm font-semibold text-fortuno-offwhite mb-1">Dica do croupier</p>
+                <p class="text-sm text-fortuno-offwhite/65 leading-relaxed">
+                  Sorteios premium costumam usar entre 500 e 2.000 bilhetes — o equilíbrio ideal entre escassez percebida e velocidade de venda.
+                </p>
+              </div>
+            </aside>
+          </section>
+        </article>
+
+        <!-- Espaço para footer fixo não cobrir conteúdo -->
+        <div class="h-28 md:h-24" aria-hidden="true"></div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       FOOTER FIXO
+       ============================================================ -->
+  <footer class="wizard-footer fixed bottom-0 left-0 right-0 z-40">
+    <div class="mx-auto max-w-[1240px] px-4 md:px-8 py-4 flex items-center gap-4">
+
+      <!-- Esquerda: progresso -->
+      <div class="hidden sm:flex items-center gap-3 min-w-0">
+        <div class="flex items-baseline gap-1">
+          <span class="font-display text-2xl text-fortuno-gold-soft">2</span>
+          <span class="text-fortuno-offwhite/55 text-sm">de 8</span>
+        </div>
+        <div class="footer-progress" aria-label="Progresso geral do wizard">
+          <span style="width: 25%;"></span>
+        </div>
+        <span class="text-xs text-fortuno-offwhite/55 hidden md:inline">≈ 12 min restantes</span>
+      </div>
+
+      <!-- Spacer -->
+      <div class="flex-1"></div>
+
+      <!-- Botões -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button type="button" class="cta-secondary inline-flex items-center gap-2 rounded-xl px-4 sm:px-5 py-3 text-sm font-medium">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">Anterior</span>
+        </button>
+        <button type="button" class="cta-primary inline-flex items-center gap-2 rounded-xl px-5 sm:px-6 py-3 text-sm font-semibold">
+          <span>Próximo</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Renderiza ícones Lucide
+    lucide.createIcons();
+  </script>
+</body>
+</html>

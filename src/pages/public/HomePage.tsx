@@ -1,10 +1,12 @@
-import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useMemo } from 'react';
 import { useLottery } from '@/hooks/useLottery';
-import { LotteryCarousel } from '@/components/home/LotteryCarousel';
-import { FraudWarning } from '@/components/home/FraudWarning';
-import { SecurityBlock } from '@/components/home/SecurityBlock';
-import { EasyToPlayBlock } from '@/components/home/EasyToPlayBlock';
+import { HeroFeaturedLottery } from '@/components/home/HeroFeaturedLottery';
+import { StatsBand } from '@/components/home/StatsBand';
+import { LotteryCarouselPremium } from '@/components/home/LotteryCarouselPremium';
+import { FraudCertificate } from '@/components/home/FraudCertificate';
+import { SecurityPillars } from '@/components/home/SecurityPillars';
+import { HowItWorksTimeline } from '@/components/home/HowItWorksTimeline';
+import { FinalCta } from '@/components/home/FinalCta';
 
 export const HomePage = (): JSX.Element => {
   const { openLotteries, loadOpen } = useLottery();
@@ -13,28 +15,27 @@ export const HomePage = (): JSX.Element => {
     void loadOpen();
   }, [loadOpen]);
 
+  // Sorteio em destaque: hoje escolhe o de maior totalPrizeValue.
+  // Quando backend expuser `isFeatured` em LotteryInfo, o find abaixo pega
+  // explicitamente — ver MOCKS.md.
+  const featuredLottery = useMemo(() => {
+    if (openLotteries.length === 0) return undefined;
+    return [...openLotteries].sort(
+      (a, b) => (b.totalPrizeValue ?? 0) - (a.totalPrizeValue ?? 0),
+    )[0];
+  }, [openLotteries]);
+
+  const nextRaffleAt = featuredLottery?.raffles?.[0]?.raffleDatetime;
+
   return (
-    <>
-      <section className="bg-fortuno-green-deep pt-16 text-fortuno-offwhite">
-        <div className="mx-auto max-w-7xl px-4 pb-16">
-          <div className="mb-10 text-center">
-            <img src="/logo-light.png" alt="Fortuno" className="mx-auto h-20" />
-            <h1 className="mt-8 font-display text-4xl md:text-5xl">A sorte está próxima.</h1>
-            <p className="mt-4 text-fortuno-offwhite/80">
-              Participe dos sorteios Fortuno e concorra a prêmios todos os dias.
-            </p>
-            <Link to="/sorteios" className="btn-primary mt-8">
-              Ver sorteios
-            </Link>
-          </div>
-
-          <LotteryCarousel lotteries={openLotteries} />
-        </div>
-      </section>
-
-      <FraudWarning />
-      <SecurityBlock />
-      <EasyToPlayBlock />
-    </>
+    <main className="bg-noir-page text-fortuno-offwhite min-h-screen">
+      <HeroFeaturedLottery featuredLottery={featuredLottery} />
+      <StatsBand />
+      <LotteryCarouselPremium lotteries={openLotteries} />
+      <FraudCertificate />
+      <SecurityPillars />
+      <HowItWorksTimeline />
+      <FinalCta nextRaffleAt={nextRaffleAt} />
+    </main>
   );
 };
