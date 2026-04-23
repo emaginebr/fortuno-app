@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useLottery } from '@/hooks/useLottery';
 import { HeroFeaturedLottery } from '@/components/home/HeroFeaturedLottery';
-import { StatsBand } from '@/components/home/StatsBand';
 import { LotteryCarouselPremium } from '@/components/home/LotteryCarouselPremium';
 import { FraudCertificate } from '@/components/home/FraudCertificate';
 import { SecurityPillars } from '@/components/home/SecurityPillars';
@@ -30,7 +29,6 @@ export const HomePage = (): JSX.Element => {
   return (
     <main className="bg-noir-page text-fortuno-offwhite min-h-screen">
       <HeroFeaturedLottery featuredLottery={featuredLottery} />
-      <StatsBand />
       <LotteryCarouselPremium lotteries={openLotteries} />
       <FraudCertificate />
       <SecurityPillars />

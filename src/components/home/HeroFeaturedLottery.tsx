@@ -129,7 +129,7 @@ export const HeroFeaturedLottery = ({
 
         <div className="grid md:grid-cols-[1.7fr_1fr] gap-8 lg:gap-10 items-stretch">
           {/* Palco cinematográfico */}
-          <figure className="hero-stage aspect-[4/3] md:aspect-[16/9] lg:aspect-[21/9]">
+          <figure className="hero-stage min-w-0 w-full aspect-[4/3] md:aspect-[16/9] lg:aspect-[21/9]">
             <img
               className="hero-image"
               src={imageUrl}
@@ -155,22 +155,11 @@ export const HeroFeaturedLottery = ({
               >
                 {featuredLottery.name}
               </h2>
-              {/* MOCK: aguarda campo `subtitle` em LotteryInfo (ver MOCKS.md). */}
-              {/* Por ora, derivamos um excerpt curto de `descriptionMd`. */}
-              {featuredLottery.descriptionMd && (
-                <p
-                  className="text-fortuno-offwhite/75 text-sm md:text-base max-w-xl"
-                  style={{ textShadow: '0 2px 12px rgba(0,0,0,0.85)' }}
-                >
-                  {featuredLottery.descriptionMd.slice(0, 140)}
-                  {featuredLottery.descriptionMd.length > 140 ? '…' : ''}
-                </p>
-              )}
             </figcaption>
           </figure>
 
           {/* Painel lateral de ação */}
-          <aside className="hero-panel flex flex-col">
+          <aside className="hero-panel min-w-0 w-full flex flex-col">
             <div>
               <span className="text-[10px] uppercase tracking-[0.26em] text-fortuno-offwhite/55">
                 Prêmio total
