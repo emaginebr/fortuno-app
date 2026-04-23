@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fortuno — Quem Somos (Editorial Casino Noir)</title>
+
+  <!-- Tailwind CDN (preview standalone — o handoff .tsx consome o tailwind.config real) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Inter + Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700&display=swap" rel="stylesheet" />
+
+  <!-- Lucide -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            fortuno: {
+              green: { deep: '#0a2a20', elegant: '#134436' },
+              gold:  { intense: '#b8963f', soft: '#d4af37' },
+              black: '#0b0b0b',
+              offwhite: '#ece8e1',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['"Playfair Display"', 'Georgia', 'serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* ===========================================================
+       ABOUT — Editorial Casino Noir (variante LIGHT BODY)
+       Reutiliza tokens de home/wizard/dashboard. Apenas blocos
+       específicos desta página institucional são definidos aqui.
+       =========================================================== */
+    :root {
+      --fortuno-green-deep:    #0a2a20;
+      --fortuno-green-elegant: #134436;
+      --fortuno-gold-intense:  #b8963f;
+      --fortuno-gold-soft:     #d4af37;
+      --fortuno-black:         #0b0b0b;
+      --fortuno-offwhite:      #ece8e1;
+
+      /* Body claro (coerente com dashboard) */
+      --about-bg-page:
+        radial-gradient(1000px 500px at 80% -10%, rgba(184,150,63,0.06), transparent 65%),
+        radial-gradient(800px 500px at -10% 110%, rgba(19,68,54,0.04), transparent 55%),
+        linear-gradient(180deg, #f7f3ec 0%, #f1ece3 60%, #ece8e1 100%);
+
+      /* Topbar escura (mesma do site) */
+      --topbar-bg:
+        linear-gradient(180deg, #061d17 0%, #0a2a20 100%);
+
+      /* Divisores */
+      --gold-divider:  linear-gradient(90deg, transparent, rgba(212,175,55,0.55), transparent);
+      --gold-divider-v: linear-gradient(180deg, transparent, rgba(212,175,55,0.55), transparent);
+      --gold-divider-soft: linear-gradient(90deg, transparent, rgba(184,150,63,0.28), transparent);
+
+      /* Card "papel" (reuso do dashboard) */
+      --card-paper-border: rgba(11,11,11,0.08);
+      --card-paper-border-hover: rgba(184,150,63,0.45);
+      --shadow-paper:
+        0 1px 0 rgba(255,255,255,0.85) inset,
+        0 10px 22px -16px rgba(10,42,32,0.18),
+        0 3px 7px -3px rgba(184,150,63,0.10);
+      --shadow-paper-hover:
+        0 1px 0 rgba(255,255,255,0.9) inset,
+        0 22px 38px -22px rgba(10,42,32,0.28),
+        0 6px 14px -5px rgba(184,150,63,0.30);
+
+      /* Linha ouro no topo dos cards claros */
+      --card-gold-bar: linear-gradient(90deg,
+        rgba(212,175,55,0) 0%,
+        rgba(212,175,55,0.85) 30%,
+        rgba(19,68,54,0.85) 70%,
+        rgba(212,175,55,0) 100%);
+
+      /* Fundo do fraud certificate / closing CTA (dark) */
+      --noir-certificate-bg:
+        radial-gradient(1000px 400px at 50% 0%, rgba(184,150,63,0.10), transparent 60%),
+        linear-gradient(180deg, #0a2a20 0%, #134436 100%);
+      --noir-closing-bg:
+        radial-gradient(700px 400px at 50% 100%, rgba(212,175,55,0.14), transparent 70%),
+        radial-gradient(900px 500px at 20% 0%, rgba(19,68,54,0.7), transparent 60%),
+        linear-gradient(180deg, #07201a 0%, #0a2a20 100%);
+
+      /* Hero about — claro, com halo ouro sutil lateral */
+      --about-hero-halo:
+        radial-gradient(650px 350px at 88% 45%, rgba(184,150,63,0.12), transparent 65%),
+        radial-gradient(900px 500px at 10% 110%, rgba(19,68,54,0.05), transparent 55%);
+
+      /* Eyebrow tracking */
+      --track-eyebrow: 0.28em;
+
+      /* Drop cap (NOVO — exclusivo about) */
+      --dropcap-fg: var(--fortuno-gold-intense);
+
+      /* Quote ornamental (NOVO — cobre queimado institucional) */
+      --quote-copper: #8a5a2b;
+      --quote-border: rgba(184,150,63,0.35);
+
+      /* Timeline horizontal institucional (variante clara — NOVO) */
+      --timeline-rail-light: linear-gradient(90deg, transparent, rgba(184,150,63,0.55), rgba(19,68,54,0.55), rgba(184,150,63,0.55), transparent);
+
+      --duration-fast: 160ms;
+      --duration-base: 240ms;
+      --duration-slow: 420ms;
+      --easing-out:    cubic-bezier(0.22, 1, 0.36, 1);
+      --easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    html, body { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--about-bg-page);
+      color: var(--fortuno-black);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      pointer-events: none;
+      opacity: 0.04;
+      mix-blend-mode: multiply;
+      background-image: radial-gradient(rgba(10,42,32,0.5) 1px, transparent 1px);
+      background-size: 3px 3px;
+      z-index: 0;
+    }
+
+    .font-display { font-family: 'Playfair Display', Georgia, serif; letter-spacing: -0.01em; }
+
+    /* ===========================================================
+       TOPBAR GLOBAL (simulado — placeholder do Header.tsx real)
+       =========================================================== */
+    .topbar {
+      background: var(--topbar-bg);
+      color: var(--fortuno-offwhite);
+      position: relative;
+      isolation: isolate;
+    }
+    .topbar::after {
+      content: '';
+      position: absolute; left: 0; right: 0; bottom: 0;
+      height: 1px;
+      background: var(--gold-divider);
+      opacity: 0.75;
+    }
+
+    /* ===========================================================
+       HERO institucional
+       =========================================================== */
+    .about-hero {
+      position: relative;
+      background: var(--about-hero-halo);
+      isolation: isolate;
+    }
+    .about-hero::before {
+      /* Linha ouro + losango no topo (ornamento art-déco sutil) */
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%;
+      height: 1px;
+      background: var(--gold-divider);
+    }
+    .about-hero::after {
+      /* Linha ouro + losango na base (fecha a banda) */
+      content: '';
+      position: absolute;
+      bottom: 0; left: 20%; right: 20%;
+      height: 1px;
+      background: var(--gold-divider-soft);
+    }
+
+    /* Eyebrow compartilhado (consistente com home/lottery-list) */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: var(--track-eyebrow);
+      color: var(--fortuno-gold-intense);
+      font-weight: 600;
+    }
+    .eyebrow .rule {
+      display: inline-block;
+      width: 32px; height: 1px;
+      background: var(--fortuno-gold-intense);
+      opacity: 0.7;
+    }
+
+    /* Ilustração lateral (cofre-forte art-déco vetorial) */
+    .hero-art {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      border: 1px solid rgba(184,150,63,0.28);
+      border-radius: 22px;
+      background:
+        radial-gradient(120% 120% at 30% 20%, rgba(212,175,55,0.12) 0%, transparent 55%),
+        linear-gradient(180deg, #faf5e8 0%, #ece8e1 100%);
+      overflow: hidden;
+      isolation: isolate;
+      box-shadow: var(--shadow-paper);
+    }
+    .hero-art::before {
+      /* filete dourado interno */
+      content: '';
+      position: absolute; inset: 12px;
+      border: 1px solid rgba(184,150,63,0.28);
+      border-radius: 14px;
+      pointer-events: none;
+    }
+    .hero-art svg { width: 100%; height: 100%; display: block; }
+
+    /* ===========================================================
+       STATS BAND institucional (variante LIGHT)
+       =========================================================== */
+    .about-stats {
+      position: relative;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.0)),
+        linear-gradient(90deg, rgba(212,175,55,0.04), rgba(212,175,55,0.08) 50%, rgba(212,175,55,0.04));
+      border-top: 1px solid rgba(184,150,63,0.18);
+      border-bottom: 1px solid rgba(184,150,63,0.18);
+    }
+    .about-stats::before,
+    .about-stats::after {
+      content: '';
+      position: absolute; left: 0; right: 0;
+      height: 1px;
+      background: var(--gold-divider);
+    }
+    .about-stats::before { top: -1px; }
+    .about-stats::after  { bottom: -1px; }
+
+    .stat-num-light {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-style: italic;
+      line-height: 1;
+      font-size: clamp(40px, 5.8vw, 68px);
+      letter-spacing: -0.02em;
+      background: linear-gradient(180deg,
+        var(--fortuno-gold-soft) 0%,
+        var(--fortuno-gold-intense) 55%,
+        var(--fortuno-green-elegant) 130%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-label-light {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.26em;
+      color: rgba(11,11,11,0.55);
+      font-weight: 600;
+    }
+
+    /* CSS count-up visual (reuso do padrão da home) */
+    @property --count {
+      syntax: '<integer>';
+      initial-value: 0;
+      inherits: false;
+    }
+    .stat-count { counter-reset: num var(--count); }
+    .stat-count::after { content: counter(num); }
+    .stat-count[data-target="2025"]    { animation: count-2025 2.0s var(--easing-out) 150ms forwards; }
+    .stat-count[data-target="48"]      { animation: count-48   2.2s var(--easing-out) 150ms forwards; }
+    .stat-count[data-target="15320"]   { animation: count-15k  2.4s var(--easing-out) 150ms forwards; }
+    .stat-count[data-target="12400"]   { animation: count-12k  2.4s var(--easing-out) 150ms forwards; }
+    @keyframes count-2025 { to { --count: 2025; } }
+    @keyframes count-48   { to { --count: 48; } }
+    @keyframes count-15k  { to { --count: 15320; } }
+    @keyframes count-12k  { to { --count: 12400; } }
+
+    /* Divisor vertical entre stats (cor ouro, light) */
+    .stat-divider-light {
+      width: 1px;
+      align-self: stretch;
+      background: linear-gradient(180deg, transparent, rgba(184,150,63,0.4), transparent);
+    }
+
+    /* ===========================================================
+       MISSION EDITORIAL — drop cap + quote ornamental (NOVO)
+       =========================================================== */
+    .mission-body {
+      font-size: clamp(16px, 1.15vw, 18px);
+      line-height: 1.75;
+      color: rgba(11,11,11,0.82);
+      font-weight: 400;
+      max-width: 62ch;
+    }
+    .mission-body p + p { margin-top: 1.1em; }
+
+    /* Drop cap — primeira letra Playfair gigante ouro */
+    .dropcap::first-letter {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-weight: 700;
+      font-size: 5.4em;
+      line-height: 0.82;
+      float: left;
+      margin: 0.08em 0.12em 0 -0.02em;
+      color: var(--dropcap-fg);
+      background: linear-gradient(180deg,
+        var(--fortuno-gold-soft) 0%,
+        var(--fortuno-gold-intense) 60%,
+        var(--fortuno-green-elegant) 140%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      padding: 0 4px 0 0;
+    }
+
+    /* Quote ornamental (aspa gigante em cobre queimado) */
+    .mission-quote {
+      position: relative;
+      margin: 32px 0 8px;
+      padding: 24px 28px 24px 56px;
+      border-left: 2px solid var(--quote-border);
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-size: clamp(20px, 2vw, 26px);
+      line-height: 1.45;
+      color: var(--quote-copper);
+      letter-spacing: -0.01em;
+      max-width: 60ch;
+    }
+    .mission-quote::before {
+      /* aspa ornamental cobre */
+      content: '\201C';
+      position: absolute;
+      top: -8px; left: 8px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-weight: 700;
+      font-size: 88px;
+      line-height: 1;
+      color: var(--quote-copper);
+      opacity: 0.38;
+      user-select: none;
+    }
+    .mission-quote cite {
+      display: block;
+      margin-top: 10px;
+      font-style: normal;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: rgba(11,11,11,0.45);
+    }
+
+    /* Ornamento art-déco lateral (título da missão) */
+    .mission-title-deco {
+      display: flex; align-items: center; gap: 14px;
+      margin-top: 18px;
+    }
+    .mission-title-deco::before {
+      content: '';
+      flex: 0 0 48px;
+      height: 1px;
+      background: var(--fortuno-gold-intense);
+      opacity: 0.8;
+    }
+    .mission-title-deco .diamond {
+      width: 8px; height: 8px; transform: rotate(45deg);
+      background: var(--fortuno-gold-intense);
+      box-shadow: 0 0 10px rgba(184,150,63,0.55);
+    }
+
+    /* ===========================================================
+       VALUES PILLARS — variante LIGHT (paper cards)
+       =========================================================== */
+    .value-pillar {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 28px 26px 26px;
+      background: #ffffff;
+      border: 1px solid var(--card-paper-border);
+      border-radius: 18px;
+      box-shadow: var(--shadow-paper);
+      overflow: hidden;
+      transition: transform var(--duration-base) var(--easing-spring),
+                  border-color var(--duration-base) var(--easing-out),
+                  box-shadow var(--duration-base) var(--easing-out);
+    }
+    .value-pillar::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--card-gold-bar);
+      opacity: 0.85;
+    }
+    .value-pillar:hover {
+      transform: translateY(-4px);
+      border-color: var(--card-paper-border-hover);
+      box-shadow: var(--shadow-paper-hover);
+    }
+    .value-pillar:focus-within {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.55), var(--shadow-paper-hover);
+      border-color: rgba(184,150,63,0.55);
+    }
+
+    .value-icon {
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      display: grid; place-items: center;
+      background: linear-gradient(180deg, #faf3e1 0%, #f0e3b8 100%);
+      color: var(--fortuno-gold-intense);
+      border: 1px solid rgba(184,150,63,0.32);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.8) inset, 0 6px 14px -6px rgba(184,150,63,0.35);
+      flex-shrink: 0;
+    }
+    .value-icon i { width: 26px; height: 26px; }
+
+    .value-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: 22px;
+      line-height: 1.15;
+      color: var(--fortuno-black);
+      letter-spacing: -0.01em;
+    }
+
+    .value-desc {
+      font-size: 14px;
+      line-height: 1.65;
+      color: rgba(11,11,11,0.68);
+    }
+
+    .value-divider {
+      height: 1px;
+      background: var(--gold-divider-soft);
+      margin-top: auto;
+    }
+
+    .value-footnote {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--fortuno-gold-intense);
+      font-weight: 600;
+    }
+
+    /* ===========================================================
+       HOW WE WORK — timeline horizontal institucional (NOVO)
+       Variante clara: numerais Playfair ouro grandes, ícone abaixo,
+       trilha ouro conectando os 4 passos
+       =========================================================== */
+    .how-rail-light {
+      position: absolute;
+      left: 0; right: 0;
+      top: 56px;
+      height: 1px;
+      background: var(--timeline-rail-light);
+      z-index: 0;
+    }
+    .how-step {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+    .how-num {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-weight: 800;
+      font-size: clamp(56px, 6.5vw, 84px);
+      line-height: 0.85;
+      letter-spacing: -0.03em;
+      background: linear-gradient(180deg,
+        var(--fortuno-gold-soft) 0%,
+        var(--fortuno-gold-intense) 55%,
+        var(--fortuno-green-elegant) 135%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-variant-numeric: tabular-nums;
+    }
+    .how-marker-dot {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      margin: 10px auto 0;
+      background: radial-gradient(120% 120% at 30% 20%, #f0d27a 0%, #c79b41 45%, #8a6a25 100%);
+      border: 2px solid #ffffff;
+      box-shadow:
+        0 0 0 1px rgba(184,150,63,0.45),
+        0 4px 10px -2px rgba(184,150,63,0.55);
+    }
+    .how-icon-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10.5px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--fortuno-gold-intense);
+      font-weight: 600;
+      margin-top: 18px;
+    }
+    .how-icon-chip i { width: 14px; height: 14px; }
+    .how-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 1.2;
+      color: var(--fortuno-black);
+      margin-top: 8px;
+    }
+    .how-desc {
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: rgba(11,11,11,0.64);
+      margin-top: 6px;
+      max-width: 30ch;
+      margin-left: auto; margin-right: auto;
+    }
+
+    /* ===========================================================
+       FRAUD CERTIFICATE (reuso idêntico ao da home)
+       Apenas o shell dark — o preview abaixo referencia o bloco
+       inteiro via HTML local igual ao do home/mockup.html, sem
+       variação. Em produção: <FraudCertificate /> importado da home.
+       =========================================================== */
+    .certificate {
+      position: relative;
+      background: var(--noir-certificate-bg);
+      border-radius: 24px;
+      overflow: hidden;
+      color: var(--fortuno-offwhite);
+    }
+    .certificate::before,
+    .certificate::after {
+      content: '';
+      position: absolute;
+      pointer-events: none;
+      border-radius: 20px;
+    }
+    .certificate::before { inset: 14px; border: 1px solid rgba(212,175,55,0.45); }
+    .certificate::after  { inset: 22px; border: 1px solid rgba(212,175,55,0.15); }
+
+    .watermark {
+      position: absolute; inset: 0;
+      display: grid; place-items: center;
+      pointer-events: none;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-size: clamp(160px, 22vw, 320px);
+      font-weight: 700;
+      color: rgba(212,175,55,0.04);
+      letter-spacing: 0.04em;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .deco-corner {
+      position: absolute;
+      width: 40px; height: 40px;
+      border: 2px solid rgba(212,175,55,0.55);
+      pointer-events: none;
+    }
+    .deco-corner.tl { top: 28px; left: 28px; border-right: 0; border-bottom: 0; border-top-left-radius: 4px; }
+    .deco-corner.tr { top: 28px; right: 28px; border-left: 0; border-bottom: 0; border-top-right-radius: 4px; }
+    .deco-corner.bl { bottom: 28px; left: 28px; border-right: 0; border-top: 0; border-bottom-left-radius: 4px; }
+    .deco-corner.br { bottom: 28px; right: 28px; border-left: 0; border-top: 0; border-bottom-right-radius: 4px; }
+
+    .deco-divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      justify-content: center;
+      margin: 24px 0;
+    }
+    .deco-divider::before,
+    .deco-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--gold-divider);
+      max-width: 140px;
+    }
+    .deco-diamond {
+      width: 10px; height: 10px;
+      transform: rotate(45deg);
+      background: var(--fortuno-gold-intense);
+      box-shadow: 0 0 12px rgba(212,175,55,0.6);
+    }
+
+    .seal-bullet {
+      display: flex; gap: 14px;
+      padding: 14px 18px;
+      background: linear-gradient(180deg, rgba(7,32,26,0.55), rgba(7,32,26,0.35));
+      border: 1px solid rgba(212,175,55,0.2);
+      border-radius: 12px;
+      transition: border-color var(--duration-base) var(--easing-out), background var(--duration-base) var(--easing-out);
+    }
+    .seal-bullet:hover { border-color: rgba(212,175,55,0.45); background: linear-gradient(180deg, rgba(7,32,26,0.7), rgba(7,32,26,0.5)); }
+    .seal-bullet .num {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic; font-weight: 700;
+      font-size: 22px;
+      color: var(--fortuno-gold-soft);
+      min-width: 32px;
+      line-height: 1.2;
+    }
+
+    /* ===========================================================
+       CLOSING CTA (dark, ornamentado)
+       =========================================================== */
+    .closing-cta {
+      position: relative;
+      background: var(--noir-closing-bg);
+      color: var(--fortuno-offwhite);
+      border-top: 1px solid rgba(212,175,55,0.2);
+      border-bottom: 1px solid rgba(212,175,55,0.2);
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .closing-cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: conic-gradient(from 0deg at 50% 50%,
+        transparent 0deg,
+        rgba(212,175,55,0.04) 70deg,
+        transparent 140deg,
+        rgba(212,175,55,0.03) 220deg,
+        transparent 360deg);
+      pointer-events: none;
+    }
+
+    /* CTAs globais — mesma linguagem do resto do site */
+    .cta-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 26px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      background: linear-gradient(180deg, #f0d27a 0%, #c79b41 55%, #8a6a25 100%);
+      color: var(--fortuno-black);
+      border: 1px solid rgba(255,255,255,0.3);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.45) inset,
+        0 8px 20px -6px rgba(184,150,63,0.5);
+      transition: transform var(--duration-base) var(--easing-spring),
+                  box-shadow var(--duration-base) var(--easing-out);
+      text-decoration: none;
+    }
+    .cta-primary:hover { transform: translateY(-1px); box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, 0 12px 26px -6px rgba(184,150,63,0.65); }
+    .cta-primary i { width: 18px; height: 18px; }
+
+    .cta-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 24px;
+      border-radius: 999px;
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      background: transparent;
+      color: var(--fortuno-offwhite);
+      border: 1px solid rgba(212,175,55,0.45);
+      transition: background var(--duration-base) var(--easing-out),
+                  border-color var(--duration-base) var(--easing-out);
+      text-decoration: none;
+    }
+    .cta-ghost:hover { background: rgba(212,175,55,0.08); border-color: rgba(212,175,55,0.7); }
+
+    /* Variante do cta-ghost sobre body CLARO (hero + CTAs secundários light) */
+    .cta-ghost-light {
+      color: var(--fortuno-black);
+      border: 1px solid rgba(184,150,63,0.45);
+    }
+    .cta-ghost-light:hover { background: rgba(184,150,63,0.10); border-color: rgba(184,150,63,0.7); }
+
+    /* Focus ring global */
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.55);
+      border-radius: 6px;
+    }
+
+    /* Scroll reveal (fallback: só renderiza estado final) */
+    @supports (animation-timeline: view()) {
+      .reveal {
+        animation: reveal-in linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 20%;
+      }
+      @keyframes reveal-in {
+        from { opacity: 0; transform: translateY(24px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition-duration: 1ms !important;
+      }
+      .stat-count { animation: none !important; }
+      .stat-count[data-target="2025"]::after  { content: '2025'; }
+      .stat-count[data-target="48"]::after    { content: '48'; }
+      .stat-count[data-target="15320"]::after { content: '15320'; }
+      .stat-count[data-target="12400"]::after { content: '12400'; }
+    }
+
+    /* ===========================================================
+       Mobile refinements
+       =========================================================== */
+    @media (max-width: 767px) {
+      .how-rail-light { display: none; }
+      .how-horizontal {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 36px;
+      }
+      .how-step {
+        display: grid;
+        grid-template-columns: 96px 1fr;
+        align-items: start;
+        gap: 18px;
+        text-align: left;
+      }
+      .how-step .how-num { font-size: 64px; }
+      .how-step .how-marker-dot { display: none; }
+      .how-icon-chip { margin-top: 4px; }
+      .how-desc { margin-left: 0; }
+
+      .stat-divider-light { display: none; }
+      .about-stats-grid { grid-template-columns: 1fr 1fr; gap: 28px 16px; }
+
+      .dropcap::first-letter {
+        font-size: 4em;
+        margin: 0.08em 0.1em 0 0;
+      }
+      .mission-quote {
+        padding: 18px 20px 20px 44px;
+        font-size: 18px;
+      }
+      .mission-quote::before { font-size: 64px; top: -4px; left: 4px; }
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- ============================================================
+       TOPBAR (placeholder do Header.tsx real — AuthenticatedShell)
+       ============================================================ -->
+  <header class="topbar relative z-20">
+    <div class="mx-auto max-w-7xl px-6 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl grid place-items-center"
+             style="background: radial-gradient(120% 120% at 30% 20%, #f0d27a 0%, #c79b41 45%, #8a6a25 100%); color: #0b0b0b;">
+          <span class="font-display italic font-extrabold text-lg leading-none">F</span>
+        </div>
+        <span class="font-display text-xl tracking-wide text-fortuno-offwhite">Fortuno</span>
+      </a>
+      <nav class="hidden md:flex items-center gap-8 text-sm text-fortuno-offwhite/80">
+        <a href="/" class="hover:text-fortuno-gold-soft transition-colors">Início</a>
+        <a href="/sorteios" class="hover:text-fortuno-gold-soft transition-colors">Sorteios</a>
+        <a href="/quem-somos" class="text-fortuno-gold-soft">Quem somos</a>
+        <a href="/fale-conosco" class="hover:text-fortuno-gold-soft transition-colors">Fale conosco</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a href="/login" class="cta-ghost text-sm hidden sm:inline-flex">Entrar</a>
+        <a href="/sorteios" class="cta-primary text-sm">Ver sorteios</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       1. HERO INSTITUCIONAL
+       ============================================================ -->
+  <section class="about-hero relative z-10 pt-16 md:pt-24 pb-16 md:pb-24" aria-labelledby="about-hero-title">
+    <div class="mx-auto max-w-7xl px-6">
+
+      <div class="grid md:grid-cols-[1.35fr_1fr] gap-10 lg:gap-16 items-center">
+
+        <!-- Coluna texto -->
+        <div class="relative">
+          <span class="eyebrow reveal">
+            <span class="rule"></span>
+            Fortuno · Desde 2025
+            <span class="rule"></span>
+          </span>
+
+          <h1 id="about-hero-title"
+              class="font-display mt-6 md:mt-8 text-fortuno-black leading-[1.02]"
+              style="font-size: clamp(40px, 6vw, 72px); letter-spacing: -0.02em;">
+            A sorte ganha confiança <br class="hidden md:block" />
+            <span class="italic text-fortuno-gold-intense">quando é organizada.</span>
+          </h1>
+
+          <p class="mt-6 md:mt-7 text-[17px] md:text-[18px] leading-relaxed text-fortuno-black/72 max-w-xl">
+            Plataforma brasileira de sorteios auditáveis — cada bilhete tem rastro,
+            cada prêmio tem entrega, cada participante sabe exatamente o que comprou.
+          </p>
+
+          <div class="mt-10 flex flex-wrap items-center gap-4">
+            <a href="/sorteios" class="cta-primary">
+              <i data-lucide="ticket"></i>
+              Ver sorteios em andamento
+              <i data-lucide="arrow-right"></i>
+            </a>
+            <a href="#missao" class="cta-ghost cta-ghost-light">
+              Conheça nossa história
+              <i data-lucide="arrow-down"></i>
+            </a>
+          </div>
+
+          <!-- Mini trust bar -->
+          <div class="mt-10 flex flex-wrap items-center gap-x-7 gap-y-3 text-xs text-fortuno-black/55">
+            <span class="inline-flex items-center gap-2">
+              <i data-lucide="shield-check" class="w-4 h-4 text-fortuno-gold-intense"></i>
+              Auditoria externa
+            </span>
+            <span class="hidden md:inline-block w-1 h-1 rounded-full bg-fortuno-gold-intense/40"></span>
+            <span class="inline-flex items-center gap-2">
+              <i data-lucide="lock" class="w-4 h-4 text-fortuno-gold-intense"></i>
+              Dados criptografados
+            </span>
+            <span class="hidden md:inline-block w-1 h-1 rounded-full bg-fortuno-gold-intense/40"></span>
+            <span class="inline-flex items-center gap-2">
+              <i data-lucide="scale" class="w-4 h-4 text-fortuno-gold-intense"></i>
+              CNPJ 00.000.000/0001-00
+            </span>
+          </div>
+        </div>
+
+        <!-- Coluna arte — cofre art-déco vetorial -->
+        <figure class="hero-art order-first md:order-last" aria-hidden="true">
+          <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+            <!-- Fundo radial -->
+            <defs>
+              <radialGradient id="bgGlow" cx="50%" cy="45%" r="60%">
+                <stop offset="0%" stop-color="#d4af37" stop-opacity="0.18" />
+                <stop offset="60%" stop-color="#d4af37" stop-opacity="0.03" />
+                <stop offset="100%" stop-color="#d4af37" stop-opacity="0" />
+              </radialGradient>
+              <linearGradient id="goldLine" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#d4af37" />
+                <stop offset="100%" stop-color="#8a6a25" />
+              </linearGradient>
+              <linearGradient id="safeFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#faf3e1" />
+                <stop offset="100%" stop-color="#ece8e1" />
+              </linearGradient>
+            </defs>
+
+            <rect x="0" y="0" width="400" height="500" fill="url(#bgGlow)" />
+
+            <!-- Moldura art-déco externa -->
+            <rect x="48" y="40" width="304" height="420" fill="none" stroke="url(#goldLine)" stroke-width="1" opacity="0.45" />
+            <rect x="60" y="52" width="280" height="396" fill="none" stroke="url(#goldLine)" stroke-width="1" opacity="0.25" />
+
+            <!-- Losangos nos 4 cantos -->
+            <g fill="#b8963f">
+              <rect x="56" y="48" width="8" height="8" transform="rotate(45 60 52)" />
+              <rect x="336" y="48" width="8" height="8" transform="rotate(45 340 52)" />
+              <rect x="56" y="444" width="8" height="8" transform="rotate(45 60 448)" />
+              <rect x="336" y="444" width="8" height="8" transform="rotate(45 340 448)" />
+            </g>
+
+            <!-- Cofre estilizado -->
+            <g transform="translate(100 120)">
+              <!-- corpo do cofre -->
+              <rect x="0" y="0" width="200" height="240" rx="12" fill="url(#safeFill)" stroke="#b8963f" stroke-width="1.5" />
+              <rect x="14" y="14" width="172" height="212" rx="6" fill="none" stroke="#b8963f" stroke-width="1" opacity="0.35" />
+              <!-- porta interna -->
+              <rect x="30" y="30" width="140" height="180" rx="4" fill="none" stroke="#b8963f" stroke-width="1" opacity="0.25" />
+
+              <!-- roda central (mandala) -->
+              <g transform="translate(100 120)">
+                <circle r="48" fill="none" stroke="#b8963f" stroke-width="1.5" />
+                <circle r="38" fill="none" stroke="#b8963f" stroke-width="0.8" opacity="0.55" />
+                <circle r="26" fill="none" stroke="#b8963f" stroke-width="1" opacity="0.75" />
+                <circle r="6" fill="#b8963f" />
+                <!-- 8 raios -->
+                <g stroke="#b8963f" stroke-width="1.2" stroke-linecap="round">
+                  <line x1="0" y1="-46" x2="0" y2="-30" />
+                  <line x1="0" y1="46" x2="0" y2="30" />
+                  <line x1="-46" y1="0" x2="-30" y2="0" />
+                  <line x1="46" y1="0" x2="30" y2="0" />
+                  <line x1="-32" y1="-32" x2="-22" y2="-22" />
+                  <line x1="32" y1="32" x2="22" y2="22" />
+                  <line x1="-32" y1="32" x2="-22" y2="22" />
+                  <line x1="32" y1="-32" x2="22" y2="-22" />
+                </g>
+                <!-- indicadores pequenos nas beiradas -->
+                <g fill="#b8963f">
+                  <rect x="-3" y="-54" width="6" height="6" transform="rotate(45 0 -51)" />
+                  <rect x="-3" y="48" width="6" height="6" transform="rotate(45 0 51)" />
+                  <rect x="-54" y="-3" width="6" height="6" transform="rotate(45 -51 0)" />
+                  <rect x="48" y="-3" width="6" height="6" transform="rotate(45 51 0)" />
+                </g>
+              </g>
+
+              <!-- "F" Playfair acima da roda (assinatura) -->
+              <text x="100" y="58" text-anchor="middle"
+                    font-family="Playfair Display, Georgia, serif"
+                    font-style="italic" font-weight="700" font-size="22" fill="#b8963f">
+                F
+              </text>
+
+              <!-- Pés do cofre -->
+              <rect x="14" y="238" width="20" height="8" fill="#b8963f" opacity="0.75" />
+              <rect x="166" y="238" width="20" height="8" fill="#b8963f" opacity="0.75" />
+            </g>
+
+            <!-- Faixa inferior "Editio Aurea" -->
+            <g transform="translate(200 400)">
+              <line x1="-70" y1="0" x2="-12" y2="0" stroke="#b8963f" stroke-width="1" opacity="0.6" />
+              <line x1="12"  y1="0" x2="70"  y2="0" stroke="#b8963f" stroke-width="1" opacity="0.6" />
+              <rect x="-4" y="-4" width="8" height="8" transform="rotate(45 0 0)" fill="#b8963f" />
+              <text x="0" y="24" text-anchor="middle"
+                    font-family="Playfair Display, Georgia, serif"
+                    font-style="italic" font-weight="700" font-size="14" fill="#8a6a25"
+                    letter-spacing="2">
+                EDITIO AUREA
+              </text>
+            </g>
+          </svg>
+        </figure>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       2. STATS BAND institucional
+       ============================================================ -->
+  <section class="about-stats relative z-10 py-14 md:py-16" aria-labelledby="stats-heading">
+    <h2 id="stats-heading" class="sr-only">Números que sustentam o Fortuno</h2>
+    <div class="mx-auto max-w-7xl px-6">
+      <div class="about-stats-grid grid grid-cols-2 md:grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr] gap-8 md:gap-0 items-center">
+
+        <div class="text-center md:px-6">
+          <div class="stat-num-light">
+            <span class="stat-count" data-target="2025" aria-hidden="true"></span>
+            <span class="sr-only">2025</span>
+          </div>
+          <div class="mt-3 stat-label-light">Ano de fundação</div>
+        </div>
+
+        <div class="stat-divider-light hidden md:block"></div>
+
+        <div class="text-center md:px-6">
+          <div class="stat-num-light">
+            R$ <span class="stat-count" data-target="12400" aria-hidden="true"></span>k+
+            <span class="sr-only">12.400.000 reais</span>
+          </div>
+          <div class="mt-3 stat-label-light">Distribuídos em prêmios</div>
+        </div>
+
+        <div class="stat-divider-light hidden md:block"></div>
+
+        <div class="text-center md:px-6">
+          <div class="stat-num-light">
+            <span class="stat-count" data-target="48" aria-hidden="true"></span>
+            <span class="sr-only">48</span>
+          </div>
+          <div class="mt-3 stat-label-light">Sorteios realizados</div>
+        </div>
+
+        <div class="stat-divider-light hidden md:block"></div>
+
+        <div class="text-center md:px-6">
+          <div class="stat-num-light">
+            <span class="stat-count" data-target="15320" aria-hidden="true"></span>+
+            <span class="sr-only">15.320</span>
+          </div>
+          <div class="mt-3 stat-label-light">Ganhadores atendidos</div>
+        </div>
+
+      </div>
+
+      <p class="mt-10 md:mt-12 text-center text-[12px] uppercase tracking-[0.26em] text-fortuno-black/45">
+        Dados auditados e atualizados em tempo real. Resultados públicos disponíveis em cada edição.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       3. NOSSA MISSÃO — editorial, drop cap + quote
+       ============================================================ -->
+  <section id="missao" class="relative z-10 py-20 md:py-28" aria-labelledby="mission-title">
+    <div class="mx-auto max-w-7xl px-6">
+      <div class="grid md:grid-cols-[0.85fr_1.15fr] gap-12 lg:gap-20 items-start">
+
+        <!-- Coluna esquerda: título editorial -->
+        <div class="reveal md:sticky md:top-24">
+          <span class="eyebrow">
+            <span class="rule"></span>
+            Capítulo I
+          </span>
+          <h2 id="mission-title"
+              class="font-display mt-5 text-fortuno-black leading-[1.0]"
+              style="font-size: clamp(44px, 5.4vw, 68px); letter-spacing: -0.02em;">
+            Nossa <br />
+            <span class="italic text-fortuno-gold-intense">missão.</span>
+          </h2>
+
+          <div class="mission-title-deco">
+            <span class="diamond"></span>
+          </div>
+
+          <p class="mt-5 text-[13px] uppercase tracking-[0.22em] text-fortuno-black/50 font-semibold">
+            Transparência e entrega, em cada bilhete.
+          </p>
+        </div>
+
+        <!-- Coluna direita: corpo editorial com drop cap + quote -->
+        <div class="reveal">
+          <div class="mission-body">
+            <p class="dropcap">
+              O Fortuno nasceu em 2025 para organizar algo que, no Brasil, sempre foi
+              opaco: o universo dos sorteios online. Nossa plataforma registra cada bilhete
+              com rastreabilidade completa — do clique inicial ao PIX confirmado, da
+              ata pública do sorteio à entrega do prêmio ao ganhador. Cada etapa é
+              auditável. Cada resultado, reprodutível.
+            </p>
+
+            <blockquote class="mission-quote">
+              A sorte deixa de ser loteria quando cada número tem dono, cada sorteio
+              tem testemunha e cada prêmio tem contrato.
+              <cite>— Manifesto Fortuno, 2025</cite>
+            </blockquote>
+
+            <p>
+              Construímos cada sorteio em parceria com organizadores que buscam
+              profissionalismo, compradores que exigem previsibilidade, e reguladores
+              que precisam de transparência. Nosso papel é intermediar — nunca especular.
+              Nunca opacificar. Nunca surpreender.
+            </p>
+
+            <p>
+              Cada edição do Fortuno é publicada com: CNPJ do organizador, instituição
+              de pagamento autorizada, método de sorteio (Loteria Federal ou geração
+              auditada), lista completa de bilhetes vendidos e hash verificável do
+              resultado. Você não precisa confiar em nós — confie nos números.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       4. NOSSOS VALORES — 4 pilares (paper cards)
+       ============================================================ -->
+  <section id="valores" class="relative z-10 py-20 md:py-28 bg-white/40" aria-labelledby="values-title">
+    <div class="absolute inset-x-0 top-0 h-px" style="background: var(--gold-divider);"></div>
+    <div class="absolute inset-x-0 bottom-0 h-px" style="background: var(--gold-divider);"></div>
+
+    <div class="mx-auto max-w-7xl px-6">
+
+      <div class="text-center mb-14 md:mb-16 max-w-3xl mx-auto">
+        <span class="eyebrow justify-center">
+          <span class="rule"></span>
+          Capítulo II
+          <span class="rule"></span>
+        </span>
+        <h2 id="values-title"
+            class="font-display mt-5 text-fortuno-black leading-[1.05]"
+            style="font-size: clamp(36px, 4.8vw, 56px); letter-spacing: -0.02em;">
+          Nossos <span class="italic text-fortuno-gold-intense">valores.</span>
+        </h2>
+        <p class="mt-5 text-fortuno-black/65 text-[16px] md:text-[17px] leading-relaxed">
+          Quatro princípios que guiam cada decisão técnica, cada copy,
+          cada parceria. Não são frases — são restrições de projeto.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
+
+        <!-- Valor 1 — Transparência -->
+        <article class="value-pillar" tabindex="0">
+          <div class="flex items-center justify-between">
+            <div class="value-icon">
+              <i data-lucide="eye" aria-hidden="true"></i>
+            </div>
+            <span class="text-[10px] uppercase tracking-[0.26em] text-fortuno-gold-intense font-semibold">I</span>
+          </div>
+          <h3 class="value-title mt-2">Transparência</h3>
+          <p class="value-desc">
+            Cada sorteio publica ata, hash verificável e lista completa de bilhetes.
+            Resultados disponíveis em tempo real, para sempre.
+          </p>
+          <div class="value-divider"></div>
+          <div class="value-footnote">
+            <i data-lucide="file-check-2" class="w-4 h-4" aria-hidden="true"></i>
+            Auditoria pública
+          </div>
+        </article>
+
+        <!-- Valor 2 — Confiança -->
+        <article class="value-pillar" tabindex="0">
+          <div class="flex items-center justify-between">
+            <div class="value-icon">
+              <i data-lucide="badge-check" aria-hidden="true"></i>
+            </div>
+            <span class="text-[10px] uppercase tracking-[0.26em] text-fortuno-gold-intense font-semibold">II</span>
+          </div>
+          <h3 class="value-title mt-2">Confiança</h3>
+          <p class="value-desc">
+            Pagamentos processados por instituições reguladas, LGPD por padrão
+            e zero compartilhamento de dados pessoais com terceiros.
+          </p>
+          <div class="value-divider"></div>
+          <div class="value-footnote">
+            <i data-lucide="lock" class="w-4 h-4" aria-hidden="true"></i>
+            TLS 1.3 · AES-256
+          </div>
+        </article>
+
+        <!-- Valor 3 — Experiência -->
+        <article class="value-pillar" tabindex="0">
+          <div class="flex items-center justify-between">
+            <div class="value-icon">
+              <i data-lucide="sparkles" aria-hidden="true"></i>
+            </div>
+            <span class="text-[10px] uppercase tracking-[0.26em] text-fortuno-gold-intense font-semibold">III</span>
+          </div>
+          <h3 class="value-title mt-2">Experiência</h3>
+          <p class="value-desc">
+            Interface editorial, sem poluição visual. Participar leva menos de
+            dois minutos — do primeiro clique ao PIX confirmado.
+          </p>
+          <div class="value-divider"></div>
+          <div class="value-footnote">
+            <i data-lucide="zap" class="w-4 h-4" aria-hidden="true"></i>
+            &lt; 2min para participar
+          </div>
+        </article>
+
+        <!-- Valor 4 — Auditoria -->
+        <article class="value-pillar" tabindex="0">
+          <div class="flex items-center justify-between">
+            <div class="value-icon">
+              <i data-lucide="clipboard-check" aria-hidden="true"></i>
+            </div>
+            <span class="text-[10px] uppercase tracking-[0.26em] text-fortuno-gold-intense font-semibold">IV</span>
+          </div>
+          <h3 class="value-title mt-2">Auditoria</h3>
+          <p class="value-desc">
+            Resultado reprodutível por qualquer participante. Hash público,
+            método documentado, sem caixas-pretas.
+          </p>
+          <div class="value-divider"></div>
+          <div class="value-footnote">
+            <i data-lucide="shield-check" class="w-4 h-4" aria-hidden="true"></i>
+            Ata pública por edição
+          </div>
+        </article>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       5. COMO FUNCIONAMOS — timeline horizontal institucional
+       ============================================================ -->
+  <section id="como" class="relative z-10 py-20 md:py-28" aria-labelledby="how-title">
+    <div class="mx-auto max-w-7xl px-6">
+
+      <div class="text-center mb-16 md:mb-20 max-w-3xl mx-auto">
+        <span class="eyebrow justify-center">
+          <span class="rule"></span>
+          Capítulo III
+          <span class="rule"></span>
+        </span>
+        <h2 id="how-title"
+            class="font-display mt-5 text-fortuno-black leading-[1.05]"
+            style="font-size: clamp(36px, 4.8vw, 56px); letter-spacing: -0.02em;">
+          Como <span class="italic text-fortuno-gold-intense">funcionamos.</span>
+        </h2>
+        <p class="mt-5 text-fortuno-black/65 text-[16px] md:text-[17px] leading-relaxed">
+          Quatro etapas mapeadas, rastreáveis e auditáveis. Do cadastro do
+          sorteio à entrega do prêmio — tudo em registro público.
+        </p>
+      </div>
+
+      <!-- Timeline -->
+      <ol class="relative how-horizontal grid md:grid-cols-4 gap-y-10 md:gap-y-0 md:gap-x-6 lg:gap-x-10" aria-label="Etapas do fluxo Fortuno">
+        <!-- Trilha horizontal (desktop) -->
+        <div class="how-rail-light hidden md:block" aria-hidden="true"></div>
+
+        <!-- Passo 1 -->
+        <li class="how-step">
+          <div class="how-num">01</div>
+          <div class="how-marker-dot" aria-hidden="true"></div>
+          <div>
+            <span class="how-icon-chip">
+              <i data-lucide="briefcase" aria-hidden="true"></i>
+              Organizador
+            </span>
+            <h3 class="how-title">Cadastra o sorteio</h3>
+            <p class="how-desc">
+              Organizador validado define prêmio, CNPJ e método de sorteio.
+            </p>
+          </div>
+        </li>
+
+        <!-- Passo 2 -->
+        <li class="how-step">
+          <div class="how-num">02</div>
+          <div class="how-marker-dot" aria-hidden="true"></div>
+          <div>
+            <span class="how-icon-chip">
+              <i data-lucide="ticket" aria-hidden="true"></i>
+              Bilhetes
+            </span>
+            <h3 class="how-title">Disponibilizados ao público</h3>
+            <p class="how-desc">
+              Edição publicada, numeração pública, limite de bilhetes declarado.
+            </p>
+          </div>
+        </li>
+
+        <!-- Passo 3 -->
+        <li class="how-step">
+          <div class="how-num">03</div>
+          <div class="how-marker-dot" aria-hidden="true"></div>
+          <div>
+            <span class="how-icon-chip">
+              <i data-lucide="qr-code" aria-hidden="true"></i>
+              Pagamento
+            </span>
+            <h3 class="how-title">PIX confirmado em segundos</h3>
+            <p class="how-desc">
+              Pagamento via instituição regulada. Bilhete atribuído automaticamente.
+            </p>
+          </div>
+        </li>
+
+        <!-- Passo 4 -->
+        <li class="how-step">
+          <div class="how-num">04</div>
+          <div class="how-marker-dot" aria-hidden="true"></div>
+          <div>
+            <span class="how-icon-chip">
+              <i data-lucide="trophy" aria-hidden="true"></i>
+              Entrega
+            </span>
+            <h3 class="how-title">Sorteio auditado e prêmio entregue</h3>
+            <p class="how-desc">
+              Hash público, ata registrada, prêmio transferido ao ganhador.
+            </p>
+          </div>
+        </li>
+      </ol>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       6. FRAUD CERTIFICATE (reuso IDÊNTICO ao da home)
+       Em produção: <FraudCertificate /> importado do módulo home.
+       Aqui renderizado para preview institucional completo.
+       ============================================================ -->
+  <section id="comunicado" class="relative z-10 py-12 md:py-16" aria-labelledby="certificate-title">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="certificate px-8 md:px-14 py-14 md:py-20 relative">
+        <div class="deco-corner tl"></div>
+        <div class="deco-corner tr"></div>
+        <div class="deco-corner bl"></div>
+        <div class="deco-corner br"></div>
+
+        <span class="watermark" aria-hidden="true">Fortuno</span>
+
+        <div class="relative z-10 text-center">
+          <span class="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.32em] text-fortuno-gold-soft">
+            <i data-lucide="shield-alert" class="w-4 h-4" aria-hidden="true"></i>
+            Comunicado oficial
+          </span>
+          <div class="deco-divider">
+            <span class="deco-diamond"></span>
+          </div>
+          <h2 id="certificate-title" class="font-display italic" style="font-size: clamp(32px, 4.4vw, 52px); letter-spacing: -0.02em;">
+            Sua sorte é séria.
+          </h2>
+          <p class="mt-4 text-white/70 max-w-2xl mx-auto">
+            Alertamos sobre tentativas de fraude em nosso nome. Leia atentamente antes de qualquer contato.
+          </p>
+        </div>
+
+        <div class="relative z-10 mt-12 grid md:grid-cols-2 gap-4 md:gap-5">
+          <div class="seal-bullet">
+            <span class="num">I</span>
+            <p class="text-sm text-white/90 leading-relaxed">
+              Nossas comunicações são feitas <strong class="text-fortuno-gold-soft">apenas por vídeo</strong>, nunca por chamada de voz.
+            </p>
+          </div>
+          <div class="seal-bullet">
+            <span class="num">II</span>
+            <p class="text-sm text-white/90 leading-relaxed">
+              <strong class="text-fortuno-gold-soft">Não pedimos</strong> nenhum valor referente a impostos para entrega de prêmios.
+            </p>
+          </div>
+          <div class="seal-bullet">
+            <span class="num">III</span>
+            <p class="text-sm text-white/90 leading-relaxed">
+              <strong class="text-fortuno-gold-soft">Não enviamos links</strong> para confirmar premiação.
+            </p>
+          </div>
+          <div class="seal-bullet">
+            <span class="num">IV</span>
+            <p class="text-sm text-white/90 leading-relaxed">
+              Em caso de dúvidas, consulte sempre nosso <strong class="text-fortuno-gold-soft">site oficial</strong>.
+            </p>
+          </div>
+          <div class="seal-bullet md:col-span-2">
+            <span class="num">V</span>
+            <p class="text-sm text-white/90 leading-relaxed">
+              <strong class="text-fortuno-gold-soft">Jamais</strong> solicitamos que você acesse ou compartilhe dados de aplicativos bancários.
+            </p>
+          </div>
+        </div>
+
+        <div class="deco-divider relative z-10">
+          <span class="deco-diamond"></span>
+        </div>
+
+        <div class="relative z-10 mt-2">
+          <div class="text-center mb-8">
+            <span class="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] text-fortuno-gold-soft">
+              <i data-lucide="eye" class="w-4 h-4" aria-hidden="true"></i>
+              Fique ligado
+            </span>
+            <h3 class="mt-3 font-display text-2xl md:text-3xl text-white">
+              Confirme sempre os dados oficiais
+            </h3>
+          </div>
+
+          <dl class="grid gap-4 md:grid-cols-2 text-sm">
+            <div class="seal-bullet flex-col !items-start gap-2">
+              <dt class="text-[10px] uppercase tracking-[0.24em] text-white/55">Nome do recebedor</dt>
+              <dd class="font-semibold text-white">FORTUNO SORTEIOS E PREMIAÇÕES LTDA</dd>
+            </div>
+            <div class="seal-bullet flex-col !items-start gap-2">
+              <dt class="text-[10px] uppercase tracking-[0.24em] text-white/55">CNPJ do recebedor</dt>
+              <dd class="font-semibold text-white font-variant-numeric">00.000.000/0001-00</dd>
+            </div>
+            <div class="seal-bullet flex-col !items-start gap-2">
+              <dt class="text-[10px] uppercase tracking-[0.24em] text-white/55">Instituições autorizadas</dt>
+              <dd class="font-semibold text-white">MERCADO PAGO · EFÍ · GERENCIANET</dd>
+            </div>
+            <div class="seal-bullet flex-col !items-start gap-2">
+              <dt class="text-[10px] uppercase tracking-[0.24em] text-white/55">Canais oficiais</dt>
+              <dd class="font-semibold text-white">
+                <a href="#" class="inline-flex items-center gap-1 hover:text-fortuno-gold-soft transition-colors">
+                  <i data-lucide="instagram" class="w-4 h-4" aria-hidden="true"></i> @fortuno
+                </a>
+                <span class="text-white/40"> · </span>
+                <a href="#" class="inline-flex items-center gap-1 hover:text-fortuno-gold-soft transition-colors">
+                  <i data-lucide="globe" class="w-4 h-4" aria-hidden="true"></i> fortuno.com.br
+                </a>
+              </dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="relative z-10 mt-12 text-center">
+          <div class="deco-divider">
+            <span class="deco-diamond"></span>
+          </div>
+          <p class="font-display italic text-fortuno-gold-soft" style="font-size: clamp(20px, 2.2vw, 28px);">
+            Fortuno — sua sorte é séria.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       7. CLOSING CTA (dark, ornamentado)
+       ============================================================ -->
+  <section class="closing-cta relative py-20 md:py-28" aria-labelledby="closing-title">
+    <div class="mx-auto max-w-4xl px-6 text-center relative z-10">
+
+      <span class="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.32em] text-fortuno-gold-soft mb-6">
+        <span class="h-px w-8 bg-fortuno-gold-soft"></span>
+        Epílogo
+        <span class="h-px w-8 bg-fortuno-gold-soft"></span>
+      </span>
+
+      <h2 id="closing-title"
+          class="font-display italic leading-[1.02]"
+          style="font-size: clamp(40px, 6vw, 72px); letter-spacing: -0.02em; color: var(--fortuno-offwhite);">
+        Pronto para entrar <br class="hidden md:block" />
+        <span class="text-fortuno-gold-soft">no jogo?</span>
+      </h2>
+
+      <p class="mt-7 text-fortuno-offwhite/75 text-[17px] md:text-[18px] leading-relaxed max-w-xl mx-auto">
+        Confira os sorteios em andamento e escolha a sua sorte. Cada bilhete
+        tem rastro — inclusive o seu.
+      </p>
+
+      <div class="mt-10 md:mt-12 flex flex-wrap justify-center gap-4">
+        <a href="/sorteios" class="cta-primary" style="padding: 17px 32px; font-size: 16px;">
+          <i data-lucide="ticket"></i>
+          Ver sorteios
+          <i data-lucide="arrow-right"></i>
+        </a>
+        <a href="/fale-conosco" class="cta-ghost" style="padding: 16px 28px; font-size: 15px;">
+          <i data-lucide="message-circle"></i>
+          Fale conosco
+        </a>
+      </div>
+
+      <!-- Deco bottom divider -->
+      <div class="mt-14 flex items-center gap-4 justify-center">
+        <span class="h-px w-24 bg-gradient-to-r from-transparent to-fortuno-gold-soft/55"></span>
+        <span class="w-2.5 h-2.5 rotate-45 bg-fortuno-gold-intense" style="box-shadow: 0 0 12px rgba(212,175,55,0.6);"></span>
+        <span class="h-px w-24 bg-gradient-to-l from-transparent to-fortuno-gold-soft/55"></span>
+      </div>
+      <p class="mt-5 font-display italic text-fortuno-gold-soft/85" style="font-size: clamp(15px, 1.4vw, 18px);">
+        Sua sorte é séria.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER (placeholder do Footer.tsx real — AuthenticatedShell)
+       ============================================================ -->
+  <footer class="bg-[#051610] border-t border-fortuno-gold-soft/10 text-fortuno-offwhite">
+    <div class="mx-auto max-w-7xl px-6 py-12">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg grid place-items-center"
+               style="background: radial-gradient(120% 120% at 30% 20%, #f0d27a 0%, #c79b41 45%, #8a6a25 100%); color: #0b0b0b;">
+            <span class="font-display italic font-extrabold leading-none">F</span>
+          </div>
+          <span class="font-display text-lg">Fortuno</span>
+          <span class="text-fortuno-offwhite/40 text-xs ml-2">Sua sorte é séria.</span>
+        </div>
+        <nav class="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-fortuno-offwhite/60">
+          <a href="/" class="hover:text-fortuno-gold-soft transition-colors">Início</a>
+          <a href="/sorteios" class="hover:text-fortuno-gold-soft transition-colors">Sorteios</a>
+          <a href="/quem-somos" class="hover:text-fortuno-gold-soft transition-colors">Quem somos</a>
+          <a href="/fale-conosco" class="hover:text-fortuno-gold-soft transition-colors">Fale conosco</a>
+        </nav>
+      </div>
+      <div class="mt-8 h-px" style="background: var(--gold-divider);"></div>
+      <p class="mt-6 text-[11px] text-fortuno-offwhite/40">
+        © 2026 FORTUNO SORTEIOS E PREMIAÇÕES LTDA · CNPJ 00.000.000/0001-00
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
