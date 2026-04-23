@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useLottery } from '@/hooks/useLottery';
 import { useCheckout } from '@/hooks/useCheckout';
@@ -6,11 +6,20 @@ import { useLotteryImage } from '@/hooks/useLotteryImage';
 import { useLotteryCombo } from '@/hooks/useLotteryCombo';
 import { useRaffle } from '@/hooks/useRaffle';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
-import { LotteryImageCarousel } from '@/components/lottery/LotteryImageCarousel';
-import { MarkdownView } from '@/components/lottery/MarkdownView';
-import { ComboSelector } from '@/components/lottery/ComboSelector';
-import { RulesPdfButton } from '@/components/lottery/RulesPdfButton';
-import { formatBRL } from '@/utils/currency';
+import { LotteryHero } from '@/components/lottery/LotteryHero';
+import { LotteryDescription } from '@/components/lottery/LotteryDescription';
+import { RaffleTimeline } from '@/components/lottery/RaffleTimeline';
+import { PrizesGrid } from '@/components/lottery/PrizesGrid';
+import { CheckoutPanel } from '@/components/lottery/CheckoutPanel';
+import { StickyBuyBar } from '@/components/lottery/StickyBuyBar';
+import { RulesAndPolicyModal } from '@/components/lottery/modals/RulesAndPolicyModal';
+import { RaffleDetailModal } from '@/components/lottery/modals/RaffleDetailModal';
+
+type ModalState =
+  | { type: 'none' }
+  | { type: 'rules' }
+  | { type: 'privacy' }
+  | { type: 'raffle'; raffleId: number };
 
 export const LotteryDetailPage = (): JSX.Element => {
   const { slug } = useParams();
@@ -20,7 +29,9 @@ export const LotteryDetailPage = (): JSX.Element => {
   const { raffles, loadByLottery: loadRaffles } = useRaffle();
   const checkout = useCheckout();
   const navigate = useNavigate();
+
   const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
+  const [modal, setModal] = useState<ModalState>({ type: 'none' });
 
   useEffect(() => {
     if (slug) void loadBySlug(slug);
@@ -33,6 +44,18 @@ export const LotteryDetailPage = (): JSX.Element => {
     void loadRaffles(currentLottery.lotteryId);
   }, [currentLottery?.lotteryId, loadImages, loadCombos, loadRaffles]);
 
+  const sortedRaffles = useMemo(
+    () =>
+      [...raffles].sort(
+        (a, b) =>
+          new Date(a.raffleDatetime).getTime() -
+          new Date(b.raffleDatetime).getTime(),
+      ),
+    [raffles],
+  );
+
+  const nextRaffle = sortedRaffles[0];
+
   if (loading || !currentLottery) {
     return <LoadingSpinner label="Carregando sorteio..." />;
   }
@@ -43,93 +66,94 @@ export const LotteryDetailPage = (): JSX.Element => {
     navigate(`/checkout/${currentLottery.lotteryId}`);
   };
 
+  const openRaffle = (raffleId: number): void =>
+    setModal({ type: 'raffle', raffleId });
+  const closeModal = (): void => setModal({ type: 'none' });
+
+  const activeRaffleIndex =
+    modal.type === 'raffle'
+      ? sortedRaffles.findIndex((r) => r.raffleId === modal.raffleId)
+      : -1;
+  const activeRaffle =
+    activeRaffleIndex >= 0 ? sortedRaffles[activeRaffleIndex] : undefined;
+
   return (
-    <section className="mx-auto max-w-7xl px-4 py-10">
-      <div className="grid gap-10 lg:grid-cols-2">
-        <div>
-          <LotteryImageCarousel images={images} />
+    <div className="min-h-screen bg-dash-page text-fortuno-black">
+      <LotteryHero
+        lottery={currentLottery}
+        images={images}
+        nextRaffleAt={nextRaffle?.raffleDatetime}
+        onOpenRules={
+          currentLottery.rulesMd ? () => setModal({ type: 'rules' }) : undefined
+        }
+        onOpenPrivacy={
+          currentLottery.privacyPolicyMd
+            ? () => setModal({ type: 'privacy' })
+            : undefined
+        }
+      />
+
+      <section className="relative z-10 mx-auto max-w-7xl px-4 md:px-6 pb-12">
+        <div className="flex flex-col gap-10">
+          {currentLottery.descriptionMd && (
+            <LotteryDescription
+              markdown={currentLottery.descriptionMd}
+              title={currentLottery.name}
+            />
+          )}
+
+          {sortedRaffles.length > 0 && (
+            <RaffleTimeline raffles={sortedRaffles} onOpenRaffle={openRaffle} />
+          )}
+
+          <CheckoutPanel
+            combos={combos}
+            ticketPrice={currentLottery.ticketPrice}
+            minQty={currentLottery.ticketMin}
+            maxQty={currentLottery.ticketMax}
+            initialQuantity={selectedQuantity}
+            onChange={setSelectedQuantity}
+            onBuy={startCheckout}
+          />
+
+          {sortedRaffles.length > 0 && (
+            <PrizesGrid raffles={sortedRaffles} onOpenRaffle={openRaffle} />
+          )}
         </div>
+      </section>
 
-        <div className="space-y-4">
-          <h1 className="font-display text-4xl text-fortuno-black">{currentLottery.name}</h1>
-          <p className="text-fortuno-black/70">
-            Prêmio total:{' '}
-            <strong className="text-fortuno-gold-intense">
-              {formatBRL(currentLottery.totalPrizeValue)}
-            </strong>
-          </p>
-          <p className="text-fortuno-black/70">
-            Cada bilhete:{' '}
-            <strong>{formatBRL(currentLottery.ticketPrice)}</strong>
-          </p>
-          <p className="text-sm text-fortuno-black/60">
-            Mínimo {currentLottery.ticketMin} · Máximo{' '}
-            {currentLottery.ticketMax > 0 ? currentLottery.ticketMax : 'sem limite'} por compra
-          </p>
+      <StickyBuyBar
+        quantity={selectedQuantity}
+        ticketPrice={currentLottery.ticketPrice}
+        combos={combos}
+        onBuy={startCheckout}
+      />
 
-          <div className="flex flex-wrap gap-3 pt-2">
-            {currentLottery.rulesMd ? (
-              <RulesPdfButton
-                title="Regras"
-                markdown={currentLottery.rulesMd}
-                filename={`${currentLottery.slug}-regras`}
-              />
-            ) : null}
-            {currentLottery.privacyPolicyMd ? (
-              <RulesPdfButton
-                title="Política de Privacidade"
-                markdown={currentLottery.privacyPolicyMd}
-                filename={`${currentLottery.slug}-politica`}
-              />
-            ) : null}
-          </div>
-        </div>
-      </div>
-
-      {currentLottery.descriptionMd ? (
-        <div className="mt-10 rounded-xl bg-white p-6 shadow-sm">
-          <MarkdownView content={currentLottery.descriptionMd} />
-        </div>
-      ) : null}
-
-      {raffles.length > 0 ? (
-        <div className="mt-10">
-          <h2 className="mb-4 font-display text-2xl text-fortuno-black">Sorteios</h2>
-          <ul className="divide-y rounded-xl border bg-white">
-            {raffles.map((r) => (
-              <li key={r.raffleId} className="flex items-center justify-between p-4">
-                <div>
-                  <p className="font-semibold text-fortuno-black">{r.name}</p>
-                  <p className="text-xs text-fortuno-black/60">
-                    {new Date(r.raffleDatetime).toLocaleString('pt-BR')}
-                  </p>
-                </div>
-                <span className="text-xs uppercase tracking-wider text-fortuno-gold-intense">
-                  {r.awards.length} {r.awards.length === 1 ? 'prêmio' : 'prêmios'}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
-
-      <div className="mt-10">
-        <h2 className="mb-4 font-display text-2xl text-fortuno-black">Escolha seu pacote</h2>
-        <ComboSelector
-          combos={combos}
-          ticketPrice={currentLottery.ticketPrice}
-          minQty={currentLottery.ticketMin}
-          maxQty={currentLottery.ticketMax}
-          initialQuantity={selectedQuantity}
-          onChange={(q) => setSelectedQuantity(q)}
+      {modal.type === 'rules' && currentLottery.rulesMd && (
+        <RulesAndPolicyModal
+          mode="rules"
+          markdown={currentLottery.rulesMd}
+          pdfFilename={`${currentLottery.slug}-regras`}
+          lotteryName={currentLottery.name}
+          onClose={closeModal}
         />
-      </div>
-
-      <div className="mt-10 flex justify-center">
-        <button type="button" onClick={startCheckout} className="btn-primary text-lg">
-          Comprar {selectedQuantity} {selectedQuantity === 1 ? 'bilhete' : 'bilhetes'}
-        </button>
-      </div>
-    </section>
+      )}
+      {modal.type === 'privacy' && currentLottery.privacyPolicyMd && (
+        <RulesAndPolicyModal
+          mode="privacy"
+          markdown={currentLottery.privacyPolicyMd}
+          pdfFilename={`${currentLottery.slug}-politica`}
+          lotteryName={currentLottery.name}
+          onClose={closeModal}
+        />
+      )}
+      {modal.type === 'raffle' && activeRaffle && (
+        <RaffleDetailModal
+          raffle={activeRaffle}
+          index={activeRaffleIndex + 1}
+          onClose={closeModal}
+        />
+      )}
+    </div>
   );
 };

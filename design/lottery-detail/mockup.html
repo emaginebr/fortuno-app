@@ -1,0 +1,1970 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fortuno — Sorteio (detalhe público) · Editorial Casino Noir</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700&display=swap"
+    rel="stylesheet"
+  />
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            fortuno: {
+              green: { deep: '#0a2a20', elegant: '#134436' },
+              gold:  { intense: '#b8963f', soft: '#d4af37' },
+              black: '#0b0b0b',
+              offwhite: '#ece8e1',
+              paper: '#f7f3ec',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['"Playfair Display"', 'Georgia', 'serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* ===========================================================
+       LOTTERY DETAIL — Editorial Casino Noir
+       Reusa tokens do wizard / home / dashboard.
+       Body claro (offwhite/paper). Acentos ouro. Modais paper +
+       borda ouro com a mesma linguagem do UserMenu dropdown.
+       =========================================================== */
+    :root {
+      /* Paleta marca */
+      --fortuno-green-deep:    #0a2a20;
+      --fortuno-green-elegant: #134436;
+      --fortuno-gold-intense:  #b8963f;
+      --fortuno-gold-soft:     #d4af37;
+      --fortuno-black:         #0b0b0b;
+      --fortuno-offwhite:      #ece8e1;
+
+      /* Body claro (mesma fórmula do dashboard) */
+      --dash-bg-page:
+        radial-gradient(1000px 500px at 80% -10%, rgba(184,150,63,0.06), transparent 65%),
+        radial-gradient(800px 500px at -10% 110%, rgba(19,68,54,0.04), transparent 55%),
+        linear-gradient(180deg, #f7f3ec 0%, #f1ece3 60%, #ece8e1 100%);
+
+      /* Topbar global (igual dashboard) */
+      --topbar-bg:
+        linear-gradient(180deg, #061d17 0%, #0a2a20 100%);
+      --topbar-border-bottom: linear-gradient(90deg,
+        transparent 0%,
+        rgba(212,175,55,0.55) 20%,
+        rgba(212,175,55,0.75) 50%,
+        rgba(212,175,55,0.55) 80%,
+        transparent 100%);
+      --nav-item-active-bg:     rgba(212,175,55,0.10);
+      --nav-item-active-border: rgba(212,175,55,0.35);
+      --user-trigger-bg:           rgba(236,232,225,0.04);
+      --user-trigger-bg-hover:     rgba(212,175,55,0.10);
+      --user-trigger-border:       rgba(212,175,55,0.28);
+      --user-trigger-border-hover: rgba(212,175,55,0.55);
+
+      /* Footer band (igual dashboard) */
+      --dash-footer-band-bg: linear-gradient(180deg, #0a2a20 0%, #0f3a2d 100%);
+
+      /* Cards "papel" (igual dashboard) */
+      --card-paper-bg:           #ffffff;
+      --card-paper-border:       rgba(11,11,11,0.08);
+      --card-paper-border-hover: rgba(184,150,63,0.45);
+      --shadow-paper:
+        0 1px 0 rgba(255,255,255,0.8) inset,
+        0 10px 20px -16px rgba(10,42,32,0.18),
+        0 3px 6px -3px rgba(184,150,63,0.08);
+      --shadow-paper-hover:
+        0 1px 0 rgba(255,255,255,0.9) inset,
+        0 18px 34px -20px rgba(10,42,32,0.26),
+        0 6px 12px -4px rgba(184,150,63,0.28);
+
+      /* Linha ouro 1px no topo de card (igual dashboard) */
+      --card-gold-bar: linear-gradient(90deg,
+        rgba(212,175,55,0) 0%,
+        rgba(212,175,55,0.85) 30%,
+        rgba(19,68,54,0.85) 70%,
+        rgba(212,175,55,0) 100%);
+
+      /* Divisores ouro (igual home/dashboard) */
+      --gold-divider:      linear-gradient(90deg, transparent, rgba(212,175,55,0.55), transparent);
+      --gold-divider-soft: linear-gradient(90deg, transparent, rgba(184,150,63,0.28), transparent);
+
+      /* Numeral ouro stat (igual dashboard) */
+      --stat-numeral-gradient:
+        linear-gradient(180deg,
+          var(--fortuno-gold-soft) 0%,
+          var(--fortuno-gold-intense) 55%,
+          var(--fortuno-green-elegant) 130%);
+
+      /* Badge "ABERTO" (reuso da home) */
+      --badge-live-bg:     rgba(212,175,55,0.12);
+      --badge-live-border: rgba(212,175,55,0.45);
+      --badge-live-dot:    #e7c05c;
+
+      /* ============================================================
+         NOVOS — específicos da lottery-detail
+         ============================================================ */
+
+      /* PALCO COMPACTO (hero da página de detalhe) — variação compacta
+         do --hero-stage-* da home: aspect 21:9, sombra 25% menor,
+         filete interno mais sutil. */
+      --stage-compact-bg:       #050f0c;
+      --stage-compact-border:   rgba(212,175,55,0.30);
+      --stage-compact-frame:    rgba(212,175,55,0.18);
+      --shadow-stage-compact:
+        0 1px 0 rgba(255,255,255,0.05) inset,
+        0 36px 76px -32px rgba(0,0,0,0.78),
+        0 18px 36px -16px rgba(0,0,0,0.55);
+      --stage-compact-overlay:
+        linear-gradient(180deg,
+          rgba(7,32,26,0.10) 0%,
+          rgba(6,21,17,0.05) 35%,
+          rgba(6,21,17,0.55) 70%,
+          rgba(5,15,12,0.92) 100%),
+        radial-gradient(120% 90% at 50% 50%, transparent 50%, rgba(0,0,0,0.55) 100%);
+      --stage-compact-grain:
+        radial-gradient(rgba(236,232,225,0.6) 1px, transparent 1px);
+
+      /* Pílula ouro outline (CTAs Regras/Política — hero) */
+      --pill-outline-bg:           rgba(7,32,26,0.55);
+      --pill-outline-bg-hover:     rgba(7,32,26,0.75);
+      --pill-outline-border:       rgba(212,175,55,0.45);
+      --pill-outline-border-hover: rgba(212,175,55,0.75);
+
+      /* RECIBO (checkout panel) — superfície papel + linhas ornamentais ouro */
+      --receipt-bg:       #fbf7ee;
+      --receipt-border:   rgba(184,150,63,0.40);
+      --receipt-shadow:
+        0 1px 0 rgba(255,255,255,0.85) inset,
+        0 14px 28px -18px rgba(10,42,32,0.22),
+        0 5px 10px -4px rgba(184,150,63,0.18);
+      --receipt-divider:
+        repeating-linear-gradient(90deg,
+          rgba(184,150,63,0.55) 0 5px,
+          transparent 5px 9px);
+      --receipt-corner: rgba(184,150,63,0.55);
+
+      /* COMBO PACK CARD (Bronze/Prata/Ouro) — variação clara do
+         "metal-casino" da home: gradient suave + selo ouro discreto */
+      --combo-card-bg:
+        linear-gradient(180deg, #ffffff 0%, #fbf7ee 100%);
+      --combo-card-border:        rgba(184,150,63,0.30);
+      --combo-card-border-active: var(--fortuno-gold-intense);
+      --combo-card-shadow:
+        0 1px 0 rgba(255,255,255,0.9) inset,
+        0 8px 18px -14px rgba(10,42,32,0.20),
+        0 2px 6px -2px rgba(184,150,63,0.10);
+      --combo-card-shadow-hover:
+        0 1px 0 rgba(255,255,255,0.95) inset,
+        0 16px 30px -18px rgba(10,42,32,0.30),
+        0 6px 12px -4px rgba(184,150,63,0.30);
+      --combo-active-ring: 0 0 0 3px rgba(212,175,55,0.45);
+
+      /* PRIZE BADGE (numeral de posição "1º LUGAR") */
+      --prize-badge-bg:
+        linear-gradient(180deg, #fff6d6 0%, #f0e3b8 100%);
+      --prize-badge-border: rgba(184,150,63,0.55);
+
+      /* MODAL — paper + borda ouro + sombra noir
+         (mesma linguagem do dropdown do UserMenu, escalada) */
+      --modal-bg:      #fbf7ee;
+      --modal-border:  rgba(184,150,63,0.45);
+      --modal-shadow:
+        0 2px 0 rgba(255,255,255,0.6) inset,
+        0 50px 100px -30px rgba(10,42,32,0.55),
+        0 24px 40px -12px rgba(184,150,63,0.28),
+        0 0 0 1px rgba(184,150,63,0.10);
+      --modal-overlay: rgba(5,15,12,0.62);
+      --modal-divider: linear-gradient(90deg,
+        transparent,
+        rgba(184,150,63,0.35) 15%,
+        rgba(184,150,63,0.55) 50%,
+        rgba(184,150,63,0.35) 85%,
+        transparent);
+
+      /* STICKY CTA (rodapé do checkout em mobile) */
+      --sticky-cta-bg:
+        linear-gradient(180deg, rgba(251,247,238,0.92), rgba(251,247,238,0.98));
+      --sticky-cta-border: rgba(184,150,63,0.35);
+
+      --duration-fast: 160ms;
+      --duration-base: 240ms;
+      --duration-slow: 420ms;
+      --easing-out:    cubic-bezier(0.22, 1, 0.36, 1);
+      --easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--dash-bg-page);
+      color: var(--fortuno-black);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      pointer-events: none;
+      opacity: 0.04;
+      mix-blend-mode: multiply;
+      background-image: radial-gradient(rgba(10,42,32,0.5) 1px, transparent 1px);
+      background-size: 3px 3px;
+      z-index: 0;
+    }
+
+    .font-display { font-family: 'Playfair Display', Georgia, serif; letter-spacing: -0.01em; }
+
+    /* ===========================================================
+       TOPBAR (placeholder do Header.tsx global) — igual dashboard
+       =========================================================== */
+    .site-topbar {
+      background: var(--topbar-bg);
+      color: var(--fortuno-offwhite);
+      position: sticky; top: 0; z-index: 40;
+      isolation: isolate;
+    }
+    .site-topbar::after {
+      content: '';
+      position: absolute; left: 0; right: 0; bottom: 0;
+      height: 1px;
+      background: var(--topbar-border-bottom);
+    }
+    .site-wordmark {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-style: italic;
+      font-size: 22px; letter-spacing: -0.01em;
+      color: var(--fortuno-offwhite);
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .site-wordmark .dot-gold {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--fortuno-gold-soft);
+      box-shadow: 0 0 8px rgba(212,175,55,0.65);
+    }
+    .site-nav-link {
+      position: relative;
+      font-size: 13px; font-weight: 600;
+      letter-spacing: 0.02em;
+      color: rgba(236,232,225,0.78);
+      padding: 8px 14px; border-radius: 999px;
+      transition: color var(--duration-fast) var(--easing-out),
+                  background-color var(--duration-fast) var(--easing-out);
+    }
+    .site-nav-link:hover { color: var(--fortuno-offwhite); }
+    .site-nav-link.is-active {
+      color: var(--fortuno-gold-soft);
+      background: var(--nav-item-active-bg);
+      border: 1px solid var(--nav-item-active-border);
+      padding: 7px 13px;
+    }
+    .site-nav-link.is-active::after {
+      content: '';
+      position: absolute;
+      left: 50%; bottom: -6px;
+      transform: translateX(-50%);
+      width: 18px; height: 2px;
+      background: var(--fortuno-gold-soft);
+      border-radius: 2px;
+      box-shadow: 0 0 6px rgba(212,175,55,0.6);
+    }
+    .user-trigger {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 5px 12px 5px 5px;
+      background: var(--user-trigger-bg);
+      border: 1px solid var(--user-trigger-border);
+      border-radius: 999px;
+      color: var(--fortuno-offwhite);
+      min-height: 44px;
+    }
+    .user-trigger .user-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(145deg, #1c5b48, #0a2a20);
+      border: 1.5px solid rgba(212,175,55,0.45);
+      display: grid; place-items: center;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-style: italic;
+      color: var(--fortuno-gold-soft);
+      font-size: 14px;
+    }
+
+    /* ===========================================================
+       HERO COMPACTO — palco wide (16:9 / 21:9) do sorteio
+       =========================================================== */
+    .hero-stage-compact {
+      position: relative;
+      overflow: hidden;
+      border-radius: 22px;
+      border: 1px solid var(--stage-compact-border);
+      background: var(--stage-compact-bg);
+      box-shadow: var(--shadow-stage-compact);
+    }
+    .hero-stage-compact .stage-image {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+    .hero-stage-compact .stage-overlay {
+      position: absolute; inset: 0;
+      background: var(--stage-compact-overlay);
+      pointer-events: none; z-index: 1;
+    }
+    .hero-stage-compact .stage-grain {
+      position: absolute; inset: 0;
+      background: var(--stage-compact-grain);
+      background-size: 3px 3px;
+      mix-blend-mode: overlay;
+      opacity: 0.08;
+      pointer-events: none; z-index: 2;
+    }
+    .hero-stage-compact .stage-frame {
+      position: absolute; inset: 10px;
+      border: 1px solid var(--stage-compact-frame);
+      border-radius: 16px;
+      pointer-events: none; z-index: 3;
+    }
+    .hero-stage-compact .stage-caption {
+      position: absolute; inset: auto 0 0 0;
+      padding: clamp(20px, 4vw, 40px);
+      z-index: 4;
+      display: flex; flex-direction: column;
+      gap: 12px;
+      text-shadow: 0 6px 30px rgba(0,0,0,0.65);
+      color: var(--fortuno-offwhite);
+    }
+    .hero-stage-compact .stage-toprow {
+      position: absolute; top: 16px; left: 16px; right: 16px;
+      z-index: 4;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      gap: 12px; flex-wrap: wrap;
+    }
+
+    /* Badge "ABERTO" (reuso home) */
+    .badge-live {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 999px;
+      background: var(--badge-live-bg);
+      border: 1px solid var(--badge-live-border);
+      color: var(--fortuno-gold-soft);
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      backdrop-filter: blur(8px);
+    }
+    .badge-live .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--badge-live-dot);
+      animation: live-pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes live-pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(212,175,55,0.65); }
+      70%  { box-shadow: 0 0 0 8px rgba(212,175,55,0); }
+      100% { box-shadow: 0 0 0 0 rgba(212,175,55,0); }
+    }
+
+    /* Pílulas ouro outline (Regras / Política) */
+    .pill-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 16px; border-radius: 999px;
+      background: var(--pill-outline-bg);
+      border: 1px solid var(--pill-outline-border);
+      color: var(--fortuno-gold-soft);
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 0.04em;
+      backdrop-filter: blur(8px);
+      transition: all var(--duration-fast) var(--easing-out);
+      min-height: 44px; cursor: pointer;
+    }
+    .pill-outline:hover {
+      background: var(--pill-outline-bg-hover);
+      border-color: var(--pill-outline-border-hover);
+      transform: translateY(-1px);
+    }
+    .pill-outline:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.55);
+    }
+    .pill-outline i { width: 14px; height: 14px; }
+
+    /* Numeral ouro do prêmio (sob a imagem, dentro do palco) */
+    .prize-numeral {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic; font-weight: 800;
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+      background: linear-gradient(180deg,
+        var(--fortuno-gold-soft) 0%,
+        var(--fortuno-gold-intense) 60%,
+        rgba(184,150,63,0.4) 110%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-size: clamp(40px, 6vw, 72px);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Countdown (variação compacta — 4 células inline) */
+    .countdown {
+      display: inline-flex; align-items: stretch; gap: 8px;
+      padding: 8px 12px; border-radius: 12px;
+      background: rgba(7,32,26,0.55);
+      border: 1px solid rgba(212,175,55,0.30);
+      backdrop-filter: blur(8px);
+    }
+    .countdown-cell {
+      display: flex; flex-direction: column; align-items: center;
+      min-width: 42px;
+    }
+    .countdown-num {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-style: italic;
+      font-size: 22px; line-height: 1;
+      color: var(--fortuno-gold-soft);
+      font-variant-numeric: tabular-nums;
+    }
+    .countdown-label {
+      font-size: 8px; font-weight: 600;
+      letter-spacing: 0.20em; text-transform: uppercase;
+      color: rgba(236,232,225,0.65);
+      margin-top: 4px;
+    }
+    .countdown-sep {
+      align-self: center;
+      color: var(--fortuno-gold-soft);
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic; font-weight: 700;
+      font-size: 18px; opacity: 0.45;
+    }
+
+    /* ===========================================================
+       DESCRIÇÃO EDITORIAL — capitular + divisores ouro
+       =========================================================== */
+    .editorial {
+      background: var(--card-paper-bg);
+      border: 1px solid var(--card-paper-border);
+      border-radius: 20px;
+      box-shadow: var(--shadow-paper);
+      padding: clamp(28px, 4vw, 48px);
+      position: relative;
+    }
+    .editorial::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--card-gold-bar);
+    }
+    .editorial h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: clamp(20px, 2vw, 26px);
+      color: var(--fortuno-black);
+      margin: 28px 0 14px;
+      letter-spacing: -0.01em;
+    }
+    .editorial h3:first-child { margin-top: 0; }
+    .editorial p {
+      font-size: 15px;
+      line-height: 1.75;
+      color: rgba(11,11,11,0.78);
+      margin-bottom: 14px;
+    }
+    .editorial p.lede::first-letter {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 800; font-style: italic;
+      font-size: 4.6em;
+      float: left;
+      line-height: 0.85;
+      padding: 4px 12px 0 0;
+      color: var(--fortuno-gold-intense);
+      background: linear-gradient(180deg,
+        var(--fortuno-gold-soft),
+        var(--fortuno-gold-intense));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .editorial-divider {
+      height: 1px;
+      background: var(--gold-divider-soft);
+      margin: 28px auto;
+      width: 60%;
+      position: relative;
+    }
+    .editorial-divider::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) rotate(45deg);
+      width: 8px; height: 8px;
+      border: 1px solid var(--fortuno-gold-intense);
+      background: var(--card-paper-bg);
+    }
+    .editorial ul {
+      list-style: none; padding: 0; margin: 0 0 16px;
+    }
+    .editorial ul li {
+      padding-left: 22px;
+      position: relative;
+      font-size: 14px;
+      line-height: 1.7;
+      color: rgba(11,11,11,0.78);
+      margin-bottom: 8px;
+    }
+    .editorial ul li::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 11px;
+      width: 6px; height: 6px;
+      transform: rotate(45deg);
+      background: var(--fortuno-gold-intense);
+    }
+
+    /* ===========================================================
+       SEÇÃO TÍTULO (eyebrow + h2 italic acento)
+       =========================================================== */
+    .section-title {
+      display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .eyebrow {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.26em; text-transform: uppercase;
+      color: rgba(11,11,11,0.55);
+    }
+    .eyebrow.gold { color: var(--fortuno-gold-intense); }
+    .h2-display {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: clamp(24px, 2.6vw, 32px);
+      color: var(--fortuno-black);
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+    }
+    .h2-display .accent { font-style: italic; color: var(--fortuno-gold-intense); }
+
+    /* ===========================================================
+       RAFFLE TIMELINE — cards-raffles clicáveis
+       =========================================================== */
+    .raffle-card {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 18px;
+      padding: 18px 22px;
+      background: var(--card-paper-bg);
+      border: 1px solid var(--card-paper-border);
+      border-radius: 16px;
+      box-shadow: var(--shadow-paper);
+      transition: all var(--duration-base) var(--easing-spring);
+      cursor: pointer;
+      width: 100%; text-align: left;
+      position: relative;
+    }
+    .raffle-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--card-gold-bar);
+      opacity: 0.7;
+    }
+    .raffle-card:hover {
+      border-color: var(--card-paper-border-hover);
+      box-shadow: var(--shadow-paper-hover);
+      transform: translateY(-2px);
+    }
+    .raffle-card:focus-visible {
+      outline: none;
+      box-shadow: var(--shadow-paper-hover), 0 0 0 3px rgba(212,175,55,0.55);
+    }
+    .raffle-marker {
+      position: relative;
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background:
+        radial-gradient(120% 120% at 30% 20%, rgba(212,175,55,0.95), rgba(184,150,63,0.55) 60%, rgba(7,32,26,0.55) 100%);
+      border: 2px solid rgba(255,255,255,0.55);
+      box-shadow:
+        0 0 0 1px rgba(184,150,63,0.45),
+        0 6px 14px -4px rgba(184,150,63,0.45),
+        inset 0 1px 0 rgba(255,255,255,0.5);
+      display: grid; place-items: center;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 800; font-style: italic;
+      font-size: 18px;
+      color: var(--fortuno-black);
+      letter-spacing: -0.01em;
+    }
+    .raffle-card:hover .raffle-marker {
+      transform: rotate(-4deg) scale(1.05);
+      transition: transform var(--duration-base) var(--easing-spring);
+    }
+    .raffle-name {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--fortuno-black);
+      letter-spacing: -0.01em;
+    }
+    .raffle-meta {
+      display: flex; flex-wrap: wrap; gap: 14px;
+      font-size: 12px; color: rgba(11,11,11,0.62);
+      margin-top: 4px;
+      align-items: center;
+    }
+    .raffle-meta span { display: inline-flex; align-items: center; gap: 6px; }
+    .raffle-meta i { width: 13px; height: 13px; color: var(--fortuno-gold-intense); }
+    .raffle-card .open-arrow {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1px solid rgba(184,150,63,0.35);
+      background: rgba(184,150,63,0.08);
+      display: grid; place-items: center;
+      color: var(--fortuno-gold-intense);
+      transition: all var(--duration-fast) var(--easing-spring);
+      flex-shrink: 0;
+    }
+    .raffle-card:hover .open-arrow {
+      background: var(--fortuno-gold-soft);
+      color: var(--fortuno-black);
+      transform: rotate(-45deg);
+    }
+
+    /* ===========================================================
+       PRIZE CARD — grid de prêmios cross-raffle
+       =========================================================== */
+    .prize-card {
+      display: flex; flex-direction: column;
+      gap: 12px;
+      padding: 18px;
+      background: var(--card-paper-bg);
+      border: 1px solid var(--card-paper-border);
+      border-radius: 16px;
+      box-shadow: var(--shadow-paper);
+      transition: all var(--duration-base) var(--easing-spring);
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      position: relative; overflow: hidden;
+      min-height: 168px;
+    }
+    .prize-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--card-gold-bar);
+      opacity: 0.7;
+    }
+    .prize-card:hover {
+      border-color: var(--card-paper-border-hover);
+      box-shadow: var(--shadow-paper-hover);
+      transform: translateY(-2px);
+    }
+    .prize-card:focus-visible {
+      outline: none;
+      box-shadow: var(--shadow-paper-hover), 0 0 0 3px rgba(212,175,55,0.55);
+    }
+    .prize-position {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 12px; border-radius: 999px;
+      background: var(--prize-badge-bg);
+      border: 1px solid var(--prize-badge-border);
+      align-self: flex-start;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 800; font-style: italic;
+      font-size: 12px; line-height: 1;
+      letter-spacing: 0.04em;
+      color: var(--fortuno-green-deep);
+    }
+    .prize-position .ord {
+      font-size: 16px;
+      background: linear-gradient(180deg,
+        var(--fortuno-gold-soft),
+        var(--fortuno-gold-intense));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .prize-description {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--fortuno-black);
+      font-weight: 600;
+      flex: 1;
+    }
+    .prize-source {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 10px; border-radius: 999px;
+      background: rgba(19,68,54,0.06);
+      border: 1px solid rgba(19,68,54,0.12);
+      font-size: 10px;
+      color: var(--fortuno-green-elegant);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      align-self: flex-start;
+    }
+    .prize-source i { width: 11px; height: 11px; }
+
+    /* ===========================================================
+       COMBO PACK CARD (Bronze / Prata / Ouro)
+       =========================================================== */
+    .combo-card {
+      display: flex; flex-direction: column;
+      gap: 12px;
+      padding: 22px;
+      background: var(--combo-card-bg);
+      border: 1.5px solid var(--combo-card-border);
+      border-radius: 18px;
+      box-shadow: var(--combo-card-shadow);
+      transition: all var(--duration-base) var(--easing-spring);
+      cursor: pointer;
+      text-align: left;
+      position: relative; overflow: hidden;
+    }
+    .combo-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--combo-card-shadow-hover);
+    }
+    .combo-card.is-active {
+      border-color: var(--combo-card-border-active);
+      box-shadow: var(--combo-card-shadow-hover), var(--combo-active-ring);
+      animation: combo-ring-pulse 2.4s ease-in-out infinite;
+    }
+    @keyframes combo-ring-pulse {
+      0%, 100% { box-shadow: var(--combo-card-shadow-hover), 0 0 0 3px rgba(212,175,55,0.45); }
+      50%      { box-shadow: var(--combo-card-shadow-hover), 0 0 0 5px rgba(212,175,55,0.20); }
+    }
+    .combo-card:focus-visible {
+      outline: none;
+      box-shadow: var(--combo-card-shadow-hover), 0 0 0 3px rgba(212,175,55,0.55);
+    }
+    .combo-medal {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background:
+        radial-gradient(120% 120% at 30% 20%, rgba(212,175,55,0.95), rgba(184,150,63,0.55) 60%, rgba(7,32,26,0.55) 100%);
+      border: 2px solid rgba(255,255,255,0.55);
+      box-shadow:
+        0 0 0 1px rgba(184,150,63,0.45),
+        inset 0 1px 0 rgba(255,255,255,0.5);
+      color: var(--fortuno-black);
+    }
+    .combo-medal.is-bronze {
+      background:
+        radial-gradient(120% 120% at 30% 20%, #d59a6a, #a96f3f 60%, #4d3017 100%);
+    }
+    .combo-medal.is-silver {
+      background:
+        radial-gradient(120% 120% at 30% 20%, #f0f0f0, #b8b8b8 60%, #5a5a5a 100%);
+    }
+    .combo-name {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--fortuno-black);
+      letter-spacing: -0.01em;
+    }
+    .combo-range {
+      font-size: 12px;
+      color: rgba(11,11,11,0.60);
+    }
+    .combo-discount-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 14px; border-radius: 999px;
+      background: var(--fortuno-gold-intense);
+      color: var(--fortuno-black);
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 0.04em;
+      align-self: flex-start;
+      box-shadow: 0 4px 10px -4px rgba(184,150,63,0.55);
+    }
+    .combo-card.is-active .combo-discount-badge {
+      background: var(--fortuno-gold-soft);
+    }
+    .combo-card .check-stamp {
+      position: absolute; top: 14px; right: 14px;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--fortuno-gold-soft);
+      color: var(--fortuno-black);
+      display: grid; place-items: center;
+      opacity: 0;
+      transform: scale(0.6);
+      transition: all var(--duration-base) var(--easing-spring);
+    }
+    .combo-card.is-active .check-stamp {
+      opacity: 1; transform: scale(1);
+    }
+
+    /* ===========================================================
+       CHECKOUT PANEL — wrapper + RECIBO
+       =========================================================== */
+    .checkout-panel {
+      background: var(--card-paper-bg);
+      border: 1px solid var(--card-paper-border);
+      border-radius: 22px;
+      box-shadow: var(--shadow-paper);
+      padding: 24px;
+      position: relative;
+    }
+    .checkout-panel::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--card-gold-bar);
+    }
+    .qty-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: center;
+      padding: 16px;
+      background: rgba(184,150,63,0.06);
+      border: 1px solid rgba(184,150,63,0.18);
+      border-radius: 14px;
+      margin-bottom: 18px;
+    }
+    .qty-row .qty-input {
+      width: 88px; height: 48px;
+      text-align: center;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-style: italic;
+      font-size: 22px;
+      color: var(--fortuno-black);
+      background: var(--card-paper-bg);
+      border: 1.5px solid rgba(184,150,63,0.35);
+      border-radius: 10px;
+      font-variant-numeric: tabular-nums;
+    }
+    .qty-row .qty-input:focus-visible {
+      outline: none;
+      border-color: var(--fortuno-gold-intense);
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.35);
+    }
+    .qty-slider {
+      -webkit-appearance: none; appearance: none;
+      width: 100%; height: 6px;
+      background: linear-gradient(90deg,
+        var(--fortuno-gold-intense) 0%,
+        var(--fortuno-gold-intense) 35%,
+        rgba(184,150,63,0.18) 35%,
+        rgba(184,150,63,0.18) 100%);
+      border-radius: 999px;
+      outline: none;
+    }
+    .qty-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background:
+        radial-gradient(120% 120% at 30% 20%, var(--fortuno-gold-soft), var(--fortuno-gold-intense) 60%, var(--fortuno-green-elegant) 100%);
+      border: 2px solid #fff;
+      box-shadow: 0 2px 6px -1px rgba(184,150,63,0.55);
+      cursor: pointer;
+    }
+
+    /* RECIBO */
+    .receipt {
+      background: var(--receipt-bg);
+      border: 1px dashed var(--receipt-border);
+      border-radius: 14px;
+      padding: 20px 22px;
+      box-shadow: var(--receipt-shadow);
+      position: relative;
+    }
+    .receipt::before,
+    .receipt::after {
+      content: '';
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--dash-bg-page);
+      border: 1px dashed var(--receipt-border);
+    }
+    .receipt::before { left: -8px; }
+    .receipt::after  { right: -8px; }
+
+    .receipt-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 0;
+      font-size: 13px;
+      color: rgba(11,11,11,0.78);
+    }
+    .receipt-row.is-total {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-style: italic;
+      font-size: 24px;
+      color: var(--fortuno-black);
+      letter-spacing: -0.01em;
+    }
+    .receipt-row .label-with-icon {
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .receipt-row .label-with-icon i { width: 14px; height: 14px; color: var(--fortuno-gold-intense); }
+    .receipt-row .discount-value { color: var(--fortuno-green-elegant); font-weight: 700; }
+    .receipt-divider {
+      height: 1px;
+      background: var(--receipt-divider);
+      background-size: 9px 1px;
+      margin: 6px 0;
+    }
+    .receipt-divider.is-strong {
+      height: 1px;
+      background: var(--gold-divider-soft);
+      margin: 12px 0;
+    }
+
+    /* CTA principal (Comprar) */
+    .cta-buy {
+      width: 100%;
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 10px;
+      padding: 16px 22px;
+      border-radius: 999px;
+      background:
+        radial-gradient(120% 120% at 30% 20%, var(--fortuno-gold-soft), var(--fortuno-gold-intense) 80%);
+      color: var(--fortuno-black);
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 800; font-style: italic;
+      font-size: 17px;
+      letter-spacing: -0.01em;
+      box-shadow:
+        0 12px 28px -8px rgba(212,175,55,0.55),
+        0 1px 0 rgba(255,255,255,0.45) inset;
+      transition: all var(--duration-fast) var(--easing-spring);
+      min-height: 56px;
+      border: none; cursor: pointer;
+    }
+    .cta-buy:hover { transform: translateY(-2px); box-shadow: 0 18px 36px -10px rgba(212,175,55,0.6); }
+    .cta-buy:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(212,175,55,0.55), 0 12px 28px -8px rgba(212,175,55,0.55); }
+
+    /* Sticky CTA mobile */
+    .sticky-cta {
+      position: sticky; bottom: 0; left: 0; right: 0;
+      background: var(--sticky-cta-bg);
+      border-top: 1px solid var(--sticky-cta-border);
+      backdrop-filter: blur(10px);
+      padding: 12px 16px calc(env(safe-area-inset-bottom, 12px) + 12px);
+      z-index: 30;
+      box-shadow: 0 -10px 24px -16px rgba(10,42,32,0.25);
+    }
+
+    /* ===========================================================
+       MODAIS — papel + borda ouro
+       (mesma família visual do dropdown UserMenu, escalada)
+       =========================================================== */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: var(--modal-overlay);
+      backdrop-filter: blur(4px);
+      z-index: 80;
+      display: grid; place-items: center;
+      padding: 24px;
+      animation: modal-fade 200ms var(--easing-out);
+    }
+    @keyframes modal-fade { from { opacity: 0; } to { opacity: 1; } }
+
+    .modal {
+      width: 100%;
+      max-width: 640px;
+      max-height: min(86vh, 760px);
+      background: var(--modal-bg);
+      border: 1px solid var(--modal-border);
+      border-radius: 20px;
+      box-shadow: var(--modal-shadow);
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      position: relative;
+      animation: modal-pop 220ms var(--easing-spring) both;
+    }
+    @keyframes modal-pop {
+      from { opacity: 0; transform: scale(0.96) translateY(8px); }
+      to   { opacity: 1; transform: scale(1)    translateY(0); }
+    }
+    .modal::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--card-gold-bar);
+      opacity: 0.95;
+    }
+
+    .modal-header {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 14px;
+      padding: 22px 24px 18px;
+      position: relative;
+    }
+    .modal-header::after {
+      content: '';
+      position: absolute;
+      left: 24px; right: 24px; bottom: 0;
+      height: 1px;
+      background: var(--modal-divider);
+    }
+    .modal-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: rgba(184,150,63,0.12);
+      border: 1px solid rgba(184,150,63,0.32);
+      color: var(--fortuno-gold-intense);
+      display: grid; place-items: center;
+    }
+    .modal-icon i { width: 20px; height: 20px; }
+    .modal-eyebrow {
+      font-size: 9px; font-weight: 600;
+      letter-spacing: 0.26em; text-transform: uppercase;
+      color: var(--fortuno-gold-intense);
+      line-height: 1; margin-bottom: 4px;
+    }
+    .modal-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--fortuno-black);
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+    }
+    .modal-close {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: rgba(11,11,11,0.06);
+      border: 1px solid rgba(11,11,11,0.10);
+      color: rgba(11,11,11,0.65);
+      display: grid; place-items: center;
+      transition: all var(--duration-fast) var(--easing-spring);
+      cursor: pointer;
+    }
+    .modal-close:hover { background: rgba(184,150,63,0.18); color: var(--fortuno-black); transform: rotate(90deg); }
+    .modal-close:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(212,175,55,0.55); }
+
+    .modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 22px 28px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(184,150,63,0.45) transparent;
+    }
+    .modal-body::-webkit-scrollbar { width: 8px; }
+    .modal-body::-webkit-scrollbar-thumb {
+      background: rgba(184,150,63,0.45);
+      border-radius: 999px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      border-top: 1px solid rgba(184,150,63,0.20);
+      background: rgba(184,150,63,0.04);
+      flex-wrap: wrap;
+    }
+
+    /* CTAs do modal */
+    .modal-btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px;
+      border-radius: 999px;
+      background: var(--fortuno-gold-intense);
+      color: var(--fortuno-black);
+      font-weight: 700; font-size: 13px;
+      letter-spacing: 0.02em;
+      box-shadow: 0 8px 20px -8px rgba(212,175,55,0.5), 0 1px 0 rgba(255,255,255,0.35) inset;
+      transition: all var(--duration-fast) var(--easing-spring);
+      min-height: 40px; border: none; cursor: pointer;
+    }
+    .modal-btn-primary:hover { background: var(--fortuno-gold-soft); transform: translateY(-1px); }
+    .modal-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(212,175,55,0.55); }
+    .modal-btn-primary i { width: 14px; height: 14px; }
+
+    .modal-btn-ghost {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--fortuno-green-elegant);
+      border: 1px solid rgba(19,68,54,0.25);
+      font-weight: 600; font-size: 12px;
+      transition: all var(--duration-fast) var(--easing-out);
+      cursor: pointer; min-height: 40px;
+    }
+    .modal-btn-ghost:hover { border-color: var(--fortuno-gold-intense); background: rgba(184,150,63,0.08); }
+
+    /* Modal — markdown body (igual editorial) */
+    .markdown-body h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--fortuno-black);
+      margin: 22px 0 10px;
+      letter-spacing: -0.01em;
+    }
+    .markdown-body h2:first-child { margin-top: 0; }
+    .markdown-body p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: rgba(11,11,11,0.78);
+      margin-bottom: 12px;
+    }
+    .markdown-body ol, .markdown-body ul {
+      padding-left: 22px; margin-bottom: 12px;
+      font-size: 14px; line-height: 1.7;
+      color: rgba(11,11,11,0.78);
+    }
+    .markdown-body strong { color: var(--fortuno-black); font-weight: 700; }
+    .markdown-body .legal-meta {
+      font-size: 11px;
+      color: rgba(11,11,11,0.50);
+      letter-spacing: 0.04em;
+      padding: 8px 12px;
+      background: rgba(184,150,63,0.06);
+      border: 1px solid rgba(184,150,63,0.18);
+      border-radius: 8px;
+      margin-bottom: 18px;
+      display: inline-block;
+    }
+
+    /* Modal RaffleDetail — lista de prêmios numerada */
+    .raffle-detail-prizes {
+      display: flex; flex-direction: column; gap: 10px;
+      margin-top: 14px;
+    }
+    .raffle-detail-prize-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 14px;
+      background: var(--card-paper-bg);
+      border: 1px solid var(--card-paper-border);
+      border-radius: 12px;
+    }
+    .raffle-detail-prize-row .pos-medal {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background:
+        radial-gradient(120% 120% at 30% 20%, var(--fortuno-gold-soft), var(--fortuno-gold-intense) 60%, var(--fortuno-green-elegant) 100%);
+      border: 2px solid rgba(255,255,255,0.55);
+      display: grid; place-items: center;
+      color: var(--fortuno-black);
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 800; font-style: italic;
+      font-size: 14px;
+    }
+    .raffle-detail-prize-row .desc {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--fortuno-black);
+    }
+
+    /* ===========================================================
+       FOOTER BAND (placeholder do Footer global) — igual dashboard
+       =========================================================== */
+    .dash-footer-band {
+      background: var(--dash-footer-band-bg);
+      color: var(--fortuno-offwhite);
+      position: relative;
+      overflow: hidden;
+    }
+    .dash-footer-band::before {
+      content: '';
+      position: absolute; left: 0; right: 0; top: 0;
+      height: 1px;
+      background: var(--gold-divider);
+      opacity: 0.55;
+    }
+    .footer-link {
+      color: rgba(236,232,225,0.70);
+      font-size: 12px; font-weight: 500;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 6px; border-radius: 6px;
+      transition: color var(--duration-fast) var(--easing-out);
+    }
+    .footer-link:hover { color: var(--fortuno-gold-soft); }
+    .footer-link i { width: 13px; height: 13px; }
+    .deco-diamond {
+      width: 8px; height: 8px;
+      transform: rotate(45deg);
+      background: var(--fortuno-gold-soft);
+      box-shadow: 0 0 8px rgba(212,175,55,0.6);
+      display: inline-block;
+    }
+
+    /* ===========================================================
+       Reduced motion
+       =========================================================== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition-duration: 1ms !important;
+      }
+    }
+
+    /* Responsivo */
+    @media (max-width: 1023px) {
+      .layout-grid { grid-template-columns: 1fr !important; }
+    }
+    @media (max-width: 639px) {
+      .raffle-card { grid-template-columns: auto 1fr; }
+      .raffle-card .open-arrow { display: none; }
+      .modal { border-radius: 16px; max-height: 92vh; }
+      .modal-header { padding: 18px 18px 14px; }
+      .modal-body { padding: 16px 18px; }
+      .modal-footer { padding: 12px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =====================================================
+       0. TOPBAR GLOBAL (placeholder do Header.tsx)
+       Renderizado pelo AuthenticatedShell em TODAS as rotas.
+       ===================================================== -->
+  <div class="site-topbar">
+    <div class="relative z-10 mx-auto max-w-7xl px-6 flex items-center justify-between gap-4"
+         style="height: 64px;">
+      <a href="/" class="site-wordmark" aria-label="Fortuno — ir para a home">
+        Fortuno<span class="dot-gold" aria-hidden="true"></span>
+      </a>
+      <nav class="hidden md:flex items-center gap-1" aria-label="Menu principal">
+        <a href="/sorteios" class="site-nav-link is-active">Sorteios</a>
+        <a href="/meus-numeros" class="site-nav-link">Meus Números</a>
+        <a href="/quem-somos" class="site-nav-link">Quem Somos</a>
+        <a href="/fale-conosco" class="site-nav-link">Fale Conosco</a>
+      </nav>
+      <div class="flex items-center gap-2">
+        <button type="button"
+                class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-full
+                       border border-[color:var(--user-trigger-border)] bg-[color:var(--user-trigger-bg)]
+                       text-fortuno-gold-soft"
+                aria-label="Abrir menu de navegação">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+        <button type="button" class="user-trigger" aria-label="Menu da minha conta">
+          <span class="user-avatar" aria-hidden="true">RL</span>
+          <span class="text-[13px] font-semibold">Rodrigo</span>
+          <i data-lucide="chevron-down" class="w-4 h-4 text-fortuno-gold-soft/75" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       1. HERO COMPACTO — palco wide do sorteio
+       ===================================================== -->
+  <section class="relative z-10 mx-auto max-w-7xl px-4 md:px-6 pt-8 md:pt-10 pb-8" aria-labelledby="lottery-title">
+
+    <!-- Eyebrow + breadcrumb -->
+    <div class="flex items-center gap-2 mb-5 flex-wrap">
+      <span class="eyebrow gold">Sorteio aberto</span>
+      <span class="text-fortuno-black/30">·</span>
+      <a href="/sorteios" class="text-[11px] uppercase tracking-[0.18em] text-fortuno-black/55 hover:text-fortuno-gold-intense">
+        Voltar para a vitrine
+      </a>
+    </div>
+
+    <!-- Palco -->
+    <div class="hero-stage-compact aspect-[16/9] lg:aspect-[21/9]">
+      <img class="stage-image"
+           src="https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=2200&q=80"
+           alt="Porsche 911 prateado em ângulo dramático — prêmio do sorteio Porsche Mega Edição #012" />
+      <div class="stage-overlay" aria-hidden="true"></div>
+      <div class="stage-grain" aria-hidden="true"></div>
+      <div class="stage-frame" aria-hidden="true"></div>
+
+      <!-- Top row do palco: badge + countdown -->
+      <div class="stage-toprow">
+        <span class="badge-live">
+          <span class="dot" aria-hidden="true"></span>
+          Aberto
+        </span>
+
+        <!-- Countdown para o próximo raffle -->
+        <div class="countdown" role="timer" aria-live="polite" aria-atomic="true"
+             aria-label="Tempo restante até o próximo sorteio: 12 dias, 4 horas, 36 minutos e 18 segundos">
+          <div class="countdown-cell">
+            <span class="countdown-num">12</span>
+            <span class="countdown-label">Dias</span>
+          </div>
+          <span class="countdown-sep" aria-hidden="true">:</span>
+          <div class="countdown-cell">
+            <span class="countdown-num">04</span>
+            <span class="countdown-label">Horas</span>
+          </div>
+          <span class="countdown-sep" aria-hidden="true">:</span>
+          <div class="countdown-cell">
+            <span class="countdown-num">36</span>
+            <span class="countdown-label">Min</span>
+          </div>
+          <span class="countdown-sep" aria-hidden="true">:</span>
+          <div class="countdown-cell">
+            <span class="countdown-num">18</span>
+            <span class="countdown-label">Seg</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Caption: nome + prêmio + CTAs Regras/Política -->
+      <figcaption class="stage-caption">
+        <span class="text-[10px] uppercase tracking-[0.26em] text-fortuno-gold-soft/85 font-semibold">Edição Nº 012</span>
+        <h1 id="lottery-title"
+            class="font-display text-fortuno-offwhite leading-[1.05] mt-1
+                   text-[clamp(28px,4.5vw,52px)] tracking-[-0.02em]">
+          Porsche Mega <span class="italic text-fortuno-gold-soft">Edição</span> #012
+        </h1>
+
+        <div class="flex flex-wrap items-end gap-x-8 gap-y-3 mt-3">
+          <div>
+            <span class="text-[10px] uppercase tracking-[0.26em] text-fortuno-offwhite/75 font-semibold block mb-1">Prêmio total</span>
+            <span class="prize-numeral">R$ 250.000</span>
+          </div>
+          <div class="flex flex-wrap gap-2.5">
+            <button type="button" class="pill-outline" aria-haspopup="dialog">
+              <i data-lucide="scroll-text" aria-hidden="true"></i>
+              Regulamento
+            </button>
+            <button type="button" class="pill-outline" aria-haspopup="dialog">
+              <i data-lucide="shield-check" aria-hidden="true"></i>
+              Política de privacidade
+            </button>
+          </div>
+        </div>
+      </figcaption>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       2. CORPO — grid 2 col em desktop:
+          ESQUERDA: descrição + sorteios + prêmios + combos
+          DIREITA: checkout panel sticky
+       ===================================================== -->
+  <section class="relative z-10 mx-auto max-w-7xl px-4 md:px-6 pb-12">
+
+    <div class="layout-grid grid lg:grid-cols-[1.55fr_1fr] gap-7">
+
+      <!-- ============================ -->
+      <!-- COLUNA PRINCIPAL              -->
+      <!-- ============================ -->
+      <div class="flex flex-col gap-10">
+
+        <!-- 2.1 DESCRIÇÃO EDITORIAL -->
+        <section aria-labelledby="desc-title">
+          <div class="section-title">
+            <span class="eyebrow gold">Sobre o sorteio</span>
+            <h2 id="desc-title" class="h2-display">
+              O que vem com a <span class="accent">Edição #012</span>
+            </h2>
+          </div>
+
+          <article class="editorial">
+            <p class="lede">
+              Este é o décimo segundo capítulo da nossa série anual: um Porsche 911 Carrera 4S
+              prateado, zero quilômetro, IPVA pago, transferido em até 30 dias para o nome do
+              ganhador. Cada bilhete é numerado, auditado e registrado em ata pública desde o
+              instante da compra. Não existe sorteio Fortuno sem comprovação de origem do prêmio.
+            </p>
+
+            <h3>O carro</h3>
+            <p>
+              Carrera 4S 2026, 450cv, tração integral, transmissão PDK de 8 marchas, opcional Sport
+              Chrono e Bose Surround. Documentado em concessionária oficial, garantia de 2 anos da
+              fábrica e revisões pré-pagas até o quarto serviço.
+            </p>
+            <ul>
+              <li>0–100 km/h em 3,4 segundos</li>
+              <li>Velocidade máxima 308 km/h</li>
+              <li>Bancos esportivos em couro semi-anilina</li>
+              <li>Pacote de iluminação ambiente Porsche Exclusive</li>
+            </ul>
+
+            <div class="editorial-divider" aria-hidden="true"></div>
+
+            <h3>Como funciona</h3>
+            <p>
+              O sorteio acontece ao vivo pelo nosso canal oficial no dia anunciado. A apuração é
+              gerada por hash criptográfico publicado antes do evento — qualquer participante
+              consegue verificar a aleatoriedade auditando o seed, que fica registrado em cartório
+              digital. Os ganhadores são notificados em até 4 horas via WhatsApp e e-mail.
+            </p>
+
+            <h3>Premiação adicional</h3>
+            <p>
+              Além do veículo principal, esta edição contempla três sorteios secundários ao longo
+              do mês: R$ 30.000 em PIX para os 2º e 3º colocados do sorteio principal e mais cinco
+              motos Honda CB 300F para a maratona dos números cap.
+            </p>
+          </article>
+        </section>
+
+        <!-- 2.2 RAFFLE TIMELINE -->
+        <section aria-labelledby="raffles-title">
+          <div class="section-title">
+            <span class="eyebrow gold">Calendário</span>
+            <h2 id="raffles-title" class="h2-display">
+              Os <span class="accent">3 sorteios</span> desta edição
+            </h2>
+            <span class="text-xs text-fortuno-black/55 ml-auto">Toque em um sorteio para ver os prêmios</span>
+          </div>
+
+          <ul class="flex flex-col gap-3" role="list">
+            <li>
+              <button type="button" class="raffle-card" aria-haspopup="dialog">
+                <span class="raffle-marker" aria-hidden="true">01</span>
+                <div class="min-w-0">
+                  <div class="raffle-name">Sorteio Principal · Porsche 911</div>
+                  <div class="raffle-meta">
+                    <span><i data-lucide="calendar"></i>Sábado, 17 de maio · 20h00</span>
+                    <span><i data-lucide="trophy"></i>3 prêmios</span>
+                    <span><i data-lucide="radio"></i>Ao vivo no YouTube</span>
+                  </div>
+                </div>
+                <span class="open-arrow" aria-hidden="true">
+                  <i data-lucide="arrow-up-right"></i>
+                </span>
+              </button>
+            </li>
+
+            <li>
+              <button type="button" class="raffle-card" aria-haspopup="dialog">
+                <span class="raffle-marker" aria-hidden="true">02</span>
+                <div class="min-w-0">
+                  <div class="raffle-name">Maratona Cap · 5 motos Honda CB 300F</div>
+                  <div class="raffle-meta">
+                    <span><i data-lucide="calendar"></i>Sábado, 24 de maio · 20h00</span>
+                    <span><i data-lucide="trophy"></i>5 prêmios</span>
+                    <span><i data-lucide="radio"></i>Ao vivo no YouTube</span>
+                  </div>
+                </div>
+                <span class="open-arrow" aria-hidden="true">
+                  <i data-lucide="arrow-up-right"></i>
+                </span>
+              </button>
+            </li>
+
+            <li>
+              <button type="button" class="raffle-card" aria-haspopup="dialog">
+                <span class="raffle-marker" aria-hidden="true">03</span>
+                <div class="min-w-0">
+                  <div class="raffle-name">PIX Premiação · R$ 60.000 dividido em 6 ganhadores</div>
+                  <div class="raffle-meta">
+                    <span><i data-lucide="calendar"></i>Sábado, 31 de maio · 20h00</span>
+                    <span><i data-lucide="trophy"></i>6 prêmios</span>
+                    <span><i data-lucide="radio"></i>Ao vivo no YouTube</span>
+                  </div>
+                </div>
+                <span class="open-arrow" aria-hidden="true">
+                  <i data-lucide="arrow-up-right"></i>
+                </span>
+              </button>
+            </li>
+          </ul>
+        </section>
+
+        <!-- 2.3 PRIZES GRID -->
+        <section aria-labelledby="prizes-title">
+          <div class="section-title">
+            <span class="eyebrow gold">Premiação completa</span>
+            <h2 id="prizes-title" class="h2-display">
+              <span class="accent">14 prêmios</span> · todos garantidos
+            </h2>
+          </div>
+
+          <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <button type="button" class="prize-card" aria-haspopup="dialog">
+              <span class="prize-position"><span class="ord">1º</span> Lugar</span>
+              <span class="prize-description">Porsche 911 Carrera 4S 2026 — prata GT, zero km, transferido em 30 dias.</span>
+              <span class="prize-source"><i data-lucide="calendar-check"></i>Sorteio Principal · 17/05</span>
+            </button>
+
+            <button type="button" class="prize-card" aria-haspopup="dialog">
+              <span class="prize-position"><span class="ord">2º</span> Lugar</span>
+              <span class="prize-description">R$ 30.000,00 em PIX, transferido em até 4 horas após apuração.</span>
+              <span class="prize-source"><i data-lucide="calendar-check"></i>Sorteio Principal · 17/05</span>
+            </button>
+
+            <button type="button" class="prize-card" aria-haspopup="dialog">
+              <span class="prize-position"><span class="ord">3º</span> Lugar</span>
+              <span class="prize-description">R$ 15.000,00 em PIX, transferido em até 4 horas após apuração.</span>
+              <span class="prize-source"><i data-lucide="calendar-check"></i>Sorteio Principal · 17/05</span>
+            </button>
+
+            <button type="button" class="prize-card" aria-haspopup="dialog">
+              <span class="prize-position"><span class="ord">1º</span> Lugar</span>
+              <span class="prize-description">Honda CB 300F 2026 zero km — vermelha, IPVA 2026 pago.</span>
+              <span class="prize-source"><i data-lucide="calendar-check"></i>Maratona Cap · 24/05</span>
+            </button>
+
+            <button type="button" class="prize-card" aria-haspopup="dialog">
+              <span class="prize-position"><span class="ord">2º</span> Lugar</span>
+              <span class="prize-description">Honda CB 300F 2026 zero km — preta, IPVA 2026 pago.</span>
+              <span class="prize-source"><i data-lucide="calendar-check"></i>Maratona Cap · 24/05</span>
+            </button>
+
+            <button type="button" class="prize-card" aria-haspopup="dialog">
+              <span class="prize-position"><span class="ord">3º</span> Lugar</span>
+              <span class="prize-description">Honda CB 300F 2026 zero km — branca, IPVA 2026 pago.</span>
+              <span class="prize-source"><i data-lucide="calendar-check"></i>Maratona Cap · 24/05</span>
+            </button>
+
+            <button type="button" class="prize-card" aria-haspopup="dialog">
+              <span class="prize-position"><span class="ord">1º</span> Lugar</span>
+              <span class="prize-description">R$ 20.000,00 em PIX. Transferido em até 4h após apuração.</span>
+              <span class="prize-source"><i data-lucide="calendar-check"></i>PIX Premiação · 31/05</span>
+            </button>
+
+            <button type="button" class="prize-card" aria-haspopup="dialog">
+              <span class="prize-position"><span class="ord">2º</span> Lugar</span>
+              <span class="prize-description">R$ 15.000,00 em PIX. Transferido em até 4h após apuração.</span>
+              <span class="prize-source"><i data-lucide="calendar-check"></i>PIX Premiação · 31/05</span>
+            </button>
+
+            <button type="button" class="prize-card" aria-haspopup="dialog">
+              <span class="prize-position"><span class="ord">3º</span> Lugar</span>
+              <span class="prize-description">R$ 10.000,00 em PIX. Transferido em até 4h após apuração.</span>
+              <span class="prize-source"><i data-lucide="calendar-check"></i>PIX Premiação · 31/05</span>
+            </button>
+          </div>
+
+          <div class="mt-3 text-xs text-fortuno-black/50 text-center">
+            Mostrando 9 de 14 prêmios — toque em um prêmio para ver detalhes do sorteio correspondente.
+          </div>
+        </section>
+
+      </div>
+
+      <!-- ============================ -->
+      <!-- COLUNA CHECKOUT (sticky)      -->
+      <!-- ============================ -->
+      <aside class="lg:sticky lg:top-[88px] lg:self-start" aria-labelledby="checkout-title">
+        <div class="checkout-panel">
+
+          <div class="flex items-baseline gap-2 mb-4">
+            <span class="eyebrow gold">Compre seus bilhetes</span>
+          </div>
+          <h2 id="checkout-title" class="font-display text-fortuno-black text-[24px] leading-tight mb-1">
+            Escolha seu <span class="italic text-fortuno-gold-intense">passe</span>.
+          </h2>
+          <p class="text-[12px] text-fortuno-black/60 mb-5">
+            Cada bilhete custa <strong class="text-fortuno-black">R$ 50,00</strong> · mín. 1 · máx. 500 por compra.
+          </p>
+
+          <!-- Combo Pack Cards -->
+          <div class="flex flex-col gap-3 mb-6" role="radiogroup" aria-label="Pacotes de bilhetes">
+
+            <button type="button" class="combo-card" role="radio" aria-checked="false">
+              <span class="check-stamp" aria-hidden="true">
+                <i data-lucide="check" class="w-3.5 h-3.5"></i>
+              </span>
+              <div class="flex items-center gap-3">
+                <span class="combo-medal is-bronze" aria-hidden="true">
+                  <i data-lucide="award" class="w-4 h-4"></i>
+                </span>
+                <div>
+                  <div class="combo-name">Bronze</div>
+                  <div class="combo-range">De 1 a 9 bilhetes</div>
+                </div>
+              </div>
+              <span class="combo-discount-badge">Sem desconto · sua chance começa aqui</span>
+            </button>
+
+            <button type="button" class="combo-card" role="radio" aria-checked="false">
+              <span class="check-stamp" aria-hidden="true">
+                <i data-lucide="check" class="w-3.5 h-3.5"></i>
+              </span>
+              <div class="flex items-center gap-3">
+                <span class="combo-medal is-silver" aria-hidden="true">
+                  <i data-lucide="award" class="w-4 h-4"></i>
+                </span>
+                <div>
+                  <div class="combo-name">Prata</div>
+                  <div class="combo-range">De 10 a 49 bilhetes</div>
+                </div>
+              </div>
+              <span class="combo-discount-badge">−10% · economize já</span>
+            </button>
+
+            <!-- Active card -->
+            <button type="button" class="combo-card is-active" role="radio" aria-checked="true">
+              <span class="check-stamp" aria-hidden="true">
+                <i data-lucide="check" class="w-3.5 h-3.5"></i>
+              </span>
+              <div class="flex items-center gap-3">
+                <span class="combo-medal" aria-hidden="true">
+                  <i data-lucide="award" class="w-4 h-4"></i>
+                </span>
+                <div>
+                  <div class="combo-name">Ouro</div>
+                  <div class="combo-range">A partir de 50 bilhetes</div>
+                </div>
+              </div>
+              <span class="combo-discount-badge">−25% · pacote mais comprado</span>
+            </button>
+          </div>
+
+          <!-- Quantidade -->
+          <div class="qty-row">
+            <input type="number" class="qty-input" min="1" max="500" value="50" aria-label="Quantidade de bilhetes" />
+            <input type="range" class="qty-slider" min="1" max="500" value="50" aria-label="Ajuste a quantidade de bilhetes" />
+          </div>
+
+          <!-- RECIBO -->
+          <div class="receipt" aria-labelledby="receipt-title">
+            <div class="text-[10px] uppercase tracking-[0.26em] text-fortuno-gold-intense font-semibold mb-3" id="receipt-title">
+              Recibo da compra
+            </div>
+
+            <div class="receipt-row">
+              <span class="label-with-icon"><i data-lucide="ticket"></i>50 bilhetes × R$ 50,00</span>
+              <span class="font-semibold tabular-nums">R$ 2.500,00</span>
+            </div>
+            <div class="receipt-divider" aria-hidden="true"></div>
+            <div class="receipt-row">
+              <span class="label-with-icon"><i data-lucide="badge-percent"></i>Desconto · pacote Ouro</span>
+              <span class="discount-value tabular-nums">− R$ 625,00</span>
+            </div>
+            <div class="receipt-divider is-strong" aria-hidden="true"></div>
+            <div class="receipt-row is-total">
+              <span>Total</span>
+              <span class="tabular-nums">R$ 1.875,00</span>
+            </div>
+          </div>
+
+          <button type="button" class="cta-buy mt-5">
+            <i data-lucide="ticket" class="w-5 h-5" aria-hidden="true"></i>
+            Comprar 50 bilhetes
+            <i data-lucide="arrow-right" class="w-5 h-5" aria-hidden="true"></i>
+          </button>
+
+          <p class="text-center mt-3 text-[11px] text-fortuno-black/55 inline-flex items-center justify-center gap-1.5 w-full">
+            <i data-lucide="lock" class="w-3 h-3 text-fortuno-gold-intense"></i>
+            Pagamento via PIX criptografado · confirmação em segundos
+          </p>
+        </div>
+      </aside>
+
+    </div>
+  </section>
+
+  <!-- Sticky CTA mobile (visível apenas <lg) -->
+  <div class="sticky-cta lg:hidden">
+    <button type="button" class="cta-buy">
+      <i data-lucide="ticket" class="w-5 h-5" aria-hidden="true"></i>
+      Comprar 50 bilhetes · R$ 1.875,00
+    </button>
+  </div>
+
+  <!-- =====================================================
+       FOOTER BAND (placeholder do Footer global)
+       ===================================================== -->
+  <footer class="dash-footer-band" aria-labelledby="footer-title">
+    <h2 id="footer-title" class="sr-only">Rodapé Fortuno</h2>
+    <div class="relative z-10 mx-auto max-w-7xl px-6 py-4 md:py-5">
+      <div class="grid md:grid-cols-[auto_1fr_auto] items-center gap-3 md:gap-6">
+        <div class="flex items-center gap-3">
+          <span class="deco-diamond" aria-hidden="true"></span>
+          <p class="font-display text-fortuno-offwhite text-sm md:text-base leading-tight">
+            Fortuno — <span class="italic text-fortuno-gold-soft">sua sorte é séria.</span>
+          </p>
+        </div>
+        <span aria-hidden="true" class="hidden md:block h-5 w-px bg-fortuno-offwhite/15 justify-self-center"></span>
+        <nav aria-label="Rodapé — suporte e contato"
+             class="flex flex-wrap items-center gap-x-4 gap-y-1 md:justify-end">
+          <a href="/suporte" class="footer-link"><i data-lucide="life-buoy"></i>Suporte</a>
+          <a href="/#como" class="footer-link"><i data-lucide="info"></i>Como funciona</a>
+          <a href="mailto:contato@fortuno.com.br" class="footer-link"><i data-lucide="mail"></i>contato@fortuno.com.br</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =====================================================
+       MODAL PREVIEWS — seção dedicada APÓS o footer.
+       Renderiza os 2 modais como cartões "still" (sem overlay
+       fixo, sem backdrop) para permitir avaliação visual
+       lado-a-lado da geometria final do paper.
+       Em produção, cada modal abre como overlay fullscreen
+       — ver tokens.md / spec.md.
+       ===================================================== -->
+  <style>
+    .modal-previews {
+      background: linear-gradient(180deg,
+        rgba(245,235,200,0.18) 0%,
+        rgba(245,235,200,0.04) 100%);
+      border-top: 1px solid rgba(184,150,63,0.18);
+      padding: 56px 24px 80px;
+    }
+    .modal-previews-inner {
+      max-width: 1440px; margin: 0 auto;
+    }
+    .modal-previews-head {
+      max-width: 720px; margin: 0 auto 40px; text-align: center;
+    }
+    .modal-previews-eyebrow {
+      font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+      color: var(--fortuno-gold-intense); font-weight: 600; margin-bottom: 10px;
+    }
+    .modal-previews-head h2 {
+      font-size: clamp(28px, 3vw, 36px);
+      color: var(--fortuno-black); margin: 0 0 12px;
+      letter-spacing: -0.01em;
+    }
+    .modal-previews-head p {
+      font-size: 14px; line-height: 1.6;
+      color: rgba(15,20,18,0.62);
+      margin: 0;
+    }
+    .modal-previews-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 32px;
+      align-items: start;
+      justify-items: center;
+    }
+    @media (max-width: 1024px) {
+      .modal-previews-grid { grid-template-columns: 1fr; }
+    }
+    .modal-preview-card {
+      background: #ffffff;
+      border: 1px solid rgba(184,150,63,0.40);
+      border-radius: 22px;
+      padding: 22px 22px 26px;
+      width: 100%;
+      max-width: 700px;
+      box-shadow: 0 20px 50px -30px rgba(15,20,18,0.30);
+    }
+    .modal-preview-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+      color: var(--fortuno-gold-intense); font-weight: 700;
+      padding: 6px 12px;
+      border: 1px solid rgba(184,150,63,0.35);
+      border-radius: 999px;
+      background: rgba(184,150,63,0.06);
+      margin-bottom: 16px;
+    }
+    .modal-preview-label i { width: 12px; height: 12px; }
+    /* "Still" modal — herda visual do .modal mas sem clipping de altura. */
+    .modal-preview-card .modal-still {
+      width: 100%;
+      max-width: 640px;
+      margin: 0 auto;
+      max-height: none;
+      background: var(--modal-bg);
+      border: 1px solid var(--modal-border);
+      border-radius: 20px;
+      box-shadow: var(--modal-shadow);
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      position: relative;
+      animation: none;
+    }
+    .modal-preview-card .modal-still::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(184,150,63,0.55) 30%,
+        rgba(212,175,55,0.85) 50%,
+        rgba(184,150,63,0.55) 70%,
+        transparent 100%);
+    }
+    .modal-preview-card .modal-still .modal-body {
+      overflow: visible;
+      max-height: none;
+    }
+  </style>
+
+  <section class="modal-previews" aria-label="Previews dos modais da página">
+    <div class="modal-previews-inner">
+      <div class="modal-previews-head">
+        <div class="modal-previews-eyebrow">Design reference</div>
+        <h2 class="font-display">Previews de modal</h2>
+        <p>
+          Estes são os designs dos modais usados nesta página.
+          Em produção, cada um abre como overlay fullscreen com backdrop blur sobre o conteúdo.
+          Aqui são exibidos "still", lado a lado, para avaliação da geometria do paper.
+        </p>
+      </div>
+
+      <div class="modal-previews-grid">
+
+        <!-- Preview 1 — RulesAndPolicyModal (mode="rules") -->
+        <article class="modal-preview-card">
+          <span class="modal-preview-label">
+            <i data-lucide="scroll-text" aria-hidden="true"></i>
+            Modal: Regras &amp; Política
+          </span>
+          <div class="modal-still" role="group" aria-labelledby="preview-rules-modal-title">
+            <header class="modal-header">
+              <span class="modal-icon" aria-hidden="true">
+                <i data-lucide="scroll-text"></i>
+              </span>
+              <div class="min-w-0">
+                <div class="modal-eyebrow">Documento oficial</div>
+                <h2 id="preview-rules-modal-title" class="modal-title">Regulamento — Edição #012</h2>
+              </div>
+              <button type="button" class="modal-close" aria-label="Fechar regulamento" tabindex="-1">
+                <i data-lucide="x" class="w-5 h-5" aria-hidden="true"></i>
+              </button>
+            </header>
+
+            <div class="modal-body markdown-body">
+              <div class="legal-meta">
+                Versão 2.0 · Atualizado em 12/04/2026 · CNPJ 12.345.678/0001-90
+              </div>
+
+              <h2>1. Do objeto e da promoção</h2>
+              <p>
+                O presente regulamento estabelece as condições de participação na promoção comercial
+                <strong>Porsche Mega Edição #012</strong>, organizada pela Fortuno Promoções Ltda.,
+                inscrita no CNPJ acima, com início em 12/04/2026 e encerramento previsto para 31/05/2026.
+              </p>
+
+              <h2>2. Da participação</h2>
+              <p>
+                Podem participar pessoas físicas maiores de 18 anos, com CPF regular junto à Receita
+                Federal. A participação se dá pela aquisição de bilhetes numerados, com valor unitário
+                de <strong>R$ 50,00</strong>, mínimo de 1 e máximo de 500 bilhetes por compra.
+              </p>
+              <ol>
+                <li>Cada bilhete corresponde a um número único, registrado em ata pública;</li>
+                <li>Os números são gerados aleatoriamente no ato da compra via hash criptográfico;</li>
+                <li>O participante recebe os números por e-mail e WhatsApp em até 60 segundos.</li>
+              </ol>
+
+              <h2>3. Da apuração e dos prêmios</h2>
+              <p>
+                A apuração ocorre ao vivo nas datas anunciadas no canal oficial da Fortuno no YouTube.
+                O método utilizado é o <strong>SHA-256 sobre o seed publicado em cartório digital
+                24h antes do evento</strong>, garantindo que ninguém — nem mesmo a organizadora — pode
+                determinar o resultado antes da apuração.
+              </p>
+              <p>
+                Os ganhadores são notificados em até 4 horas após a apuração via WhatsApp e e-mail
+                cadastrados no momento da compra. O prêmio principal (Porsche 911 Carrera 4S) é
+                transferido em até 30 dias para o nome do ganhador, com despesas de transferência
+                custeadas pela organizadora.
+              </p>
+
+              <h2>4. Do reembolso</h2>
+              <p>Não há possibilidade de reembolso após a confirmação da compra...</p>
+              <h2>5. Da cessão de imagem</h2>
+              <p>O ganhador autoriza o uso de sua imagem...</p>
+            </div>
+
+            <div class="modal-footer">
+              <span class="text-[11px] text-fortuno-black/50 inline-flex items-center gap-1.5">
+                <i data-lucide="info" class="w-3 h-3"></i>
+                Versão integral em PDF disponível para download.
+              </span>
+              <div class="flex gap-2 ml-auto">
+                <button type="button" class="modal-btn-ghost" tabindex="-1">Fechar</button>
+                <button type="button" class="modal-btn-primary" tabindex="-1">
+                  <i data-lucide="download" aria-hidden="true"></i>
+                  Baixar PDF
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Preview 2 — RaffleDetailModal -->
+        <article class="modal-preview-card">
+          <span class="modal-preview-label">
+            <i data-lucide="trophy" aria-hidden="true"></i>
+            Modal: Detalhes do Sorteio
+          </span>
+          <div class="modal-still" role="group" aria-labelledby="preview-raffle-modal-title">
+            <header class="modal-header">
+              <span class="modal-icon" aria-hidden="true">
+                <i data-lucide="trophy"></i>
+              </span>
+              <div class="min-w-0">
+                <div class="modal-eyebrow">Sorteio Nº 01</div>
+                <h2 id="preview-raffle-modal-title" class="modal-title">Sorteio Principal · Porsche 911</h2>
+              </div>
+              <button type="button" class="modal-close" aria-label="Fechar detalhes do sorteio" tabindex="-1">
+                <i data-lucide="x" class="w-5 h-5" aria-hidden="true"></i>
+              </button>
+            </header>
+
+            <div class="modal-body">
+              <!-- Meta -->
+              <div class="grid grid-cols-2 gap-3 mb-5">
+                <div class="p-3 rounded-xl bg-[rgba(184,150,63,0.06)] border border-[rgba(184,150,63,0.20)]">
+                  <div class="text-[9px] uppercase tracking-[0.22em] text-fortuno-gold-intense font-semibold mb-1">Data</div>
+                  <div class="text-sm font-semibold text-fortuno-black">Sábado, 17 de maio de 2026</div>
+                  <div class="text-[11px] text-fortuno-black/55 mt-0.5">Apuração às 20h00 (Brasília)</div>
+                </div>
+                <div class="p-3 rounded-xl bg-[rgba(184,150,63,0.06)] border border-[rgba(184,150,63,0.20)]">
+                  <div class="text-[9px] uppercase tracking-[0.22em] text-fortuno-gold-intense font-semibold mb-1">Transmissão</div>
+                  <div class="text-sm font-semibold text-fortuno-black inline-flex items-center gap-1.5">
+                    <i data-lucide="youtube" class="w-4 h-4 text-fortuno-gold-intense"></i>
+                    YouTube /fortuno
+                  </div>
+                  <a href="#" class="text-[11px] text-fortuno-gold-intense hover:underline mt-0.5 inline-block" tabindex="-1">
+                    Abrir transmissão →
+                  </a>
+                </div>
+              </div>
+
+              <p class="text-sm leading-relaxed text-fortuno-black/78 mb-2">
+                O sorteio principal define o ganhador do veículo. A apuração utiliza hash SHA-256
+                calculado sobre seed publicada em cartório digital 24 horas antes do evento. Qualquer
+                participante consegue auditar o seed e validar a aleatoriedade independente.
+              </p>
+
+              <!-- Lista de prêmios -->
+              <div class="mt-4">
+                <div class="text-[10px] uppercase tracking-[0.26em] text-fortuno-gold-intense font-semibold mb-2">Prêmios deste sorteio</div>
+                <div class="raffle-detail-prizes">
+                  <div class="raffle-detail-prize-row">
+                    <span class="pos-medal" aria-hidden="true">1º</span>
+                    <div class="desc">Porsche 911 Carrera 4S 2026 — prata GT, zero km, transferido em 30 dias.</div>
+                  </div>
+                  <div class="raffle-detail-prize-row">
+                    <span class="pos-medal" aria-hidden="true">2º</span>
+                    <div class="desc">R$ 30.000,00 em PIX, transferido em até 4 horas após apuração.</div>
+                  </div>
+                  <div class="raffle-detail-prize-row">
+                    <span class="pos-medal" aria-hidden="true">3º</span>
+                    <div class="desc">R$ 15.000,00 em PIX, transferido em até 4 horas após apuração.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <span class="text-[11px] text-fortuno-black/50 inline-flex items-center gap-1.5">
+                <i data-lucide="shield-check" class="w-3 h-3"></i>
+                Apuração auditada por hash SHA-256 público.
+              </span>
+              <button type="button" class="modal-btn-ghost ml-auto" tabindex="-1">Fechar</button>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <script>
+    if (window.lucide) { lucide.createIcons(); }
+  </script>
+</body>
+</html>

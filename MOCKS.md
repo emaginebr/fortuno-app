@@ -69,6 +69,7 @@ Registro vivo dos endpoints que o frontend consome em modo MOCK até que o backe
 ### Home — Imagem de fallback do hero
 
 - **Arquivo**: `public/images/hero-fallback.jpg` (asset estático pendente)
+- **Arquivo(s) consumidor(es)**: `src/components/home/HeroFeaturedLottery.tsx`, `src/components/lottery/LotteryHero.tsx` (palco compacto da página `/sorteios/:slug`).
 - **Rota esperada**: admin cadastrar imagens reais por sorteio (campo `images[0].imageUrl` já existe em `LotteryInfo`).
-- **Descrição**: quando um sorteio em destaque não tem imagem, o `HeroFeaturedLottery` aponta para `/images/hero-fallback.jpg`. O asset deve ser fornecido pelo time de design — enquanto não existir, uma URL quebrada fica como placeholder.
+- **Descrição**: quando um sorteio (em destaque ou em detalhe) não tem imagem, o componente aponta para `/images/hero-fallback.jpg`. O asset deve ser fornecido pelo time de design — enquanto não existir, uma URL quebrada fica como placeholder.
 - **Item de acompanhamento**: pendente de abertura.

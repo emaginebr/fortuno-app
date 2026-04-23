@@ -1,6 +1,7 @@
 @import './tokens.css';
 @import './home.css';
 @import './dashboard.css';
+@import './lottery-detail.css';
 
 @tailwind base;
 @tailwind components;

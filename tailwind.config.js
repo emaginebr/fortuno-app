@@ -38,6 +38,11 @@ export default {
         'paper': 'var(--shadow-paper)',
         'paper-hover': 'var(--shadow-paper-hover)',
         'dropdown': 'var(--dropdown-shadow)',
+        'stage-compact': 'var(--shadow-stage-compact)',
+        'receipt': 'var(--receipt-shadow)',
+        'combo-card': 'var(--combo-card-shadow)',
+        'combo-card-hover': 'var(--combo-card-shadow-hover)',
+        'modal': 'var(--modal-shadow)',
       },
       backgroundImage: {
         'noir-page': 'var(--noir-bg-page)',
@@ -71,6 +76,13 @@ export default {
         'topbar': 'var(--topbar-bg)',
         'topbar-border-bottom': 'var(--topbar-border-bottom)',
         'dropdown-divider': 'var(--dropdown-divider)',
+        'stage-compact-overlay': 'var(--stage-compact-overlay)',
+        'stage-compact-grain': 'var(--stage-compact-grain)',
+        'combo-card': 'var(--combo-card-bg)',
+        'prize-badge': 'var(--prize-badge-bg)',
+        'modal-divider': 'var(--modal-divider)',
+        'receipt-divider': 'var(--receipt-divider)',
+        'sticky-cta': 'var(--sticky-cta-bg)',
       },
       transitionTimingFunction: {
         'noir-out': 'cubic-bezier(0.22, 1, 0.36, 1)',
@@ -143,6 +155,24 @@ export default {
           '0%': { opacity: '0', transform: 'scale(0.96) translateY(-6px)' },
           '100%': { opacity: '1', transform: 'scale(1) translateY(0)' },
         },
+        'modal-fade': {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        'modal-pop': {
+          '0%': { opacity: '0', transform: 'scale(0.96) translateY(8px)' },
+          '100%': { opacity: '1', transform: 'scale(1) translateY(0)' },
+        },
+        'combo-ring-pulse': {
+          '0%, 100%': {
+            boxShadow:
+              'var(--combo-card-shadow-hover), 0 0 0 3px rgba(212,175,55,0.45)',
+          },
+          '50%': {
+            boxShadow:
+              'var(--combo-card-shadow-hover), 0 0 0 5px rgba(212,175,55,0.20)',
+          },
+        },
       },
       animation: {
         'marker-breath': 'marker-breath 2.6s ease-in-out infinite',
@@ -157,6 +187,9 @@ export default {
         'avatar-breath': 'avatar-breath 6s ease-in-out infinite',
         'check-bounce': 'check-bounce 360ms cubic-bezier(0.34, 1.56, 0.64, 1)',
         'user-menu-open': 'user-menu-open 180ms cubic-bezier(0.22, 1, 0.36, 1) both',
+        'modal-fade': 'modal-fade 200ms cubic-bezier(0.22, 1, 0.36, 1)',
+        'modal-pop': 'modal-pop 220ms cubic-bezier(0.34, 1.56, 0.64, 1) both',
+        'combo-ring-pulse': 'combo-ring-pulse 2.4s ease-in-out infinite',
       },
     },
   },
