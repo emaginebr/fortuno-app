@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fortuno — Checkout Wizard Horizontal (Editorial Casino Noir)</title>
+
+  <!-- Tailwind CDN para preview standalone -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fonts: Inter + Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700;1,800&display=swap" rel="stylesheet" />
+
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            fortuno: {
+              green: { deep: '#0a2a20', elegant: '#134436' },
+              gold:  { intense: '#b8963f', soft: '#d4af37' },
+              black: '#0b0b0b',
+              offwhite: '#ece8e1',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['"Playfair Display"', 'Georgia', 'serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* ===========================================================
+       CHECKOUT HORIZONTAL — tokens locais ao mockup
+       Reutiliza 100% de wizard-vertical/tokens.md, lottery-detail/tokens.md,
+       dashboard/tokens.md e home/tokens.md. Novos tokens listados em tokens.md.
+       =========================================================== */
+    :root {
+      --fortuno-green-deep:    #0a2a20;
+      --fortuno-green-elegant: #134436;
+      --fortuno-gold-intense:  #b8963f;
+      --fortuno-gold-soft:     #d4af37;
+      --fortuno-black:         #0b0b0b;
+      --fortuno-offwhite:      #ece8e1;
+
+      /* === Body claro (reuso do dashboard) === */
+      --dash-bg-page:
+        radial-gradient(1100px 520px at 82% -12%, rgba(212,175,55,0.09), transparent 60%),
+        radial-gradient(900px 460px at -10% 110%, rgba(19,68,54,0.10), transparent 55%),
+        linear-gradient(180deg, #fbf7ee 0%, #f5eede 60%, #f0e6cf 100%);
+
+      /* === Paper cards (reuso do dashboard) === */
+      --card-paper-bg:              #ffffff;
+      --card-paper-border:          rgba(184,150,63,0.22);
+      --card-paper-border-hover:    rgba(184,150,63,0.45);
+      --shadow-paper:
+        0 1px 0 rgba(255,255,255,0.9) inset,
+        0 14px 28px -18px rgba(10,42,32,0.16),
+        0 4px 10px -4px rgba(184,150,63,0.12);
+      --shadow-paper-hover:
+        0 1px 0 rgba(255,255,255,0.95) inset,
+        0 22px 40px -22px rgba(10,42,32,0.25),
+        0 10px 18px -6px rgba(184,150,63,0.28);
+      --card-gold-bar: linear-gradient(90deg,
+        transparent 0%,
+        rgba(184,150,63,0.45) 15%,
+        rgba(212,175,55,0.70) 50%,
+        rgba(184,150,63,0.45) 85%,
+        transparent 100%);
+      --gold-divider-soft: linear-gradient(90deg, transparent, rgba(184,150,63,0.32), transparent);
+      --gold-divider: linear-gradient(90deg, transparent, rgba(212,175,55,0.55), transparent);
+
+      /* === Receipt (reuso lottery-detail) === */
+      --receipt-bg:       #fbf7ee;
+      --receipt-border:   rgba(184,150,63,0.40);
+      --receipt-shadow:
+        0 1px 0 rgba(255,255,255,0.85) inset,
+        0 14px 28px -18px rgba(10,42,32,0.22),
+        0 5px 10px -4px rgba(184,150,63,0.18);
+      --receipt-divider:
+        repeating-linear-gradient(90deg,
+          rgba(184,150,63,0.55) 0 5px,
+          transparent 5px 9px);
+
+      /* === Focus ring ouro (reuso wizard) === */
+      --shadow-gold-focus: 0 0 0 3px rgba(212,175,55,0.55);
+
+      /* === Modal (reuso lottery-detail) === */
+      --modal-bg:      #fbf7ee;
+      --modal-border:  rgba(184,150,63,0.45);
+      --modal-shadow:
+        0 2px 0 rgba(255,255,255,0.6) inset,
+        0 50px 100px -30px rgba(10,42,32,0.55),
+        0 24px 40px -12px rgba(184,150,63,0.28),
+        0 0 0 1px rgba(184,150,63,0.10);
+      --modal-overlay: rgba(5,15,12,0.62);
+
+      /* === Stage compacto (reuso lottery-detail) === */
+      --stage-compact-bg:       #050f0c;
+      --stage-compact-border:   rgba(212,175,55,0.30);
+      --stage-compact-frame:    rgba(212,175,55,0.18);
+      --shadow-stage-compact:
+        0 1px 0 rgba(255,255,255,0.05) inset,
+        0 36px 76px -32px rgba(0,0,0,0.78),
+        0 18px 36px -16px rgba(0,0,0,0.55);
+      --stage-compact-overlay:
+        linear-gradient(180deg,
+          rgba(7,32,26,0.10) 0%,
+          rgba(6,21,17,0.05) 35%,
+          rgba(6,21,17,0.55) 70%,
+          rgba(5,15,12,0.92) 100%),
+        radial-gradient(120% 90% at 50% 50%, transparent 50%, rgba(0,0,0,0.55) 100%);
+
+      /* === Metal marker (reuso wizard) === */
+      --metal-marker-pending: radial-gradient(120% 120% at 30% 20%, #eae0c3 0%, #c7b885 55%, #8a7a46 100%);
+      --metal-marker-active:  radial-gradient(120% 120% at 30% 20%, #f0d27a 0%, #c79b41 45%, #8a6a25 100%);
+      --metal-marker-done:    radial-gradient(120% 120% at 30% 20%, #1c5b48 0%, #0f3b2e 60%, #06241c 100%);
+
+      /* === Durações & easing (reuso wizard) === */
+      --duration-fast:   160ms;
+      --duration-base:   240ms;
+      --duration-slow:   420ms;
+      --easing-out:      cubic-bezier(0.22, 1, 0.36, 1);
+      --easing-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+
+      /* ===========================================================
+         NOVOS TOKENS — ver tokens.md
+         =========================================================== */
+
+      /* Stepper horizontal */
+      --hstep-marker-size: 56px;
+      --hstep-track-height: 3px;
+      --hstep-track-bg:  rgba(184,150,63,0.18);
+      --hstep-track-fill: linear-gradient(90deg,
+        var(--fortuno-gold-soft) 0%,
+        var(--fortuno-gold-intense) 60%,
+        var(--fortuno-green-elegant) 100%);
+      --hstep-skip-opacity: 0.38;
+
+      /* Confete de sucesso */
+      --confetti-gold-a: #d4af37;
+      --confetti-gold-b: #b8963f;
+      --confetti-green:  #134436;
+
+      /* Número de bilhete editorial (numeral Playfair em fundo claro) */
+      --ticket-numeral-gradient: linear-gradient(180deg,
+        var(--fortuno-gold-soft) 0%,
+        var(--fortuno-gold-intense) 55%,
+        rgba(19,68,54,0.85) 100%);
+
+      /* Botão ghost "escolher número" */
+      --btn-ghost-gold-bg:           rgba(184,150,63,0.08);
+      --btn-ghost-gold-bg-hover:     rgba(184,150,63,0.18);
+      --btn-ghost-gold-border:       rgba(184,150,63,0.45);
+      --btn-ghost-gold-border-hover: var(--fortuno-gold-intense);
+
+      /* Ornamento art-déco (reaproveitado do Fraud Certificate) */
+      --ornament-line: linear-gradient(90deg, transparent, rgba(184,150,63,0.55) 20%, rgba(212,175,55,0.85) 50%, rgba(184,150,63,0.55) 80%, transparent);
+    }
+
+    html, body { background: var(--dash-bg-page); color: var(--fortuno-black); min-height: 100vh; }
+    body { font-family: 'Inter', system-ui, sans-serif; }
+
+    .font-display { font-family: 'Playfair Display', Georgia, serif; letter-spacing: -0.01em; }
+
+    /* ===========================================================
+       STEPPER HORIZONTAL
+       =========================================================== */
+    .hstepper {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      padding: 28px 16px 22px;
+    }
+    /* Trilha de fundo — linha horizontal entre os marcadores */
+    .hstepper::before {
+      content: '';
+      position: absolute;
+      top: 56px; /* 28 (pad-top) + 28 (raio do marker 56/2) */
+      left: calc(12.5% + 24px);
+      right: calc(12.5% + 24px);
+      height: var(--hstep-track-height);
+      background: var(--hstep-track-bg);
+      border-radius: 999px;
+      z-index: 0;
+    }
+    /* Trilha preenchida (ouro→verde) — largura = progresso */
+    .hstepper::after {
+      content: '';
+      position: absolute;
+      top: 56px;
+      left: calc(12.5% + 24px);
+      width: var(--hstep-fill, 0%);
+      height: var(--hstep-track-height);
+      background: var(--hstep-track-fill);
+      border-radius: 999px;
+      box-shadow: 0 0 12px rgba(212,175,55,0.55);
+      transition: width var(--duration-slow) var(--easing-out);
+      z-index: 1;
+    }
+
+    .hstep {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 0 8px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: inherit;
+      text-align: center;
+    }
+    .hstep:focus-visible { outline: none; }
+    .hstep:focus-visible .hstep-marker {
+      box-shadow: var(--shadow-gold-focus), 0 6px 14px -6px rgba(0,0,0,0.3);
+    }
+
+    .hstep-marker {
+      width: var(--hstep-marker-size);
+      height: var(--hstep-marker-size);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--metal-marker-pending);
+      border: 1.5px solid rgba(184,150,63,0.35);
+      color: rgba(11,11,11,0.55);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.6) inset,
+        0 -1px 0 rgba(0,0,0,0.12) inset,
+        0 6px 14px -6px rgba(10,42,32,0.25);
+      transition:
+        transform var(--duration-base) var(--easing-spring),
+        box-shadow var(--duration-base) var(--easing-out),
+        background var(--duration-base) var(--easing-out),
+        color var(--duration-base) var(--easing-out);
+    }
+    .hstep:hover:not([aria-disabled="true"]) .hstep-marker { transform: translateY(-2px); }
+
+    /* Ativa */
+    .hstep[aria-current="step"] .hstep-marker {
+      background: var(--metal-marker-active);
+      color: var(--fortuno-black);
+      border-color: rgba(255,255,255,0.55);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.55) inset,
+        0 -1px 0 rgba(0,0,0,0.35) inset,
+        0 0 0 4px rgba(184,150,63,0.22),
+        0 10px 26px -8px rgba(184,150,63,0.55);
+      animation: hmarker-breath 2.6s ease-in-out infinite;
+    }
+    @keyframes hmarker-breath {
+      0%, 100% { box-shadow: 0 1px 0 rgba(255,255,255,0.55) inset, 0 -1px 0 rgba(0,0,0,0.35) inset, 0 0 0 4px rgba(184,150,63,0.22), 0 10px 26px -8px rgba(184,150,63,0.55); }
+      50%      { box-shadow: 0 1px 0 rgba(255,255,255,0.55) inset, 0 -1px 0 rgba(0,0,0,0.35) inset, 0 0 0 7px rgba(184,150,63,0.10), 0 12px 32px -8px rgba(184,150,63,0.70); }
+    }
+
+    /* Concluída (verde elegant) */
+    .hstep[data-state="done"] .hstep-marker {
+      background: var(--metal-marker-done);
+      color: var(--fortuno-gold-soft);
+      border-color: rgba(212,175,55,0.55);
+    }
+    .hstep[data-state="done"] .check-icon {
+      animation: check-pop var(--duration-slow) var(--easing-spring);
+    }
+    @keyframes check-pop {
+      0%   { transform: scale(0.4); opacity: 0; }
+      60%  { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Pulada (skip) — cadastro já feito */
+    .hstep[data-state="skipped"] { opacity: var(--hstep-skip-opacity); }
+    .hstep[data-state="skipped"] .hstep-marker {
+      background: transparent;
+      border-style: dashed;
+      border-color: rgba(184,150,63,0.45);
+      color: var(--fortuno-gold-intense);
+      box-shadow: none;
+    }
+
+    /* Bloqueada */
+    .hstep[aria-disabled="true"] { cursor: not-allowed; opacity: 0.5; }
+    .hstep[aria-disabled="true"] .hstep-marker { filter: saturate(0.6); }
+
+    .hstep-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(11,11,11,0.55);
+      transition: color var(--duration-base) var(--easing-out);
+      white-space: nowrap;
+    }
+    .hstep[aria-current="step"] .hstep-label { color: var(--fortuno-gold-intense); }
+    .hstep[data-state="done"] .hstep-label { color: var(--fortuno-green-elegant); }
+    .hstep-sub {
+      font-size: 10px;
+      color: rgba(11,11,11,0.45);
+      letter-spacing: 0.02em;
+      text-transform: none;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    /* Stepper mobile — barras dot */
+    .hstepper-mobile {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.78);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(184,150,63,0.20);
+    }
+    .hstepper-mobile ol { display: flex; gap: 6px; flex: 1; }
+    .hstepper-mobile ol li {
+      height: 6px;
+      flex: 1;
+      border-radius: 999px;
+      background: rgba(184,150,63,0.18);
+    }
+    .hstepper-mobile ol li[data-state="done"] { background: var(--fortuno-gold-intense); }
+    .hstepper-mobile ol li[aria-current="step"] {
+      background: linear-gradient(90deg, var(--fortuno-gold-soft), var(--fortuno-gold-intense));
+      box-shadow: 0 0 8px rgba(212,175,55,0.55);
+    }
+
+    /* ===========================================================
+       PAPER CARD
+       =========================================================== */
+    .paper-card {
+      position: relative;
+      background: var(--card-paper-bg);
+      border: 1px solid var(--card-paper-border);
+      border-radius: 22px;
+      box-shadow: var(--shadow-paper);
+    }
+    .paper-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--card-gold-bar);
+      border-top-left-radius: 22px;
+      border-top-right-radius: 22px;
+    }
+
+    /* ===========================================================
+       INPUT EDITORIAL
+       =========================================================== */
+    .field {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 14px;
+      color: var(--fortuno-black);
+      background: #fff;
+      border: 1.5px solid rgba(184,150,63,0.28);
+      border-radius: 12px;
+      transition: border-color var(--duration-fast) var(--easing-out),
+                  box-shadow var(--duration-fast) var(--easing-out);
+    }
+    .field::placeholder { color: rgba(11,11,11,0.35); }
+    .field:focus {
+      outline: none;
+      border-color: var(--fortuno-gold-intense);
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.22);
+    }
+    .field-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(11,11,11,0.58);
+      margin-bottom: 6px;
+    }
+    .field-help {
+      font-size: 11px;
+      color: rgba(11,11,11,0.50);
+      margin-top: 6px;
+    }
+    .field-error {
+      font-size: 11px;
+      color: #b94a2f;
+      margin-top: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ===========================================================
+       CTAs
+       =========================================================== */
+    .cta-gold {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 22px;
+      border-radius: 999px;
+      background: radial-gradient(120% 120% at 30% 20%, var(--fortuno-gold-soft), var(--fortuno-gold-intense) 80%);
+      color: var(--fortuno-black);
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 800;
+      font-style: italic;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+      border: none;
+      cursor: pointer;
+      min-height: 48px;
+      box-shadow:
+        0 12px 28px -8px rgba(212,175,55,0.55),
+        0 1px 0 rgba(255,255,255,0.45) inset;
+      transition: all var(--duration-fast) var(--easing-spring);
+    }
+    .cta-gold:hover { transform: translateY(-2px); box-shadow: 0 18px 36px -10px rgba(212,175,55,0.6); }
+    .cta-gold:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(212,175,55,0.55), 0 12px 28px -8px rgba(212,175,55,0.55); }
+    .cta-gold[disabled] { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .cta-ghost-gold {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: var(--btn-ghost-gold-bg);
+      color: var(--fortuno-gold-intense);
+      border: 1.5px solid var(--btn-ghost-gold-border);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      min-height: 40px;
+      transition: all var(--duration-fast) var(--easing-spring);
+    }
+    .cta-ghost-gold:hover {
+      background: var(--btn-ghost-gold-bg-hover);
+      border-color: var(--btn-ghost-gold-border-hover);
+      color: var(--fortuno-black);
+      transform: translateY(-1px);
+    }
+    .cta-ghost-gold:focus-visible { outline: none; box-shadow: var(--shadow-gold-focus); }
+
+    .cta-ghost-noir {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: transparent;
+      color: rgba(11,11,11,0.65);
+      border: 1px solid rgba(11,11,11,0.18);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      min-height: 40px;
+      transition: all var(--duration-fast) var(--easing-out);
+    }
+    .cta-ghost-noir:hover { background: rgba(11,11,11,0.04); border-color: rgba(11,11,11,0.32); color: var(--fortuno-black); }
+    .cta-ghost-noir:focus-visible { outline: none; box-shadow: var(--shadow-gold-focus); }
+
+    /* ===========================================================
+       CART BILLET ITEM (linha de bilhete no carrinho)
+       =========================================================== */
+    .billet-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      gap: 14px;
+      align-items: center;
+      padding: 14px 18px;
+      background: #fff;
+      border: 1px solid rgba(184,150,63,0.22);
+      border-radius: 14px;
+      transition: all var(--duration-base) var(--easing-spring);
+    }
+    .billet-row + .billet-row { margin-top: 10px; }
+    .billet-row.is-random {
+      background: linear-gradient(180deg, #ffffff 0%, #fbf7ee 100%);
+      border-color: rgba(184,150,63,0.28);
+    }
+    .billet-row.is-manual { border-left: 3px solid var(--fortuno-gold-intense); }
+    .billet-row[data-entering="true"] { animation: billet-slide-in 320ms var(--easing-spring) both; }
+    @keyframes billet-slide-in {
+      0%   { opacity: 0; transform: translateX(-8px) scale(0.98); }
+      100% { opacity: 1; transform: translateX(0) scale(1); }
+    }
+
+    .billet-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: grid; place-items: center;
+      background: linear-gradient(180deg, #fff6d6 0%, #f0e3b8 100%);
+      border: 1px solid rgba(184,150,63,0.45);
+      color: var(--fortuno-gold-intense);
+    }
+    .billet-row.is-manual .billet-icon {
+      background: radial-gradient(120% 120% at 30% 20%, var(--fortuno-gold-soft), var(--fortuno-gold-intense) 80%);
+      color: var(--fortuno-black);
+    }
+
+    .billet-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--fortuno-black);
+      line-height: 1.2;
+    }
+    .billet-title .numeral {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 800;
+      font-style: italic;
+      font-size: 20px;
+      background: var(--ticket-numeral-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.01em;
+    }
+    .billet-sub {
+      font-size: 11px;
+      color: rgba(11,11,11,0.50);
+      margin-top: 2px;
+      letter-spacing: 0.02em;
+    }
+    .billet-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--fortuno-black);
+      tab-size: 4;
+      font-variant-numeric: tabular-nums;
+    }
+    .billet-remove {
+      width: 34px; height: 34px;
+      border-radius: 10px;
+      border: 1px solid rgba(11,11,11,0.12);
+      background: rgba(11,11,11,0.04);
+      color: rgba(11,11,11,0.55);
+      display: grid; place-items: center;
+      cursor: pointer;
+      transition: all var(--duration-fast) var(--easing-out);
+    }
+    .billet-remove:hover { background: rgba(185,74,47,0.10); color: #b94a2f; border-color: rgba(185,74,47,0.35); }
+    .billet-remove:focus-visible { outline: none; box-shadow: var(--shadow-gold-focus); }
+
+    /* ===========================================================
+       RECIBO (reuso lottery-detail)
+       =========================================================== */
+    .receipt {
+      background: var(--receipt-bg);
+      border: 1px dashed var(--receipt-border);
+      border-radius: 14px;
+      padding: 20px 22px;
+      box-shadow: var(--receipt-shadow);
+      position: relative;
+    }
+    .receipt::before, .receipt::after {
+      content: '';
+      position: absolute; top: 50%;
+      transform: translateY(-50%);
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: #f5eede;
+      border: 1px dashed var(--receipt-border);
+    }
+    .receipt::before { left: -8px; }
+    .receipt::after  { right: -8px; }
+    .receipt-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0;
+      font-size: 13px;
+      color: rgba(11,11,11,0.78);
+    }
+    .receipt-row.is-total {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-style: italic;
+      font-size: 26px;
+      color: var(--fortuno-black);
+      letter-spacing: -0.01em;
+    }
+    .receipt-divider { height: 1px; background: var(--receipt-divider); background-size: 9px 1px; margin: 6px 0; }
+    .receipt-divider.is-strong { background: var(--gold-divider-soft); margin: 12px 0; }
+    .combo-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: var(--fortuno-gold-intense);
+      color: var(--fortuno-black);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ===========================================================
+       TRUST SEALS (reuso home)
+       =========================================================== */
+    .trust-seal {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(19,68,54,0.06);
+      border: 1px solid rgba(19,68,54,0.12);
+      color: var(--fortuno-green-elegant);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    /* ===========================================================
+       PRIZE THUMB (miniatura do sorteio no painel direito)
+       =========================================================== */
+    .prize-thumb {
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      aspect-ratio: 16/9;
+      background: var(--stage-compact-bg);
+      border: 1px solid var(--stage-compact-border);
+      box-shadow: var(--shadow-stage-compact);
+    }
+    .prize-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .prize-thumb::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: var(--stage-compact-overlay);
+      pointer-events: none;
+    }
+    .prize-thumb-caption {
+      position: absolute; left: 14px; right: 14px; bottom: 12px;
+      color: var(--fortuno-offwhite);
+      text-shadow: 0 6px 30px rgba(0,0,0,0.65);
+    }
+
+    /* ===========================================================
+       QR CODE (PIX)
+       =========================================================== */
+    .qr-card {
+      background: #fff;
+      border: 1.5px solid var(--fortuno-gold-intense);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.95) inset,
+        0 36px 60px -24px rgba(10,42,32,0.25),
+        0 12px 24px -12px rgba(184,150,63,0.35);
+    }
+    .qr-placeholder {
+      width: 320px; height: 320px;
+      background:
+        linear-gradient(45deg, transparent 48%, rgba(0,0,0,0.05) 48% 52%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, rgba(0,0,0,0.05) 48% 52%, transparent 52%),
+        repeating-conic-gradient(
+          from 0deg at 50% 50%,
+          #0b0b0b 0% 25%,
+          #ffffff 0% 50%
+        );
+      background-size: 24px 24px, 24px 24px, 48px 48px;
+      border: 8px solid #fff;
+      border-radius: 8px;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+      position: relative;
+    }
+    .qr-placeholder::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 56px; height: 56px;
+      border-radius: 10px;
+      background: var(--fortuno-gold-intense);
+      box-shadow: inset 0 0 0 8px #fff;
+    }
+
+    .copy-code {
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      font-size: 12px;
+      letter-spacing: 0.02em;
+      color: var(--fortuno-black);
+      background: #fbf7ee;
+      border: 1px dashed var(--receipt-border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      padding-right: 48px;
+      position: relative;
+      word-break: break-all;
+      line-height: 1.5;
+    }
+    .copy-code button {
+      position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: var(--fortuno-gold-intense);
+      color: var(--fortuno-black);
+      display: grid; place-items: center;
+      border: none; cursor: pointer;
+      transition: background var(--duration-fast) var(--easing-out);
+    }
+    .copy-code button:hover { background: var(--fortuno-gold-soft); }
+
+    /* Live pulse — "aguardando pagamento" */
+    .live-pulse-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--fortuno-gold-soft);
+      position: relative;
+    }
+    .live-pulse-dot::after {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: 50%;
+      border: 2px solid var(--fortuno-gold-soft);
+      animation: live-pulse 1.6s ease-out infinite;
+    }
+    @keyframes live-pulse {
+      0%   { transform: scale(1); opacity: 1; }
+      100% { transform: scale(3); opacity: 0; }
+    }
+
+    /* Countdown crítico (<2min) */
+    .countdown-critical {
+      color: #b94a2f !important;
+      animation: countdown-blink 1s ease-in-out infinite;
+    }
+    @keyframes countdown-blink {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0.55; }
+    }
+
+    /* ===========================================================
+       SUCCESS — ornamento art-déco + confete
+       =========================================================== */
+    .ornament {
+      display: flex; align-items: center; gap: 14px;
+      justify-content: center;
+      margin: 0 auto 18px;
+    }
+    .ornament-line {
+      flex: 1;
+      max-width: 140px;
+      height: 1px;
+      background: var(--ornament-line);
+    }
+    .ornament-diamond {
+      width: 14px; height: 14px;
+      background: var(--fortuno-gold-intense);
+      transform: rotate(45deg);
+      box-shadow: 0 0 0 3px rgba(184,150,63,0.18), 0 0 12px rgba(212,175,55,0.45);
+    }
+
+    /* Confete CSS-only — explode na montagem */
+    .confetti-wrap { position: relative; height: 0; overflow: visible; pointer-events: none; }
+    .confetti-piece {
+      position: absolute;
+      top: 0; left: 50%;
+      width: 8px; height: 14px;
+      background: var(--confetti-gold-a);
+      opacity: 0;
+      border-radius: 2px;
+      animation: confetti-fall 1.8s var(--easing-out) forwards;
+    }
+    .confetti-piece:nth-child(2n) { background: var(--confetti-gold-b); width: 6px; height: 10px; }
+    .confetti-piece:nth-child(3n) { background: var(--confetti-green); transform: rotate(30deg); }
+    .confetti-piece:nth-child(1)  { left: 12%; animation-delay: 0ms;    --tx:-80px;  --rot: 420deg; }
+    .confetti-piece:nth-child(2)  { left: 24%; animation-delay: 80ms;   --tx:-40px;  --rot: -380deg; }
+    .confetti-piece:nth-child(3)  { left: 34%; animation-delay: 140ms;  --tx:-10px;  --rot: 300deg; }
+    .confetti-piece:nth-child(4)  { left: 44%; animation-delay: 60ms;   --tx: 20px;  --rot: -240deg; }
+    .confetti-piece:nth-child(5)  { left: 54%; animation-delay: 180ms;  --tx: 50px;  --rot: 320deg; }
+    .confetti-piece:nth-child(6)  { left: 64%; animation-delay: 20ms;   --tx: 90px;  --rot: -360deg; }
+    .confetti-piece:nth-child(7)  { left: 74%; animation-delay: 140ms;  --tx:130px;  --rot: 400deg; }
+    .confetti-piece:nth-child(8)  { left: 84%; animation-delay: 220ms;  --tx:170px;  --rot:-300deg; }
+    .confetti-piece:nth-child(9)  { left: 18%; animation-delay: 260ms;  --tx:-110px; --rot: 280deg; }
+    .confetti-piece:nth-child(10) { left: 82%; animation-delay: 260ms;  --tx:200px;  --rot:-440deg; }
+    @keyframes confetti-fall {
+      0%   { opacity: 0; transform: translate(0, 0) rotate(0deg); }
+      10%  { opacity: 1; }
+      100% { opacity: 0; transform: translate(var(--tx, 0), 380px) rotate(var(--rot, 360deg)); }
+    }
+
+    .ticket-mini {
+      position: relative;
+      padding: 22px 18px 18px;
+      background: linear-gradient(180deg, #ffffff 0%, #fbf7ee 100%);
+      border: 1.5px solid rgba(184,150,63,0.35);
+      border-radius: 18px;
+      box-shadow: var(--shadow-paper);
+      text-align: center;
+    }
+    .ticket-mini::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--card-gold-bar);
+    }
+    .ticket-mini-number {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 800;
+      font-style: italic;
+      font-size: 40px;
+      line-height: 1;
+      background: var(--ticket-numeral-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.01em;
+      margin-bottom: 10px;
+    }
+    .ticket-mini-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(11,11,11,0.68);
+    }
+    .ticket-mini-date {
+      font-size: 10px;
+      color: rgba(11,11,11,0.50);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+    .ticket-mini-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(19,68,54,0.08);
+      border: 1px solid rgba(19,68,54,0.18);
+      color: var(--fortuno-green-elegant);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      margin-top: 10px;
+    }
+    .ticket-mini-chip.is-manual {
+      background: rgba(184,150,63,0.15);
+      border-color: rgba(184,150,63,0.40);
+      color: var(--fortuno-gold-intense);
+    }
+
+    /* ===========================================================
+       MODAL (reuso lottery-detail) — "Escolher número"
+       =========================================================== */
+    .modal-overlay-inline {
+      background: var(--modal-overlay);
+      backdrop-filter: blur(4px);
+      padding: 26px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+    }
+    .modal-card {
+      width: 100%;
+      max-width: 480px;
+      background: var(--modal-bg);
+      border: 1px solid var(--modal-border);
+      border-radius: 20px;
+      box-shadow: var(--modal-shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .modal-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--card-gold-bar);
+    }
+    .modal-header {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 20px 22px 16px;
+      border-bottom: 1px solid rgba(184,150,63,0.18);
+    }
+    .modal-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: rgba(184,150,63,0.12);
+      border: 1px solid rgba(184,150,63,0.32);
+      color: var(--fortuno-gold-intense);
+      display: grid; place-items: center;
+    }
+    .modal-close {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: rgba(11,11,11,0.06);
+      border: 1px solid rgba(11,11,11,0.10);
+      color: rgba(11,11,11,0.65);
+      display: grid; place-items: center;
+      cursor: pointer;
+      transition: all var(--duration-fast) var(--easing-spring);
+    }
+    .modal-close:hover { background: rgba(184,150,63,0.18); color: var(--fortuno-black); transform: rotate(90deg); }
+
+    /* ===========================================================
+       SEPARADOR ENTRE ESTADOS (só para mockup)
+       =========================================================== */
+    .state-divider {
+      margin: 48px auto;
+      max-width: 1240px;
+      padding: 0 16px;
+    }
+    .state-divider-inner {
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px 22px;
+      background: rgba(11,11,11,0.92);
+      border-radius: 14px;
+      color: var(--fortuno-gold-soft);
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+      box-shadow: 0 12px 24px -10px rgba(0,0,0,0.3);
+    }
+    .state-divider-inner::before {
+      content: attr(data-num);
+      display: grid; place-items: center;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--fortuno-gold-intense);
+      color: var(--fortuno-black);
+      font-size: 14px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition-duration: 1ms !important;
+      }
+    }
+
+    /* ===========================================================
+       Topbar (reuso dashboard) — compacta só para contexto
+       =========================================================== */
+    .topbar {
+      height: 64px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(184,150,63,0.22);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px;
+    }
+    .brand-word {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 800;
+      font-style: italic;
+      font-size: 22px;
+      color: var(--fortuno-black);
+    }
+    .brand-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--fortuno-gold-intense);
+      margin-left: 4px;
+      transform: translateY(-6px);
+    }
+  </style>
+</head>
+<body class="text-fortuno-black">
+
+  <!-- ==========================================================
+       PREAMBULO DO MOCKUP
+       ========================================================== -->
+  <div class="max-w-[1240px] mx-auto px-4 pt-8 pb-4">
+    <p class="text-[10px] uppercase tracking-[0.32em] text-fortuno-gold-intense font-semibold">Fortuno · Design System</p>
+    <h1 class="font-display italic font-extrabold text-4xl md:text-5xl mt-1 text-fortuno-black">Checkout — Wizard Horizontal</h1>
+    <p class="mt-2 text-sm text-fortuno-black/65 max-w-2xl">4 etapas · Editorial Casino Noir (variante light body). Stepper horizontal ancorado no topo, 4 estados renderizados abaixo com separadores. Um modal still (Escolher número) aparece na seção da Etapa 2.</p>
+  </div>
+
+  <!-- ======================================================================
+       ESTADO 1 — CADASTRO (usuário não logado)
+       ====================================================================== -->
+  <div class="state-divider"><div class="state-divider-inner" data-num="1">Estado 1: Cadastro (usuário não autenticado)</div></div>
+
+  <section class="max-w-[1240px] mx-auto px-4">
+    <!-- Topbar -->
+    <div class="topbar rounded-t-2xl">
+      <div class="flex items-center gap-3">
+        <span class="brand-word">Fortuno<span class="brand-dot"></span></span>
+        <span class="hidden md:inline text-xs uppercase tracking-[0.22em] text-fortuno-black/55">Checkout</span>
+      </div>
+      <div class="flex items-center gap-3 text-sm text-fortuno-black/60">
+        <i data-lucide="shield-check" class="w-4 h-4 text-fortuno-green-elegant"></i>
+        <span>Compra protegida</span>
+      </div>
+    </div>
+
+    <!-- Stepper horizontal -->
+    <div class="paper-card rounded-none">
+      <nav aria-label="Etapas do checkout" class="hstepper" style="--hstep-fill: 0%;">
+        <button type="button" class="hstep" aria-current="step">
+          <span class="hstep-marker"><i data-lucide="user-round" class="w-6 h-6"></i></span>
+          <span class="hstep-label">1. Cadastro</span>
+          <span class="hstep-sub">dados essenciais</span>
+        </button>
+        <span class="hstep" aria-disabled="true">
+          <span class="hstep-marker"><i data-lucide="shopping-cart" class="w-6 h-6"></i></span>
+          <span class="hstep-label">2. Carrinho</span>
+          <span class="hstep-sub">bilhetes</span>
+        </span>
+        <span class="hstep" aria-disabled="true">
+          <span class="hstep-marker"><i data-lucide="qr-code" class="w-6 h-6"></i></span>
+          <span class="hstep-label">3. PIX</span>
+          <span class="hstep-sub">pagamento</span>
+        </span>
+        <span class="hstep" aria-disabled="true">
+          <span class="hstep-marker"><i data-lucide="party-popper" class="w-6 h-6"></i></span>
+          <span class="hstep-label">4. Pronto!</span>
+          <span class="hstep-sub">seus números</span>
+        </span>
+      </nav>
+    </div>
+
+    <!-- Conteúdo da etapa 1 -->
+    <div class="paper-card rounded-t-none border-t-0 p-8 md:p-12">
+      <!-- Prize tiny bar ancorada no TOPO para manter desejo -->
+      <div class="grid md:grid-cols-[auto_1fr] gap-4 items-center mb-8 pb-6 border-b border-fortuno-gold-intense/15">
+        <div class="prize-thumb w-[200px] h-[112px] rounded-xl">
+          <img src="https://images.unsplash.com/photo-1563720223185-11003d516935?w=800&h=450&fit=crop" alt="Porsche 911 prateado — prêmio do sorteio"/>
+          <div class="prize-thumb-caption">
+            <p class="text-[9px] uppercase tracking-[0.22em] text-fortuno-gold-soft/90 font-semibold">Sorteio ativo</p>
+            <p class="font-display italic font-bold text-sm leading-tight mt-0.5">Porsche 911 · Edição #012</p>
+          </div>
+        </div>
+        <div>
+          <p class="text-[10px] uppercase tracking-[0.26em] text-fortuno-gold-intense font-semibold">Seu carrinho</p>
+          <p class="font-display italic font-bold text-xl mt-1"><span class="text-fortuno-gold-intense">10 bilhetes</span> · Porsche 911 Edição #012</p>
+          <p class="text-xs text-fortuno-black/55 mt-1">Total a pagar <strong class="text-fortuno-black">R$ 250,00</strong>. Cadastro leva menos de um minuto.</p>
+        </div>
+      </div>
+
+      <div class="flex items-baseline justify-between flex-wrap gap-2 mb-6">
+        <div>
+          <p class="text-[10px] uppercase tracking-[0.26em] text-fortuno-gold-intense font-semibold">Etapa 01</p>
+          <h2 class="font-display italic font-bold text-3xl md:text-4xl mt-1">Crie sua conta Fortuno</h2>
+          <p class="text-sm text-fortuno-black/60 mt-2">Seus bilhetes ficam protegidos na sua conta — só você acessa.</p>
+        </div>
+        <a href="#" class="text-xs font-semibold text-fortuno-gold-intense hover:text-fortuno-black transition-colors">
+          Já tem conta? <span class="underline underline-offset-4">Entrar</span>
+        </a>
+      </div>
+
+      <form class="grid md:grid-cols-2 gap-5 max-w-3xl">
+        <div>
+          <label class="field-label" for="f-nome">Nome completo</label>
+          <input id="f-nome" type="text" class="field" placeholder="Ex.: Maria de Oliveira" value="Maria de Oliveira"/>
+        </div>
+        <div>
+          <label class="field-label" for="f-email">E-mail</label>
+          <input id="f-email" type="email" class="field" placeholder="voce@email.com"/>
+        </div>
+        <div>
+          <label class="field-label" for="f-tel">Telefone</label>
+          <input id="f-tel" type="tel" class="field" placeholder="(11) 91234-5678"/>
+        </div>
+        <div>
+          <label class="field-label" for="f-cpf">CPF</label>
+          <input id="f-cpf" type="text" class="field" placeholder="000.000.000-00" inputmode="numeric"/>
+          <span class="field-help">Usamos o CPF só para emitir seu bilhete — LGPD.</span>
+        </div>
+        <div>
+          <label class="field-label" for="f-pwd">Senha</label>
+          <input id="f-pwd" type="password" class="field" placeholder="mínimo 8 caracteres"/>
+        </div>
+        <div>
+          <label class="field-label" for="f-pwd2">Confirmar senha</label>
+          <input id="f-pwd2" type="password" class="field" placeholder="repita a senha"/>
+        </div>
+
+        <label class="md:col-span-2 flex items-start gap-3 text-xs text-fortuno-black/60 mt-2">
+          <input type="checkbox" class="mt-0.5 accent-fortuno-gold-intense w-4 h-4" checked/>
+          <span>Li e concordo com os <a href="#" class="text-fortuno-gold-intense font-semibold underline underline-offset-4">Termos</a> e a <a href="#" class="text-fortuno-gold-intense font-semibold underline underline-offset-4">Política de Privacidade</a>.</span>
+        </label>
+      </form>
+
+      <!-- Footer da etapa -->
+      <div class="flex items-center justify-between mt-10 pt-6 border-t border-fortuno-gold-intense/15 flex-wrap gap-4">
+        <p class="text-[11px] text-fortuno-black/50 flex items-center gap-2">
+          <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+          Dados criptografados · nunca compartilhamos com terceiros.
+        </p>
+        <button type="button" class="cta-gold">
+          Continuar para o carrinho
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       ESTADO 2 — CARRINHO (10 bilhetes, sendo 2 escolhidos)
+       ====================================================================== -->
+  <div class="state-divider"><div class="state-divider-inner" data-num="2">Estado 2: Carrinho (10 bilhetes, sendo 2 escolhidos · combo Prata aplicado)</div></div>
+
+  <section class="max-w-[1240px] mx-auto px-4">
+    <div class="topbar rounded-t-2xl">
+      <div class="flex items-center gap-3">
+        <span class="brand-word">Fortuno<span class="brand-dot"></span></span>
+        <span class="hidden md:inline text-xs uppercase tracking-[0.22em] text-fortuno-black/55">Checkout</span>
+      </div>
+      <div class="flex items-center gap-3 text-sm text-fortuno-black/60">
+        <i data-lucide="circle-user-round" class="w-5 h-5 text-fortuno-gold-intense"></i>
+        <span class="font-medium text-fortuno-black">Maria O.</span>
+      </div>
+    </div>
+
+    <!-- Stepper: etapa 1 pulada (usuária já autenticada e completa), 2 ativa -->
+    <div class="paper-card rounded-none">
+      <nav aria-label="Etapas do checkout" class="hstepper" style="--hstep-fill: 33.33%;">
+        <span class="hstep" data-state="skipped" aria-label="Etapa de cadastro pulada — perfil já completo">
+          <span class="hstep-marker"><i data-lucide="user-check" class="w-6 h-6"></i></span>
+          <span class="hstep-label">1. Cadastro</span>
+          <span class="hstep-sub">pulado</span>
+        </span>
+        <button type="button" class="hstep" aria-current="step">
+          <span class="hstep-marker"><i data-lucide="shopping-cart" class="w-6 h-6"></i></span>
+          <span class="hstep-label">2. Carrinho</span>
+          <span class="hstep-sub">agora</span>
+        </button>
+        <span class="hstep" aria-disabled="true">
+          <span class="hstep-marker"><i data-lucide="qr-code" class="w-6 h-6"></i></span>
+          <span class="hstep-label">3. PIX</span>
+          <span class="hstep-sub">pagamento</span>
+        </span>
+        <span class="hstep" aria-disabled="true">
+          <span class="hstep-marker"><i data-lucide="party-popper" class="w-6 h-6"></i></span>
+          <span class="hstep-label">4. Pronto!</span>
+          <span class="hstep-sub">seus números</span>
+        </span>
+      </nav>
+    </div>
+
+    <div class="paper-card rounded-t-none border-t-0 p-6 md:p-10">
+      <div class="grid lg:grid-cols-[1.55fr_1fr] gap-8">
+
+        <!-- ===== Coluna esquerda: lista de bilhetes ===== -->
+        <div>
+          <div class="flex items-baseline justify-between flex-wrap gap-2 mb-5">
+            <div>
+              <p class="text-[10px] uppercase tracking-[0.26em] text-fortuno-gold-intense font-semibold">Etapa 02</p>
+              <h2 class="font-display italic font-bold text-3xl md:text-4xl mt-1">Seus bilhetes</h2>
+            </div>
+            <p class="text-xs text-fortuno-black/55 font-medium">
+              <span class="tabular-nums font-bold text-fortuno-black">10</span> de <span class="tabular-nums">10</span> bilhetes
+            </p>
+          </div>
+
+          <!-- Lista -->
+          <div role="list" aria-label="Itens do carrinho">
+            <!-- 8 aleatórios agregados -->
+            <div role="listitem" class="billet-row is-random">
+              <div class="billet-icon"><i data-lucide="dices" class="w-5 h-5"></i></div>
+              <div>
+                <p class="billet-title">8 bilhetes aleatórios</p>
+                <p class="billet-sub">Números sorteados ao confirmar · <strong>8 × R$ 25,00</strong></p>
+              </div>
+              <p class="billet-value tabular-nums">R$ 200,00</p>
+              <span class="w-[34px]"></span><!-- spacer para alinhar com colunas que têm remove -->
+            </div>
+
+            <!-- Escolhido 1 -->
+            <div role="listitem" class="billet-row is-manual">
+              <div class="billet-icon"><i data-lucide="hash" class="w-5 h-5"></i></div>
+              <div>
+                <p class="billet-title">1 bilhete <span class="numeral">00042</span></p>
+                <p class="billet-sub">Escolhido por você · R$ 25,00</p>
+              </div>
+              <p class="billet-value tabular-nums">R$ 25,00</p>
+              <button type="button" class="billet-remove" aria-label="Remover número 00042">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <!-- Escolhido 2 -->
+            <div role="listitem" class="billet-row is-manual">
+              <div class="billet-icon"><i data-lucide="hash" class="w-5 h-5"></i></div>
+              <div>
+                <p class="billet-title">1 bilhete <span class="numeral">01337</span></p>
+                <p class="billet-sub">Escolhido por você · R$ 25,00</p>
+              </div>
+              <p class="billet-value tabular-nums">R$ 25,00</p>
+              <button type="button" class="billet-remove" aria-label="Remover número 01337">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Botão "escolher número" -->
+          <div class="mt-5 flex items-center justify-between flex-wrap gap-3">
+            <button type="button" class="cta-ghost-gold">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              Escolher um número específico
+            </button>
+            <p class="text-[11px] text-fortuno-black/50 flex items-center gap-1.5">
+              <i data-lucide="info" class="w-3.5 h-3.5"></i>
+              Cada número escolhido reduz 1 aleatório do agregado.
+            </p>
+          </div>
+
+          <!-- Modal still: Escolher número -->
+          <div class="mt-8">
+            <p class="text-[10px] uppercase tracking-[0.26em] text-fortuno-gold-intense font-semibold mb-3">Modal still — Escolher número</p>
+            <div class="modal-overlay-inline">
+              <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="choose-title">
+                <header class="modal-header">
+                  <div class="modal-icon"><i data-lucide="hash" class="w-5 h-5"></i></div>
+                  <div>
+                    <p class="text-[10px] uppercase tracking-[0.26em] text-fortuno-gold-intense font-semibold">Bilhete manual</p>
+                    <h3 id="choose-title" class="font-display italic font-bold text-xl">Escolha seu número</h3>
+                  </div>
+                  <button type="button" class="modal-close" aria-label="Fechar">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                  </button>
+                </header>
+                <div class="p-6">
+                  <label class="field-label" for="choose-input">Número entre 00001 e 99999</label>
+                  <input id="choose-input" type="text" inputmode="numeric" class="field text-center font-display italic font-bold text-[22px] tracking-[0.18em] tabular-nums" placeholder="00000" value="00042"/>
+                  <span class="field-help flex items-center gap-1.5">
+                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-fortuno-green-elegant"></i>
+                    Número disponível
+                  </span>
+                </div>
+                <footer class="px-6 py-4 flex justify-end gap-3 border-t border-fortuno-gold-intense/18 bg-fortuno-gold-intense/5">
+                  <button type="button" class="cta-ghost-noir">Cancelar</button>
+                  <button type="button" class="cta-gold" style="padding:10px 18px; font-size:13px; min-height:40px;">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    Adicionar bilhete
+                  </button>
+                </footer>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== Coluna direita: recibo + trust + CTA ===== -->
+        <aside class="lg:sticky lg:top-6 lg:self-start space-y-5">
+          <!-- Miniatura do prêmio -->
+          <div class="prize-thumb">
+            <img src="https://images.unsplash.com/photo-1563720223185-11003d516935?w=800&h=450&fit=crop" alt="Porsche 911 prateado — prêmio do sorteio"/>
+            <div class="prize-thumb-caption">
+              <p class="text-[9px] uppercase tracking-[0.22em] text-fortuno-gold-soft/90 font-semibold">Prêmio</p>
+              <p class="font-display italic font-bold text-base leading-tight mt-0.5">Porsche 911 · Edição #012</p>
+            </div>
+          </div>
+
+          <!-- Recibo -->
+          <section class="receipt" aria-labelledby="receipt-title">
+            <p id="receipt-title" class="text-[10px] uppercase tracking-[0.26em] text-fortuno-gold-intense font-semibold mb-2">Resumo</p>
+
+            <div class="receipt-row">
+              <span>Subtotal · 10 bilhetes</span>
+              <span class="tabular-nums font-medium">R$ 250,00</span>
+            </div>
+            <div class="receipt-divider" aria-hidden="true"></div>
+            <div class="receipt-row">
+              <span class="flex items-center gap-1.5">
+                <i data-lucide="tag" class="w-3.5 h-3.5 text-fortuno-gold-intense"></i>
+                Desconto (combo)
+              </span>
+              <span class="tabular-nums text-fortuno-green-elegant font-bold">− R$ 25,00</span>
+            </div>
+
+            <div class="mt-2">
+              <span class="combo-chip">
+                <i data-lucide="check" class="w-3 h-3"></i>
+                Pacote Prata · 10% off
+              </span>
+            </div>
+
+            <div class="receipt-divider is-strong" aria-hidden="true"></div>
+            <div class="receipt-row is-total">
+              <span class="font-display italic font-bold">Total</span>
+              <span class="tabular-nums">R$ 225,00</span>
+            </div>
+          </section>
+
+          <!-- CTA -->
+          <button type="button" class="cta-gold w-full text-[17px] min-h-[56px]">
+            <i data-lucide="shield-check" class="w-5 h-5"></i>
+            Confirmar compra
+          </button>
+
+          <!-- Trust seals -->
+          <div class="flex flex-wrap gap-2 justify-center">
+            <span class="trust-seal"><i data-lucide="building-2" class="w-3.5 h-3.5"></i>CNPJ Verificado</span>
+            <span class="trust-seal"><i data-lucide="lock" class="w-3.5 h-3.5"></i>PIX criptografado</span>
+            <span class="trust-seal"><i data-lucide="gavel" class="w-3.5 h-3.5"></i>Sorteio auditado</span>
+          </div>
+
+          <p class="text-center text-[10px] text-fortuno-black/45 leading-relaxed">
+            Pagamento via PIX · Processamento imediato<br>
+            Regulamento no rodapé. Suporte 24h.
+          </p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       ESTADO 3 — PIX (aguardando pagamento, countdown 12:47)
+       ====================================================================== -->
+  <div class="state-divider"><div class="state-divider-inner" data-num="3">Estado 3: PIX (aguardando pagamento · countdown 12:47)</div></div>
+
+  <section class="max-w-[1240px] mx-auto px-4">
+    <div class="topbar rounded-t-2xl">
+      <div class="flex items-center gap-3">
+        <span class="brand-word">Fortuno<span class="brand-dot"></span></span>
+        <span class="hidden md:inline text-xs uppercase tracking-[0.22em] text-fortuno-black/55">Checkout</span>
+      </div>
+      <div class="flex items-center gap-3 text-sm text-fortuno-black/60">
+        <i data-lucide="circle-user-round" class="w-5 h-5 text-fortuno-gold-intense"></i>
+        <span class="font-medium text-fortuno-black">Maria O.</span>
+      </div>
+    </div>
+
+    <div class="paper-card rounded-none">
+      <nav aria-label="Etapas do checkout" class="hstepper" style="--hstep-fill: 66.66%;">
+        <span class="hstep" data-state="skipped"><span class="hstep-marker"><i data-lucide="user-check" class="w-6 h-6"></i></span><span class="hstep-label">1. Cadastro</span><span class="hstep-sub">pulado</span></span>
+        <span class="hstep" data-state="done"><span class="hstep-marker"><i data-lucide="check" class="w-6 h-6 check-icon"></i></span><span class="hstep-label">2. Carrinho</span><span class="hstep-sub">10 bilhetes</span></span>
+        <button type="button" class="hstep" aria-current="step">
+          <span class="hstep-marker"><i data-lucide="qr-code" class="w-6 h-6"></i></span>
+          <span class="hstep-label">3. PIX</span>
+          <span class="hstep-sub">aguardando</span>
+        </button>
+        <span class="hstep" aria-disabled="true">
+          <span class="hstep-marker"><i data-lucide="party-popper" class="w-6 h-6"></i></span>
+          <span class="hstep-label">4. Pronto!</span>
+          <span class="hstep-sub">seus números</span>
+        </span>
+      </nav>
+    </div>
+
+    <div class="paper-card rounded-t-none border-t-0 p-6 md:p-10">
+      <div class="grid lg:grid-cols-[auto_1fr] gap-8 lg:gap-12 items-start max-w-5xl mx-auto">
+
+        <!-- Lado esquerdo: QR + valor -->
+        <div class="flex flex-col items-center text-center">
+          <p class="text-[10px] uppercase tracking-[0.26em] text-fortuno-gold-intense font-semibold">Valor total</p>
+          <p class="font-display italic font-extrabold text-5xl md:text-6xl mt-1 tabular-nums bg-clip-text text-transparent"
+             style="background: var(--ticket-numeral-gradient); -webkit-background-clip: text;">
+            R$ 225,00
+          </p>
+
+          <div class="qr-card mt-6">
+            <div class="qr-placeholder" role="img" aria-label="QR Code PIX para pagamento de R$ 225,00"></div>
+          </div>
+
+          <!-- Status -->
+          <div class="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-fortuno-gold-intense/10 border border-fortuno-gold-intense/32">
+            <span class="live-pulse-dot"></span>
+            <span class="text-xs font-semibold text-fortuno-gold-intense">Aguardando pagamento...</span>
+          </div>
+        </div>
+
+        <!-- Lado direito: instruções + copia-cola + countdown -->
+        <div class="max-w-md w-full">
+          <p class="text-[10px] uppercase tracking-[0.26em] text-fortuno-gold-intense font-semibold">Etapa 03</p>
+          <h2 class="font-display italic font-bold text-3xl md:text-4xl mt-1">Pague com PIX</h2>
+          <p class="text-sm text-fortuno-black/60 mt-2">Seu bilhete é garantido no instante em que o pagamento cair.</p>
+
+          <!-- Instruções -->
+          <ol class="mt-6 space-y-3" aria-label="Passos para pagar">
+            <li class="flex items-start gap-3">
+              <span class="font-display italic font-extrabold text-xl text-fortuno-gold-intense leading-none mt-0.5 w-7 text-center">1</span>
+              <p class="text-sm text-fortuno-black/78">Abra o app do seu banco</p>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="font-display italic font-extrabold text-xl text-fortuno-gold-intense leading-none mt-0.5 w-7 text-center">2</span>
+              <p class="text-sm text-fortuno-black/78">Leia o QR Code ao lado <span class="text-fortuno-black/50">ou</span> cole o código</p>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="font-display italic font-extrabold text-xl text-fortuno-gold-intense leading-none mt-0.5 w-7 text-center">3</span>
+              <p class="text-sm text-fortuno-black/78">Confirme o valor de <strong class="text-fortuno-black">R$ 225,00</strong></p>
+            </li>
+          </ol>
+
+          <!-- Copia-e-cola -->
+          <div class="mt-6">
+            <label class="field-label">Código copia-e-cola</label>
+            <div class="copy-code">
+              00020126580014BR.GOV.BCB.PIX0136a1b2c3d4-e5f6-7890-abcd-ef123456789052040000530398654052.2558005802BR5914FORTUNO LTDA6009SAO PAULO62070503***6304ABCD
+              <button type="button" aria-label="Copiar código PIX">
+                <i data-lucide="copy" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Countdown -->
+          <div class="mt-6 flex items-center gap-4 p-4 rounded-2xl bg-fortuno-offwhite/60 border border-fortuno-gold-intense/22">
+            <div class="w-12 h-12 rounded-xl grid place-items-center bg-fortuno-gold-intense/15 border border-fortuno-gold-intense/35 text-fortuno-gold-intense">
+              <i data-lucide="clock" class="w-6 h-6"></i>
+            </div>
+            <div class="flex-1">
+              <p class="text-[10px] uppercase tracking-[0.22em] text-fortuno-black/55 font-semibold">Expira em</p>
+              <p class="font-display italic font-bold text-3xl leading-none mt-1 tabular-nums text-fortuno-black" aria-live="polite" aria-atomic="true">12:47</p>
+            </div>
+          </div>
+
+          <!-- Ações secundárias -->
+          <div class="mt-6 flex items-center justify-between flex-wrap gap-3">
+            <button type="button" class="cta-ghost-noir text-xs">
+              <i data-lucide="refresh-ccw" class="w-3.5 h-3.5"></i>
+              Gerar novo código
+            </button>
+            <button type="button" class="text-[11px] text-fortuno-black/45 hover:text-fortuno-black transition-colors underline underline-offset-4">
+              Cancelar compra
+            </button>
+          </div>
+
+          <!-- Pi Simulator (DEV only) -->
+          <div class="mt-6 pt-4 border-t border-dashed border-fortuno-gold-intense/25">
+            <p class="text-[9px] uppercase tracking-[0.22em] text-fortuno-black/35 font-semibold mb-2">Somente em desenvolvimento</p>
+            <button type="button" class="cta-ghost-gold text-xs">
+              <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+              Simular pagamento (DEV)
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       ESTADO 4 — CONCLUSÃO (3 bilhetes)
+       ====================================================================== -->
+  <div class="state-divider"><div class="state-divider-inner" data-num="4">Estado 4: Conclusão (3 bilhetes · celebratório)</div></div>
+
+  <section class="max-w-[1240px] mx-auto px-4 pb-16">
+    <div class="topbar rounded-t-2xl">
+      <div class="flex items-center gap-3">
+        <span class="brand-word">Fortuno<span class="brand-dot"></span></span>
+        <span class="hidden md:inline text-xs uppercase tracking-[0.22em] text-fortuno-black/55">Checkout</span>
+      </div>
+      <div class="flex items-center gap-3 text-sm text-fortuno-black/60">
+        <i data-lucide="circle-user-round" class="w-5 h-5 text-fortuno-gold-intense"></i>
+        <span class="font-medium text-fortuno-black">Maria O.</span>
+      </div>
+    </div>
+
+    <div class="paper-card rounded-none">
+      <nav aria-label="Etapas do checkout" class="hstepper" style="--hstep-fill: 100%;">
+        <span class="hstep" data-state="skipped"><span class="hstep-marker"><i data-lucide="user-check" class="w-6 h-6"></i></span><span class="hstep-label">1. Cadastro</span><span class="hstep-sub">pulado</span></span>
+        <span class="hstep" data-state="done"><span class="hstep-marker"><i data-lucide="check" class="w-6 h-6 check-icon"></i></span><span class="hstep-label">2. Carrinho</span><span class="hstep-sub">3 bilhetes</span></span>
+        <span class="hstep" data-state="done"><span class="hstep-marker"><i data-lucide="check" class="w-6 h-6 check-icon"></i></span><span class="hstep-label">3. PIX</span><span class="hstep-sub">confirmado</span></span>
+        <button type="button" class="hstep" aria-current="step">
+          <span class="hstep-marker"><i data-lucide="party-popper" class="w-6 h-6"></i></span>
+          <span class="hstep-label">4. Pronto!</span>
+          <span class="hstep-sub">seus números</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="paper-card rounded-t-none border-t-0 p-8 md:p-14 text-center">
+      <!-- Ornamento + confete -->
+      <div class="ornament">
+        <span class="ornament-line"></span>
+        <span class="ornament-diamond"></span>
+        <span class="ornament-line"></span>
+      </div>
+
+      <div class="confetti-wrap" aria-hidden="true">
+        <span class="confetti-piece"></span><span class="confetti-piece"></span>
+        <span class="confetti-piece"></span><span class="confetti-piece"></span>
+        <span class="confetti-piece"></span><span class="confetti-piece"></span>
+        <span class="confetti-piece"></span><span class="confetti-piece"></span>
+        <span class="confetti-piece"></span><span class="confetti-piece"></span>
+      </div>
+
+      <p class="text-[10px] uppercase tracking-[0.32em] text-fortuno-gold-intense font-semibold">Pagamento confirmado</p>
+      <h2 class="font-display italic font-extrabold text-4xl md:text-6xl leading-[0.95] mt-2 max-w-3xl mx-auto">
+        Sua sorte entrou<br class="hidden md:block"> no jogo.
+      </h2>
+      <p class="text-base text-fortuno-black/70 mt-4 max-w-xl mx-auto">
+        Seu pagamento foi confirmado. <strong class="text-fortuno-black">3 bilhetes</strong> garantidos para <strong class="text-fortuno-black">Porsche 911 · Edição #012</strong>.
+      </p>
+
+      <!-- Grid de bilhetes mini -->
+      <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
+        <div class="ticket-mini">
+          <p class="ticket-mini-number">00042</p>
+          <p class="ticket-mini-label">Porsche 911 · #012</p>
+          <p class="ticket-mini-date">Sorteio · 12 mai 2026</p>
+          <span class="ticket-mini-chip is-manual"><i data-lucide="hash" class="w-3 h-3"></i>Escolhido</span>
+        </div>
+        <div class="ticket-mini">
+          <p class="ticket-mini-number">87129</p>
+          <p class="ticket-mini-label">Porsche 911 · #012</p>
+          <p class="ticket-mini-date">Sorteio · 12 mai 2026</p>
+          <span class="ticket-mini-chip"><i data-lucide="dices" class="w-3 h-3"></i>Aleatório</span>
+        </div>
+        <div class="ticket-mini">
+          <p class="ticket-mini-number">45890</p>
+          <p class="ticket-mini-label">Porsche 911 · #012</p>
+          <p class="ticket-mini-date">Sorteio · 12 mai 2026</p>
+          <span class="ticket-mini-chip"><i data-lucide="dices" class="w-3 h-3"></i>Aleatório</span>
+        </div>
+      </div>
+
+      <!-- CTAs -->
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+        <a href="/meus-numeros" class="cta-gold">
+          <i data-lucide="ticket" class="w-5 h-5"></i>
+          Ver todos os meus bilhetes
+        </a>
+        <a href="/sorteios" class="cta-ghost-noir">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          Voltar para sorteios
+        </a>
+      </div>
+
+      <!-- Share -->
+      <div class="mt-10 pt-8 border-t border-fortuno-gold-intense/15 max-w-md mx-auto">
+        <p class="text-[10px] uppercase tracking-[0.26em] text-fortuno-gold-intense font-semibold mb-3">Compartilhe sua sorte</p>
+        <div class="flex items-center justify-center gap-3">
+          <a href="#" class="cta-ghost-gold text-xs">
+            <i data-lucide="message-circle" class="w-4 h-4"></i>
+            WhatsApp
+          </a>
+          <a href="#" class="cta-ghost-gold text-xs">
+            <i data-lucide="copy" class="w-4 h-4"></i>
+            Copiar link
+          </a>
+        </div>
+      </div>
+
+      <!-- Trust seals -->
+      <div class="mt-10 flex flex-wrap gap-2 justify-center">
+        <span class="trust-seal"><i data-lucide="building-2" class="w-3.5 h-3.5"></i>CNPJ Verificado</span>
+        <span class="trust-seal"><i data-lucide="lock" class="w-3.5 h-3.5"></i>PIX criptografado</span>
+        <span class="trust-seal"><i data-lucide="gavel" class="w-3.5 h-3.5"></i>Sorteio auditado</span>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  </script>
+</body>
+</html>

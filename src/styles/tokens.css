@@ -437,6 +437,92 @@
     rgba(251, 247, 238, 0.98)
   );
   --sticky-cta-border: rgba(184, 150, 63, 0.35);
+
+  /* ===========================================================
+     CHECKOUT WIZARD HORIZONTAL — Editorial Casino Noir (light body)
+     Anexar APÓS os blocos do wizard, home, dashboard e lottery-detail.
+     =========================================================== */
+
+  /* --- Stepper horizontal --- */
+  --hstep-marker-size: 56px;
+  --hstep-track-height: 3px;
+  --hstep-track-bg: rgba(184, 150, 63, 0.18);
+  --hstep-track-fill: linear-gradient(
+    90deg,
+    var(--fortuno-gold-soft) 0%,
+    var(--fortuno-gold-intense) 60%,
+    var(--fortuno-green-elegant) 100%
+  );
+  --hstep-skip-opacity: 0.38;
+
+  /* Marcador "pendente" no body claro — paleta ouro-pálido */
+  --hmarker-metal-pending: radial-gradient(
+    120% 120% at 30% 20%,
+    #eae0c3 0%,
+    #c7b885 55%,
+    #8a7a46 100%
+  );
+
+  /* Marcador "skipped" — borda dashed ouro */
+  --hmarker-skip-border: rgba(184, 150, 63, 0.45);
+
+  /* --- Botão ghost ouro ("Escolher um número", share da etapa 4) --- */
+  --btn-ghost-gold-bg: rgba(184, 150, 63, 0.08);
+  --btn-ghost-gold-bg-hover: rgba(184, 150, 63, 0.18);
+  --btn-ghost-gold-border: rgba(184, 150, 63, 0.45);
+  --btn-ghost-gold-border-hover: var(--fortuno-gold-intense);
+
+  /* --- Numeral de bilhete (Playfair sobre fundo claro) --- */
+  --ticket-numeral-gradient: linear-gradient(
+    180deg,
+    var(--fortuno-gold-soft) 0%,
+    var(--fortuno-gold-intense) 55%,
+    rgba(19, 68, 54, 0.85) 100%
+  );
+
+  /* --- Carrinho — billet row & ícones --- */
+  --billet-row-bg: #ffffff;
+  --billet-row-bg-random: linear-gradient(180deg, #ffffff 0%, #fbf7ee 100%);
+  --billet-row-border: rgba(184, 150, 63, 0.22);
+  --billet-row-accent: var(--fortuno-gold-intense);
+  --billet-icon-bg-random: linear-gradient(180deg, #fff6d6 0%, #f0e3b8 100%);
+  --billet-icon-bg-manual: radial-gradient(
+    120% 120% at 30% 20%,
+    var(--fortuno-gold-soft),
+    var(--fortuno-gold-intense) 80%
+  );
+
+  /* --- PIX — QR card --- */
+  --qr-card-bg: #ffffff;
+  --qr-card-border: var(--fortuno-gold-intense);
+  --qr-card-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 36px 60px -24px rgba(10, 42, 32, 0.25),
+    0 12px 24px -12px rgba(184, 150, 63, 0.35);
+
+  /* --- Copy-code PIX --- */
+  --copy-code-bg: #fbf7ee;
+  --copy-code-border: var(--receipt-border);
+
+  /* --- Countdown crítico (<2 min) --- */
+  --countdown-critical: #b94a2f;
+  --countdown-critical-bg: rgba(185, 74, 47, 0.1);
+  --countdown-critical-border: rgba(185, 74, 47, 0.35);
+
+  /* --- Ornamento art-déco (etapa 4) --- */
+  --ornament-line: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(184, 150, 63, 0.55) 20%,
+    rgba(212, 175, 55, 0.85) 50%,
+    rgba(184, 150, 63, 0.55) 80%,
+    transparent 100%
+  );
+
+  /* --- Confete (etapa 4) --- */
+  --confetti-gold-a: var(--fortuno-gold-soft);
+  --confetti-gold-b: var(--fortuno-gold-intense);
+  --confetti-green: var(--fortuno-green-elegant);
 }
 
 .dark {

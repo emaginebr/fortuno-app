@@ -1,0 +1,351 @@
+/*
+ * Fortuno — Checkout Wizard Horizontal (`/checkout/:lotteryId`)
+ * Editorial Casino Noir · variante light body.
+ * Complementa Tailwind com partes não viáveis por utilitárias:
+ * stepper horizontal (pseudo-elementos da trilha), ornamento art-déco,
+ * confete CSS-only, paper-card base, CTAs gold/ghost.
+ */
+
+/* ===========================================================
+   CARD PAPER BASE (reusado em lottery-detail e dashboard)
+   =========================================================== */
+.paper-card {
+  position: relative;
+  background: var(--card-paper-bg);
+  border: 1px solid var(--card-paper-border);
+  border-radius: 18px;
+  box-shadow: var(--shadow-paper);
+}
+.paper-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--card-gold-bar);
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+  pointer-events: none;
+}
+
+/* ===========================================================
+   CTAs (ouro sólido e ghost ouro)
+   =========================================================== */
+.cta-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.4rem;
+  min-height: 48px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    180deg,
+    var(--fortuno-gold-soft) 0%,
+    var(--fortuno-gold-intense) 100%
+  );
+  color: var(--fortuno-black);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  border: 1px solid rgba(138, 106, 37, 0.5);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.55) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.18) inset,
+    0 10px 24px -12px rgba(184, 150, 63, 0.65),
+    0 4px 10px -3px rgba(184, 150, 63, 0.35);
+  transition:
+    transform var(--duration-fast) var(--easing-spring),
+    box-shadow var(--duration-fast) var(--easing-out),
+    background var(--duration-fast) var(--easing-out);
+  cursor: pointer;
+}
+.cta-gold:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.65) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.18) inset,
+    0 14px 32px -12px rgba(184, 150, 63, 0.8),
+    0 6px 14px -3px rgba(184, 150, 63, 0.5);
+}
+.cta-gold:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.cta-ghost-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.125rem;
+  min-height: 40px;
+  border-radius: 9999px;
+  background: var(--btn-ghost-gold-bg);
+  color: var(--fortuno-gold-intense);
+  border: 1.5px solid var(--btn-ghost-gold-border);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  transition:
+    background var(--duration-fast) var(--easing-out),
+    border-color var(--duration-fast) var(--easing-out),
+    color var(--duration-fast) var(--easing-out),
+    transform var(--duration-fast) var(--easing-spring);
+  cursor: pointer;
+}
+.cta-ghost-gold:hover:not(:disabled) {
+  background: var(--btn-ghost-gold-bg-hover);
+  border-color: var(--btn-ghost-gold-border-hover);
+  color: var(--fortuno-black);
+  transform: translateY(-1px);
+}
+.cta-ghost-gold:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.cta-ghost-noir {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  min-height: 44px;
+  border-radius: 9999px;
+  background: rgba(11, 11, 11, 0.04);
+  color: var(--fortuno-black);
+  border: 1.5px solid rgba(11, 11, 11, 0.14);
+  font-weight: 600;
+  font-size: 14px;
+  transition:
+    background var(--duration-fast) var(--easing-out),
+    border-color var(--duration-fast) var(--easing-out),
+    transform var(--duration-fast) var(--easing-spring);
+  cursor: pointer;
+}
+.cta-ghost-noir:hover {
+  background: rgba(11, 11, 11, 0.08);
+  border-color: var(--fortuno-gold-intense);
+  transform: translateY(-1px);
+}
+
+/* ===========================================================
+   STEPPER HORIZONTAL — trilha de fundo + fill animado
+   =========================================================== */
+.hstep-wrap {
+  position: relative;
+  padding: 28px 24px 24px;
+}
+/* trilha bg (atrás dos marcadores) */
+.hstep-wrap::before {
+  content: '';
+  position: absolute;
+  top: calc(28px + (var(--hstep-marker-size) / 2) - (var(--hstep-track-height) / 2));
+  left: calc(12.5% + 24px);
+  right: calc(12.5% + 24px);
+  height: var(--hstep-track-height);
+  background: var(--hstep-track-bg);
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: 0;
+}
+/* trilha fill controlada via --hstep-fill (0..100%) */
+.hstep-wrap::after {
+  content: '';
+  position: absolute;
+  top: calc(28px + (var(--hstep-marker-size) / 2) - (var(--hstep-track-height) / 2));
+  left: calc(12.5% + 24px);
+  width: calc((75% - 48px) * (var(--hstep-fill, 0) / 100));
+  height: var(--hstep-track-height);
+  background: var(--hstep-track-fill);
+  border-radius: 9999px;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.45);
+  pointer-events: none;
+  transition: width var(--duration-slow) var(--easing-out);
+  z-index: 0;
+}
+
+.hstep-col {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.hstep-marker {
+  width: var(--hstep-marker-size);
+  height: var(--hstep-marker-size);
+  border-radius: 9999px;
+  display: grid;
+  place-items: center;
+  background: var(--hmarker-metal-pending);
+  border: 1.5px solid rgba(184, 150, 63, 0.35);
+  color: rgba(11, 11, 11, 0.55);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.12) inset,
+    0 6px 14px -6px rgba(10, 42, 32, 0.25);
+  transition:
+    background var(--duration-base) var(--easing-spring),
+    border-color var(--duration-base) var(--easing-out),
+    box-shadow var(--duration-base) var(--easing-out),
+    color var(--duration-base) var(--easing-out);
+}
+.hstep-marker[data-state='active'] {
+  background: var(--marker-metal-active);
+  color: var(--fortuno-black);
+  border-color: rgba(255, 255, 255, 0.55);
+}
+.hstep-marker[data-state='done'] {
+  background: var(--marker-metal-done);
+  color: var(--fortuno-gold-soft);
+  border-color: rgba(212, 175, 55, 0.55);
+}
+.hstep-marker[data-state='skipped'] {
+  background: transparent;
+  border: 1.5px dashed var(--hmarker-skip-border);
+  color: var(--fortuno-gold-intense);
+  box-shadow: none;
+}
+
+/* opacidade reduzida no wrapper skipped */
+.hstep-col[data-state='skipped'] {
+  opacity: var(--hstep-skip-opacity);
+}
+
+.hstep-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(11, 11, 11, 0.55);
+  text-align: center;
+  white-space: nowrap;
+  transition: color var(--duration-base) var(--easing-out);
+}
+.hstep-col[data-state='active'] .hstep-label {
+  color: var(--fortuno-gold-intense);
+}
+.hstep-col[data-state='done'] .hstep-label {
+  color: var(--fortuno-green-elegant);
+}
+
+.hstep-sub {
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(11, 11, 11, 0.45);
+  text-align: center;
+  margin-top: 2px;
+}
+
+/* Stepper mobile — dots lineares */
+.hstep-mobile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(184, 150, 63, 0.2);
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+}
+.hstep-mobile-dots {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+}
+.hstep-mobile-dots li {
+  list-style: none;
+  height: 6px;
+  flex: 1;
+  border-radius: 9999px;
+  background: rgba(184, 150, 63, 0.18);
+  transition: background var(--duration-base) var(--easing-out);
+}
+.hstep-mobile-dots li[data-state='active'] {
+  background: linear-gradient(
+    90deg,
+    var(--fortuno-gold-soft),
+    var(--fortuno-gold-intense)
+  );
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.55);
+}
+.hstep-mobile-dots li[data-state='done'] {
+  background: var(--fortuno-green-elegant);
+}
+
+/* ===========================================================
+   ORNAMENTO ART-DÉCO (etapa 4)
+   =========================================================== */
+.ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 0 auto 20px;
+}
+.ornament-line {
+  flex: 1;
+  max-width: 140px;
+  height: 1px;
+  background: var(--ornament-line);
+}
+.ornament-diamond {
+  width: 14px;
+  height: 14px;
+  background: var(--fortuno-gold-intense);
+  transform: rotate(45deg);
+  box-shadow:
+    0 0 0 3px rgba(184, 150, 63, 0.18),
+    0 0 12px rgba(212, 175, 55, 0.45);
+}
+
+/* ===========================================================
+   CONFETE CSS-ONLY (etapa 4)
+   10 peças com delays/posições/cores alternadas via :nth-child.
+   =========================================================== */
+.confetti-wrap {
+  position: relative;
+  height: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.confetti-piece {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 8px;
+  height: 14px;
+  background: var(--confetti-gold-a);
+  opacity: 0;
+  border-radius: 2px;
+  animation: confetti-fall 1.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.confetti-piece:nth-child(1)  { --tx: -220px; --rot: 420deg; background: var(--confetti-gold-a); animation-delay: 0.0s; left: 20%; }
+.confetti-piece:nth-child(2)  { --tx:  180px; --rot: -380deg; background: var(--confetti-gold-b); animation-delay: 0.05s; left: 30%; }
+.confetti-piece:nth-child(3)  { --tx: -120px; --rot: 280deg; background: var(--confetti-green);   animation-delay: 0.1s;  left: 40%; }
+.confetti-piece:nth-child(4)  { --tx:   40px; --rot: -260deg; background: var(--confetti-gold-a); animation-delay: 0.15s; left: 50%; }
+.confetti-piece:nth-child(5)  { --tx:  -60px; --rot: 340deg; background: var(--confetti-gold-b); animation-delay: 0.2s;  left: 55%; }
+.confetti-piece:nth-child(6)  { --tx:  160px; --rot: -300deg; background: var(--confetti-green);  animation-delay: 0.25s; left: 60%; }
+.confetti-piece:nth-child(7)  { --tx:  240px; --rot: 400deg; background: var(--confetti-gold-a); animation-delay: 0.3s;  left: 70%; }
+.confetti-piece:nth-child(8)  { --tx: -180px; --rot: -440deg; background: var(--confetti-gold-b); animation-delay: 0.35s; left: 45%; }
+.confetti-piece:nth-child(9)  { --tx:   80px; --rot: 260deg; background: var(--confetti-green);  animation-delay: 0.4s;  left: 35%; }
+.confetti-piece:nth-child(10) { --tx: -200px; --rot: -360deg; background: var(--confetti-gold-a); animation-delay: 0.45s; left: 65%; }
+
+/* ===========================================================
+   PIX — status pulsante ("aguardando pagamento")
+   =========================================================== */
+.pix-live-dot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--fortuno-gold-soft);
+  box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.65);
+  animation: live-pulse 1.8s ease-in-out infinite;
+}

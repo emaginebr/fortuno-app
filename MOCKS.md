@@ -66,6 +66,27 @@ Registro vivo dos endpoints que o frontend consome em modo MOCK até que o backe
 - **Descrição**: enquanto não existir, derivamos um excerpt dos primeiros 140 caracteres de `descriptionMd`. Substituir por `featuredLottery.subtitle ?? excerpt` quando o campo chegar.
 - **Item de acompanhamento**: pendente de abertura.
 
+### Checkout — validação de número já comprado
+
+- **Arquivo**: `src/components/checkout/ChooseNumberModal.tsx`
+- **Rota esperada**: `GET /lotteries/{id}/numbers/{n}/available`
+- **Descrição**: o modal de "escolher número específico" valida localmente apenas duplicidade na lista do usuário (`alreadyPicked`). Enquanto o endpoint não existir, assume-se que qualquer número no range é disponível; o backend rejeita no `createQrCode` se estiver tomado.
+- **Item de acompanhamento**: pendente de abertura.
+
+### Checkout — expiração do QR PIX
+
+- **Arquivo**: `src/components/checkout/PixStep.tsx`
+- **Rota esperada**: campo `expiredAt` em `TicketQRCodeInfo` (já existe em `types/ticket.ts`). Se o backend não retornar um ISO válido, o step aplica fallback de 15 min.
+- **Descrição**: o countdown usa `qrCode.expiredAt` quando presente e válido; caso contrário, aplica `Date.now() + 15min`. Remover fallback quando o backend garantir `expiredAt`.
+- **Item de acompanhamento**: pendente de abertura.
+
+### Checkout — data do próximo sorteio no TicketMiniCard
+
+- **Arquivo**: `src/components/checkout/SuccessStep.tsx`
+- **Rota esperada**: `LotteryInfo.nextRaffleDate` (ou equivalente dedicado). Hoje o step deriva a próxima `raffle.startDate` futura de `currentLottery.raffles`.
+- **Descrição**: enquanto não houver um campo dedicado, extraímos a próxima raffle com `startDate > now`. Se nenhuma existir, exibimos "Em breve".
+- **Item de acompanhamento**: pendente de abertura.
+
 ### Home — Imagem de fallback do hero
 
 - **Arquivo**: `public/images/hero-fallback.jpg` (asset estático pendente)

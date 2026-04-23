@@ -43,6 +43,7 @@ export default {
         'combo-card': 'var(--combo-card-shadow)',
         'combo-card-hover': 'var(--combo-card-shadow-hover)',
         'modal': 'var(--modal-shadow)',
+        'qr-card': 'var(--qr-card-shadow)',
       },
       backgroundImage: {
         'noir-page': 'var(--noir-bg-page)',
@@ -83,6 +84,13 @@ export default {
         'modal-divider': 'var(--modal-divider)',
         'receipt-divider': 'var(--receipt-divider)',
         'sticky-cta': 'var(--sticky-cta-bg)',
+        'hstep-track-fill': 'var(--hstep-track-fill)',
+        'hmarker-pending': 'var(--hmarker-metal-pending)',
+        'billet-row-random': 'var(--billet-row-bg-random)',
+        'billet-icon-random': 'var(--billet-icon-bg-random)',
+        'billet-icon-manual': 'var(--billet-icon-bg-manual)',
+        'ticket-numeral': 'var(--ticket-numeral-gradient)',
+        'ornament-line': 'var(--ornament-line)',
       },
       transitionTimingFunction: {
         'noir-out': 'cubic-bezier(0.22, 1, 0.36, 1)',
@@ -173,6 +181,40 @@ export default {
               'var(--combo-card-shadow-hover), 0 0 0 5px rgba(212,175,55,0.20)',
           },
         },
+        'hmarker-breath': {
+          '0%, 100%': {
+            boxShadow:
+              '0 1px 0 rgba(255,255,255,0.55) inset, 0 -1px 0 rgba(0,0,0,0.35) inset, 0 0 0 4px rgba(184,150,63,0.22), 0 10px 26px -8px rgba(184,150,63,0.55)',
+          },
+          '50%': {
+            boxShadow:
+              '0 1px 0 rgba(255,255,255,0.55) inset, 0 -1px 0 rgba(0,0,0,0.35) inset, 0 0 0 7px rgba(184,150,63,0.10), 0 12px 32px -8px rgba(184,150,63,0.70)',
+          },
+        },
+        'billet-slide-in': {
+          '0%': { opacity: '0', transform: 'translateX(-8px) scale(0.98)' },
+          '100%': { opacity: '1', transform: 'translateX(0) scale(1)' },
+        },
+        'countdown-blink': {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.55' },
+        },
+        'confetti-fall': {
+          '0%': { opacity: '0', transform: 'translate(0, 0) rotate(0deg)' },
+          '10%': { opacity: '1' },
+          '100%': {
+            opacity: '0',
+            transform: 'translate(var(--tx, 0), 380px) rotate(var(--rot, 360deg))',
+          },
+        },
+        'step-slide-in': {
+          '0%': { opacity: '0', transform: 'translateX(24px)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
+        'step-slide-out': {
+          '0%': { opacity: '1', transform: 'translateX(0)' },
+          '100%': { opacity: '0', transform: 'translateX(-24px)' },
+        },
       },
       animation: {
         'marker-breath': 'marker-breath 2.6s ease-in-out infinite',
@@ -190,6 +232,16 @@ export default {
         'modal-fade': 'modal-fade 200ms cubic-bezier(0.22, 1, 0.36, 1)',
         'modal-pop': 'modal-pop 220ms cubic-bezier(0.34, 1.56, 0.64, 1) both',
         'combo-ring-pulse': 'combo-ring-pulse 2.4s ease-in-out infinite',
+        'hmarker-breath': 'hmarker-breath 2.6s ease-in-out infinite',
+        'billet-slide-in':
+          'billet-slide-in 320ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'countdown-blink': 'countdown-blink 1s ease-in-out infinite',
+        'confetti-fall':
+          'confetti-fall 1.8s cubic-bezier(0.22, 1, 0.36, 1) forwards',
+        'step-slide-in':
+          'step-slide-in 280ms cubic-bezier(0.22, 1, 0.36, 1) both',
+        'step-slide-out':
+          'step-slide-out 200ms cubic-bezier(0.22, 1, 0.36, 1) both',
       },
     },
   },
