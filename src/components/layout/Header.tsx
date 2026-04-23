@@ -11,6 +11,7 @@ interface NavItemDef {
 }
 
 const NAV_ITEMS: NavItemDef[] = [
+  { to: '/', labelKey: 'menu.home' },
   { to: '/sorteios', labelKey: 'menu.lotteries' },
   { to: '/meus-numeros', labelKey: 'menu.myNumbers' },
   { to: '/quem-somos', labelKey: 'menu.about' },
