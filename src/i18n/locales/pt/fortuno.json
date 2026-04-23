@@ -273,5 +273,79 @@
     "goToAria": "Ir para página {{page}}",
     "ofLabelPrefix": "Página",
     "ofLabelMiddle": "de"
+  },
+  "myNumbers": {
+    "eyebrow": "Coleção pessoal",
+    "titlePrefix": "Meus",
+    "titleEmphasis": "Números",
+    "counterSingular": "bilhete",
+    "counterPlural": "bilhetes",
+    "lotteryContextPrefix": "em",
+    "cta": "Comprar mais bilhetes",
+    "ctaAria": "Ir para a vitrine de sorteios",
+    "gridAria": "Lista dos seus bilhetes",
+    "loadingAria": "Carregando seus bilhetes",
+    "paginationAria": "Paginação dos seus bilhetes",
+    "trustBar": "Todos os bilhetes são auditados e imutáveis",
+    "purchasePrefix": "Compra",
+    "authentic": "Autenticado",
+    "ticketEyebrow": "Bilhete",
+    "ticketAria": "Bilhete {{number}}, {{status}}. Sorteio em {{drawDate}}.",
+    "ticketAriaNoDate": "Bilhete {{number}}, {{status}}.",
+    "filters": {
+      "lotteryLabel": "Sorteio",
+      "lotteryAll": "Todos os sorteios",
+      "lotteryAria": "Filtrar por sorteio",
+      "searchLabel": "Número",
+      "searchPlaceholder": "Buscar número",
+      "searchAria": "Buscar por número do bilhete",
+      "statusLabel": "Status",
+      "statusAll": "Todos os status",
+      "statusAria": "Filtrar por status",
+      "sortLabel": "Ordenar",
+      "sortAria": "Ordenar bilhetes",
+      "sortNewest": "Mais recentes",
+      "sortOldest": "Mais antigos",
+      "clear": "Limpar filtros"
+    },
+    "status": {
+      "open": "Em jogo",
+      "closed": "Sorteado",
+      "refunded": "Reembolsado",
+      "winner": "Vencedor",
+      "pendingRefund": "Reembolso pendente"
+    },
+    "empty": {
+      "noTicketsTitle": "Sua coleção começa aqui.",
+      "noTicketsBody": "Ainda não há bilhetes na sua conta. Explore os sorteios em andamento e garanta os seus números da sorte.",
+      "noTicketsCta": "Ver sorteios",
+      "noMatchTitle": "Nenhum bilhete encontrado.",
+      "noMatchBody": "Os filtros ativos não retornaram resultados. Ajuste o sorteio, o status ou limpe a busca.",
+      "noMatchClear": "Limpar filtros"
+    },
+    "modal": {
+      "eyebrow": "Bilhete autenticado",
+      "title": "Detalhes do bilhete",
+      "closeAria": "Fechar detalhes do bilhete",
+      "lotteryLabel": "Sorteio",
+      "drawDateLabel": "Data do sorteio",
+      "prizeLabel": "Prêmio",
+      "statusLabel": "Status",
+      "purchaseLabel": "Compra",
+      "idLabel": "ID",
+      "qrCaption": "Identificador do bilhete",
+      "downloadCta": "Baixar como imagem",
+      "downloadUnavailable": "Download em breve",
+      "viewLotteryCta": "Ver detalhes do sorteio"
+    }
+  },
+  "ticket": {
+    "status": {
+      "open": "Em jogo",
+      "closed": "Sorteado",
+      "refunded": "Reembolsado",
+      "winner": "Vencedor",
+      "pendingRefund": "Reembolso pendente"
+    }
   }
 }

@@ -87,6 +87,20 @@ Registro vivo dos endpoints que o frontend consome em modo MOCK até que o backe
 - **Descrição**: enquanto não houver um campo dedicado, extraímos a próxima raffle com `startDate > now`. Se nenhuma existir, exibimos "Em breve".
 - **Item de acompanhamento**: pendente de abertura.
 
+### MyNumbers — Ticket vencedor (`isWinner`)
+
+- **Arquivo**: `src/pages/dashboard/MyNumbersPage.tsx`
+- **Rota esperada**: `GET /raffles/{lotteryId}/winners` retornando, no mínimo, `{ ticketId: number }[]` para marcar bilhetes vencedores.
+- **Descrição**: o voucher premium exibe a variante "vencedor" (metal ouro + chip `Crown` + selo "Champ") quando `isWinner === true`. Enquanto o backend não expõe vencedores por sorteio, a página passa `isWinner={false}` para todos os bilhetes. Ao chegar o endpoint, alimentar um `Map<lotteryId, ticketId[]>` via `useRaffleAward` e calcular por bilhete.
+- **Item de acompanhamento**: pendente de abertura.
+
+### MyNumbers — Download do bilhete como imagem
+
+- **Arquivo**: `src/components/tickets/TicketDetailModal.tsx`
+- **Rota esperada**: n/a — feature client-side dependente de `html2canvas` ou equivalente.
+- **Descrição**: o modal de detalhes do bilhete mostra um botão "Baixar como imagem" que hoje fica desabilitado com tooltip "em breve". `html2canvas` não está no `package.json` e a política do repo proíbe instalar libs nessa PR. Decisões possíveis: (a) serializar o voucher em SVG puro programaticamente e fazer download via Blob + `<a download>`; (b) adicionar `html2canvas` em PR separado.
+- **Item de acompanhamento**: pendente de abertura.
+
 ### Home — Imagem de fallback do hero
 
 - **Arquivo**: `public/images/hero-fallback.jpg` (asset estático pendente)

@@ -229,6 +229,14 @@ export default {
           '0%': { transform: 'translateX(-100%)' },
           '100%': { transform: 'translateX(100%)' },
         },
+        'ticket-stagger-in': {
+          '0%': { opacity: '0', transform: 'translateY(8px) scale(0.985)' },
+          '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+        },
+        'voucher-shimmer': {
+          '0%': { left: '-100%' },
+          '100%': { left: '200%' },
+        },
       },
       animation: {
         'marker-breath': 'marker-breath 2.6s ease-in-out infinite',
@@ -257,6 +265,10 @@ export default {
         'step-slide-out':
           'step-slide-out 200ms cubic-bezier(0.22, 1, 0.36, 1) both',
         'skeleton-slide': 'skeleton-slide 1.8s linear infinite',
+        'ticket-stagger-in':
+          'ticket-stagger-in 460ms cubic-bezier(0.22, 1, 0.36, 1) both',
+        'voucher-shimmer':
+          'voucher-shimmer 1.6s cubic-bezier(0.22, 1, 0.36, 1) infinite',
       },
     },
   },

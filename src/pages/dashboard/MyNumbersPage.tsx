@@ -1,139 +1,268 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ShieldCheck } from 'lucide-react';
+import { useUser } from 'nauth-react';
 import { useTicket } from '@/hooks/useTicket';
 import { useLottery } from '@/hooks/useLottery';
-import { TicketCard } from '@/components/tickets/TicketCard';
-import { LoadingSpinner } from '@/components/common/LoadingSpinner';
+import { useReferral } from '@/hooks/useReferral';
+import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
+import { Pagination } from '@/components/common/Pagination';
+import {
+  TicketsToolbar,
+  type TicketsSort,
+  type TicketsStatusFilter,
+} from '@/components/tickets/TicketsToolbar';
+import { TicketsGrid, TicketsGridSkeleton } from '@/components/tickets/TicketsGrid';
+import { TicketCardPremium } from '@/components/tickets/TicketCardPremium';
+import { TicketEmptyState } from '@/components/tickets/TicketEmptyState';
+import { TicketDetailModal } from '@/components/tickets/TicketDetailModal';
+import { TicketRefundState, LotteryStatus } from '@/types/enums';
+import type { LotteryInfo } from '@/types/lottery';
+import type { TicketInfo } from '@/types/ticket';
 
 const PAGE_SIZE = 12;
 
+const prefersReducedMotion = (): boolean => {
+  if (typeof window === 'undefined' || !window.matchMedia) return false;
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+};
+
+const formatDrawDate = (iso: string | undefined): string | undefined => {
+  if (!iso) return undefined;
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return undefined;
+  return d.toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+};
+
+const formatPrize = (value: number | undefined): string | undefined => {
+  if (value == null || value <= 0) return undefined;
+  return value.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    maximumFractionDigits: 0,
+  });
+};
+
+const nextDrawDateFor = (lottery: LotteryInfo | undefined): string | undefined => {
+  if (!lottery?.raffles?.length) return undefined;
+  const now = Date.now();
+  const upcoming = lottery.raffles
+    .map((r) => ({ iso: r.raffleDatetime, ts: new Date(r.raffleDatetime).getTime() }))
+    .filter((r) => !Number.isNaN(r.ts))
+    .sort((a, b) => a.ts - b.ts);
+  const future = upcoming.find((r) => r.ts >= now);
+  return formatDrawDate((future ?? upcoming[0])?.iso);
+};
+
 export const MyNumbersPage = (): JSX.Element => {
+  const { t } = useTranslation();
+  const { user } = useUser();
+  const { referralCode, panel, loadPanel } = useReferral();
   const { tickets, loading, loadMine } = useTicket();
   const { openLotteries, loadOpen } = useLottery();
-  const [lotteryFilter, setLotteryFilter] = useState<number | ''>('');
+
+  const [lotteryFilter, setLotteryFilter] = useState<number | null>(null);
   const [search, setSearch] = useState('');
+  const [sort, setSort] = useState<TicketsSort>('newest');
+  const [statusFilter, setStatusFilter] = useState<TicketsStatusFilter>('all');
   const [page, setPage] = useState(1);
+  const [selectedTicketId, setSelectedTicketId] = useState<number | null>(null);
 
   useEffect(() => {
-    void loadMine();
+    void loadPanel();
+  }, [loadPanel]);
+
+  useEffect(() => {
     void loadOpen();
-  }, [loadMine, loadOpen]);
+  }, [loadOpen]);
 
   useEffect(() => {
-    if (lotteryFilter) {
-      void loadMine({ lotteryId: lotteryFilter });
-    } else {
-      void loadMine();
-    }
+    void loadMine(lotteryFilter != null ? { lotteryId: lotteryFilter } : undefined);
   }, [lotteryFilter, loadMine]);
 
-  const filtered = useMemo(() => {
-    if (!search.trim()) return tickets;
-    const q = search.trim().toLowerCase();
-    return tickets.filter(
-      (t) =>
-        t.ticketValue.toLowerCase().includes(q) ||
-        String(t.ticketNumber).includes(q),
-    );
-  }, [tickets, search]);
+  // MOCK: aguarda `panel.totalPoints` — ver MOCKS.md. Trunca totalToReceive p/ int.
+  const totalPoints = Math.max(0, Math.floor(panel?.totalToReceive ?? 0));
 
+  // Índices auxiliares por lotteryId a partir de openLotteries.
+  const lotteryById = useMemo(() => {
+    const m = new Map<number, LotteryInfo>();
+    openLotteries.forEach((l) => m.set(l.lotteryId, l));
+    return m;
+  }, [openLotteries]);
+
+  const filtered = useMemo<TicketInfo[]>(() => {
+    let out = tickets;
+
+    const q = search.trim().toLowerCase();
+    if (q) {
+      out = out.filter(
+        (t0) =>
+          t0.ticketValue.toLowerCase().includes(q) ||
+          String(t0.ticketNumber).includes(q),
+      );
+    }
+
+    if (statusFilter !== 'all') {
+      out = out.filter((t0) => {
+        const lottery = lotteryById.get(t0.lotteryId);
+        const closed = lottery?.status === LotteryStatus.Closed;
+        if (statusFilter === 'refunded')
+          return t0.refundState === TicketRefundState.Refunded;
+        if (statusFilter === 'closed')
+          return closed && t0.refundState !== TicketRefundState.Refunded;
+        // open
+        return !closed && t0.refundState !== TicketRefundState.Refunded;
+      });
+    }
+
+    const sorted = [...out].sort((a, b) => {
+      const at = new Date(a.createdAt).getTime();
+      const bt = new Date(b.createdAt).getTime();
+      return sort === 'newest' ? bt - at : at - bt;
+    });
+    return sorted;
+  }, [tickets, search, statusFilter, sort, lotteryById]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const paginated = useMemo(
     () => filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
     [filtered, page],
   );
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
 
-  const lotteryNameById = useMemo(() => {
-    const map = new Map<number, string>();
-    openLotteries.forEach((l) => map.set(l.lotteryId, l.name));
-    return map;
-  }, [openLotteries]);
+  // Reset pagina ao mudar filtros
+  useEffect(() => {
+    setPage(1);
+  }, [search, lotteryFilter, statusFilter, sort]);
+
+  const handlePageChange = (next: number): void => {
+    setPage(next);
+    window.scrollTo({
+      top: 0,
+      behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+    });
+  };
+
+  const hasActiveFilters =
+    lotteryFilter !== null ||
+    search.trim() !== '' ||
+    sort !== 'newest' ||
+    statusFilter !== 'all';
+
+  const handleClearFilters = (): void => {
+    setLotteryFilter(null);
+    setSearch('');
+    setSort('newest');
+    setStatusFilter('all');
+    setPage(1);
+  };
+
+  const lotteryContextName =
+    lotteryFilter != null ? lotteryById.get(lotteryFilter)?.name : undefined;
+
+  const selectedTicket = useMemo<TicketInfo | undefined>(
+    () =>
+      selectedTicketId != null
+        ? tickets.find((tk) => tk.ticketId === selectedTicketId)
+        : undefined,
+    [selectedTicketId, tickets],
+  );
+
+  const selectedLottery = selectedTicket
+    ? lotteryById.get(selectedTicket.lotteryId)
+    : undefined;
+
+  const isFirstLoad = loading && tickets.length === 0;
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-10">
-      <h1 className="font-display text-3xl text-fortuno-black">Meus Números</h1>
+    <div className="min-h-screen bg-dash-page text-fortuno-black flex flex-col">
+      <DashboardHeader
+        user={user}
+        referralCode={referralCode}
+        totalPoints={totalPoints}
+      />
 
-      <div className="mt-6 flex flex-wrap gap-4">
-        <div className="flex-1 min-w-[200px]">
-          <label className="text-sm font-semibold" htmlFor="lottery-filter">
-            Sorteio
-          </label>
-          <select
-            id="lottery-filter"
-            value={lotteryFilter}
-            onChange={(e) =>
-              setLotteryFilter(e.target.value ? Number(e.target.value) : '')
-            }
-            className="mt-1 w-full rounded-md border border-fortuno-black/20 px-3 py-2"
-          >
-            <option value="">Todos os sorteios</option>
-            {openLotteries.map((l) => (
-              <option key={l.lotteryId} value={l.lotteryId}>
-                {l.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="flex-1 min-w-[200px]">
-          <label className="text-sm font-semibold" htmlFor="number-search">
-            Buscar número
-          </label>
-          <input
-            id="number-search"
-            type="text"
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-            placeholder="Digite um número ou parte dele"
-            className="mt-1 w-full rounded-md border border-fortuno-black/20 px-3 py-2"
-          />
-        </div>
-      </div>
+      <main className="relative z-10 mx-auto max-w-7xl w-full px-6 py-8 md:py-10 flex-1">
+        <TicketsToolbar
+          totalCount={filtered.length}
+          openLotteries={openLotteries}
+          lotteryFilter={lotteryFilter}
+          search={search}
+          sort={sort}
+          statusFilter={statusFilter}
+          lotteryContextName={lotteryContextName}
+          hasActiveFilters={hasActiveFilters}
+          onLotteryChange={setLotteryFilter}
+          onSearchChange={setSearch}
+          onSortChange={setSort}
+          onStatusChange={setStatusFilter}
+          onClearFilters={handleClearFilters}
+        />
 
-      {loading ? (
-        <LoadingSpinner label="Carregando seus bilhetes..." />
-      ) : filtered.length === 0 ? (
-        <p className="mt-10 text-center text-fortuno-black/60">
-          Nenhum bilhete encontrado.
-        </p>
-      ) : (
-        <>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {paginated.map((t) => (
-              <TicketCard
-                key={t.ticketId}
-                ticket={t}
-                lotteryName={lotteryNameById.get(t.lotteryId)}
+        <div className="mt-8">
+          {isFirstLoad ? (
+            <TicketsGridSkeleton count={6} />
+          ) : filtered.length === 0 ? (
+            <TicketEmptyState
+              variant={hasActiveFilters ? 'no-match' : 'no-tickets'}
+              onClearFilters={handleClearFilters}
+            />
+          ) : (
+            <>
+              <TicketsGrid>
+                {paginated.map((tk, i) => {
+                  const lottery = lotteryById.get(tk.lotteryId);
+                  const drawDate = nextDrawDateFor(lottery);
+                  const closed = lottery?.status === LotteryStatus.Closed;
+                  return (
+                    <TicketCardPremium
+                      key={tk.ticketId}
+                      ticket={tk}
+                      drawDate={drawDate}
+                      lotteryClosed={closed}
+                      // MOCK: aguarda endpoint de vencedores por sorteio — ver MOCKS.md.
+                      isWinner={false}
+                      index={i}
+                      onClick={() => setSelectedTicketId(tk.ticketId)}
+                    />
+                  );
+                })}
+              </TicketsGrid>
+
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+                ariaLabel={t('myNumbers.paginationAria')}
+                className="mt-10"
               />
-            ))}
-          </div>
 
-          {totalPages > 1 ? (
-            <nav className="mt-8 flex items-center justify-center gap-2">
-              <button
-                type="button"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
-                className="btn-secondary disabled:opacity-40"
-              >
-                Anterior
-              </button>
-              <span className="px-3 text-sm">
-                Página {page} de {totalPages}
-              </span>
-              <button
-                type="button"
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-                className="btn-secondary disabled:opacity-40"
-              >
-                Próxima
-              </button>
-            </nav>
-          ) : null}
-        </>
-      )}
-    </main>
+              <div className="mt-4 flex justify-center">
+                <span className="trust-bar">
+                  <ShieldCheck aria-hidden="true" />
+                  {t('myNumbers.trustBar')}
+                </span>
+              </div>
+            </>
+          )}
+        </div>
+      </main>
+
+      {selectedTicket ? (
+        <TicketDetailModal
+          ticket={selectedTicket}
+          lotteryName={selectedLottery?.name}
+          lotterySlug={selectedLottery?.slug}
+          lotteryPrize={formatPrize(selectedLottery?.totalPrizeValue)}
+          drawDate={nextDrawDateFor(selectedLottery)}
+          lotteryClosed={selectedLottery?.status === LotteryStatus.Closed}
+          isWinner={false}
+          onClose={() => setSelectedTicketId(null)}
+        />
+      ) : null}
+    </div>
   );
 };

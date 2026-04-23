@@ -4,6 +4,7 @@
 @import './lottery-detail.css';
 @import './checkout.css';
 @import './lottery-list.css';
+@import './my-numbers.css';
 
 @tailwind base;
 @tailwind components;

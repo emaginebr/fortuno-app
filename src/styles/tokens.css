@@ -615,6 +615,35 @@
     rgba(212, 175, 55, 0.1) 60%,
     transparent 100%
   );
+
+  /* ===========================================================
+     MY NUMBERS — Toolbar editorial (reusável por outras listagens)
+     Tokens semânticos genéricos de toolbar + filter pills.
+     =========================================================== */
+
+  /* --- Toolbar editorial (card que acomoda título + pílulas) --- */
+  --toolbar-card-bg: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(247, 243, 236, 0.82) 100%
+  );
+  --toolbar-card-border: rgba(184, 150, 63, 0.32);
+  --toolbar-card-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.85) inset,
+    0 12px 28px -18px rgba(10, 42, 32, 0.18),
+    0 4px 10px -4px rgba(184, 150, 63, 0.1);
+
+  /* --- Filter pills (Toolbar) --- */
+  --filter-pill-bg: rgba(255, 255, 255, 0.65);
+  --filter-pill-border: rgba(184, 150, 63, 0.3);
+  --filter-pill-bg-hover: rgba(212, 175, 55, 0.1);
+  --filter-pill-border-hover: rgba(184, 150, 63, 0.55);
+  --filter-pill-bg-active: linear-gradient(
+    180deg,
+    rgba(212, 175, 55, 0.18),
+    rgba(184, 150, 63, 0.12)
+  );
+  --filter-pill-border-active: rgba(212, 175, 55, 0.65);
 }
 
 .dark {

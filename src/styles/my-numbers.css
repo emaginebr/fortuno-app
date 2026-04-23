@@ -1,0 +1,1237 @@
+/* ===========================================================
+   MY NUMBERS — Editorial Casino Noir · Vintage Casino Voucher (v2)
+   Layout vertical: head / voucher-number-band / meta+foot
+   Reusos: dashboard, lottery-list, lottery-detail, checkout.
+   Apenas o que é genuinamente novo vive aqui.
+   =========================================================== */
+
+/* === Tokens exclusivos do voucher (não promover sem 2o consumidor) === */
+:root {
+  /* Papel pergaminho */
+  --ticket-paper-bg:
+    radial-gradient(
+      120% 100% at 0% 0%,
+      rgba(255, 250, 232, 0.95) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      120% 100% at 100% 100%,
+      rgba(247, 243, 236, 0.85) 0%,
+      transparent 60%
+    ),
+    linear-gradient(180deg, #fdfaf0 0%, #f3ecd6 100%);
+
+  /* Frame metálico — variantes */
+  --ticket-frame-bg-open: linear-gradient(
+    135deg,
+    #d4af37 0%,
+    #b8963f 25%,
+    #f5dc8b 50%,
+    #b8963f 75%,
+    #8a6f2b 100%
+  );
+  --ticket-frame-bg-closed: linear-gradient(
+    135deg,
+    #2d5d4a 0%,
+    #1a4034 25%,
+    #4a7a68 50%,
+    #1a4034 75%,
+    #0a2a20 100%
+  );
+  --ticket-frame-bg-refunded: linear-gradient(
+    135deg,
+    #c08a4a 0%,
+    #8a5a2b 25%,
+    #d8a672 50%,
+    #8a5a2b 75%,
+    #4d3216 100%
+  );
+
+  /* Numeral (Playfair italic) por estado */
+  --ticket-numeral-grad-open: linear-gradient(
+    180deg,
+    #d4af37 0%,
+    #b8963f 50%,
+    #6e4421 130%
+  );
+  --ticket-numeral-grad-closed: linear-gradient(
+    180deg,
+    #2d5d4a 0%,
+    #1a4034 60%,
+    #0a2a20 130%
+  );
+  --ticket-numeral-grad-refunded: linear-gradient(
+    180deg,
+    #c08a4a 0%,
+    #8a5a2b 60%,
+    #4d3216 130%
+  );
+
+  /* Tipografia fluida do número (container inline-size + clamp(cqi)) */
+  --voucher-number-size: clamp(34px, 11cqi, 84px);
+  --voucher-number-size-long: clamp(24px, 7.5cqi, 56px);
+  --voucher-number-size-xlong: clamp(20px, 6cqi, 44px);
+  --voucher-number-ls: -0.03em;
+  --voucher-number-ls-long: -0.02em;
+  --voucher-number-ls-xlong: -0.015em;
+
+  /* Linha ouro art-déco que moldura o número */
+  --voucher-rule-line: linear-gradient(
+    90deg,
+    transparent,
+    rgba(184, 150, 63, 0.55),
+    transparent
+  );
+
+  /* Watermark FORTUNO ao fundo */
+  --ticket-watermark-color: rgba(184, 150, 63, 0.07);
+
+  /* Sombras do voucher */
+  --ticket-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.85) inset,
+    0 18px 32px -18px rgba(10, 42, 32, 0.28),
+    0 6px 14px -4px rgba(184, 150, 63, 0.18);
+  --ticket-shadow-hover:
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 28px 48px -22px rgba(10, 42, 32, 0.42),
+    0 14px 24px -8px rgba(184, 150, 63, 0.4),
+    0 0 0 1px rgba(212, 175, 55, 0.25);
+
+  /* Ornamentos art-déco */
+  --ticket-corner-color: rgba(184, 150, 63, 0.55);
+
+  /* Shimmer ao hover */
+  --ticket-shimmer-bg: linear-gradient(
+    110deg,
+    transparent 30%,
+    rgba(255, 236, 180, 0.55) 48%,
+    rgba(255, 236, 180, 0.85) 50%,
+    rgba(255, 236, 180, 0.55) 52%,
+    transparent 70%
+  );
+
+  /* Selo circular art-déco (3 metais) */
+  --seal-bg-open: radial-gradient(
+    circle at 30% 30%,
+    #f5dc8b 0%,
+    #b8963f 60%,
+    #6e4421 100%
+  );
+  --seal-bg-closed: radial-gradient(
+    circle at 30% 30%,
+    #6a9684 0%,
+    #2d5d4a 60%,
+    #0a2a20 100%
+  );
+  --seal-bg-refunded: radial-gradient(
+    circle at 30% 30%,
+    #d8a672 0%,
+    #8a5a2b 60%,
+    #4d3216 100%
+  );
+  --seal-border: rgba(110, 68, 33, 0.55);
+  --seal-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 4px 8px -4px rgba(110, 68, 33, 0.45);
+
+  /* Status pill por estado */
+  --status-open-bg: rgba(184, 150, 63, 0.16);
+  --status-open-border: rgba(184, 150, 63, 0.5);
+  --status-open-fg: #6e4421;
+  --status-closed-bg: rgba(19, 68, 54, 0.14);
+  --status-closed-border: rgba(19, 68, 54, 0.45);
+  --status-closed-fg: #134436;
+  --status-refunded-bg: rgba(138, 90, 43, 0.12);
+  --status-refunded-border: rgba(138, 90, 43, 0.45);
+  --status-refunded-fg: #6e4421;
+
+  /* Skeleton */
+  --ticket-skel-base: rgba(184, 150, 63, 0.1);
+  --ticket-skel-shimmer: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(212, 175, 55, 0.18) 40%,
+    rgba(212, 175, 55, 0.32) 50%,
+    rgba(212, 175, 55, 0.18) 60%,
+    transparent 100%
+  );
+}
+
+/* ===========================================================
+   TOOLBAR EDITORIAL — título + pílulas de filtro
+   =========================================================== */
+.tickets-toolbar {
+  position: relative;
+  background: var(--toolbar-card-bg);
+  border: 1px solid var(--toolbar-card-border);
+  border-radius: 20px;
+  padding: 18px 20px 16px;
+  box-shadow: var(--toolbar-card-shadow);
+  backdrop-filter: blur(8px);
+}
+.tickets-toolbar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--gold-divider);
+  opacity: 0.7;
+  border-radius: 20px 20px 0 0;
+}
+.toolbar-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(24px, 2.6vw, 32px);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  color: var(--fortuno-black);
+}
+.toolbar-title .italic {
+  font-style: italic;
+  color: var(--fortuno-gold-intense);
+}
+.toolbar-lottery-context {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(11, 11, 11, 0.6);
+  letter-spacing: 0.02em;
+}
+.toolbar-lottery-context strong {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  color: var(--fortuno-green-elegant);
+  letter-spacing: -0.005em;
+}
+.toolbar-lottery-context svg {
+  width: 13px;
+  height: 13px;
+  color: var(--fortuno-gold-intense);
+}
+.toolbar-counter {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(11, 11, 11, 0.55);
+  letter-spacing: 0.02em;
+  margin-left: 8px;
+}
+.toolbar-counter strong {
+  color: var(--fortuno-green-elegant);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* === Pílulas === */
+.filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.filter-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 8px 12px;
+  min-height: 40px;
+  border-radius: 999px;
+  background: var(--filter-pill-bg);
+  border: 1px solid var(--filter-pill-border);
+  color: var(--fortuno-black);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition:
+    background var(--duration-fast) var(--easing-out),
+    border-color var(--duration-fast) var(--easing-out),
+    transform var(--duration-fast) var(--easing-out);
+  cursor: pointer;
+}
+.filter-pill:hover {
+  background: var(--filter-pill-bg-hover);
+  border-color: var(--filter-pill-border-hover);
+}
+.filter-pill:focus-within,
+.filter-pill:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-gold-focus);
+  border-color: var(--filter-pill-border-active);
+}
+.filter-pill.is-active {
+  background: var(--filter-pill-bg-active);
+  border-color: var(--filter-pill-border-active);
+  color: var(--fortuno-black);
+}
+.filter-pill .pill-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--fortuno-gold-intense);
+  flex-shrink: 0;
+}
+.filter-pill .pill-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(11, 11, 11, 0.55);
+}
+.filter-pill .pill-value {
+  font-weight: 600;
+  color: var(--fortuno-black);
+  font-variant-numeric: tabular-nums;
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.filter-pill.is-search {
+  padding: 4px 6px 4px 14px;
+  gap: 6px;
+}
+.filter-pill.is-search input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--fortuno-black);
+  font-size: 13px;
+  width: 160px;
+  font-variant-numeric: tabular-nums;
+}
+.filter-pill.is-search input::placeholder {
+  color: rgba(11, 11, 11, 0.45);
+}
+.filter-pill.is-search .pill-search-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(184, 150, 63, 0.18);
+  border: 1px solid rgba(184, 150, 63, 0.4);
+  color: var(--fortuno-gold-intense);
+  display: inline-grid;
+  place-items: center;
+}
+.filter-pill .pill-native-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--fortuno-black);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  max-width: 180px;
+}
+.toolbar-clear-link {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--fortuno-green-elegant);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  transition:
+    color var(--duration-fast) var(--easing-out),
+    background var(--duration-fast) var(--easing-out);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.toolbar-clear-link:hover {
+  color: var(--fortuno-gold-intense);
+  background: rgba(184, 150, 63, 0.1);
+}
+@media (max-width: 639px) {
+  .filter-pills-scroll {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+  }
+  .filter-pills-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  .filter-pill {
+    flex-shrink: 0;
+  }
+}
+
+/* ===========================================================
+   TICKET PREMIUM v2 — Vintage Casino Voucher (layout vertical)
+   =========================================================== */
+
+.ticket {
+  position: relative;
+  isolation: isolate;
+  padding: 1.5px;
+  border-radius: 18px;
+  background: var(--ticket-frame-bg-open);
+  box-shadow: var(--ticket-shadow);
+  transition:
+    transform var(--duration-base) var(--easing-spring),
+    box-shadow var(--duration-base) var(--easing-out);
+  width: 100%;
+  aspect-ratio: 1.9 / 1;
+  display: block;
+  animation: ticket-stagger-in 460ms var(--easing-out) both;
+  container-type: inline-size;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+}
+button.ticket {
+  cursor: pointer;
+  border: none;
+}
+.ticket:hover {
+  transform: translateY(-3px) rotate(-0.3deg);
+  box-shadow: var(--ticket-shadow-hover);
+}
+.ticket:focus-visible {
+  outline: none;
+  box-shadow: var(--ticket-shadow-hover), var(--shadow-gold-focus);
+}
+.ticket {
+  animation-delay: calc(var(--ticket-index, 0) * 60ms);
+}
+
+/* === Papel interno (fluxo vertical) === */
+.ticket-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  background: var(--ticket-paper-bg);
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 16px 22px 14px;
+  gap: 8px;
+}
+.ticket-inner::before {
+  content: 'FORTUNO';
+  position: absolute;
+  bottom: -14px;
+  right: -6px;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 900;
+  font-style: italic;
+  font-size: clamp(68px, 22cqi, 120px);
+  letter-spacing: -0.04em;
+  color: var(--ticket-watermark-color);
+  pointer-events: none;
+  line-height: 0.85;
+  user-select: none;
+  transform: rotate(-4deg);
+  z-index: 0;
+}
+
+/* === Cantos art-déco === */
+.ticket-corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: var(--ticket-corner-color);
+  pointer-events: none;
+  z-index: 2;
+}
+.ticket-corner.is-tl {
+  top: 7px;
+  left: 7px;
+  border-top: 1.5px solid;
+  border-left: 1.5px solid;
+  border-top-left-radius: 7px;
+}
+.ticket-corner.is-tr {
+  top: 7px;
+  right: 7px;
+  border-top: 1.5px solid;
+  border-right: 1.5px solid;
+  border-top-right-radius: 7px;
+}
+.ticket-corner.is-bl {
+  bottom: 7px;
+  left: 7px;
+  border-bottom: 1.5px solid;
+  border-left: 1.5px solid;
+  border-bottom-left-radius: 7px;
+}
+.ticket-corner.is-br {
+  bottom: 7px;
+  right: 7px;
+  border-bottom: 1.5px solid;
+  border-right: 1.5px solid;
+  border-bottom-right-radius: 7px;
+}
+.ticket-corner::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--fortuno-gold-soft);
+  transform: rotate(45deg);
+  box-shadow: 0 0 0 1px rgba(184, 150, 63, 0.45);
+}
+.ticket-corner.is-tl::after {
+  top: -2px;
+  left: -2px;
+}
+.ticket-corner.is-tr::after {
+  top: -2px;
+  right: -2px;
+}
+.ticket-corner.is-bl::after {
+  bottom: -2px;
+  left: -2px;
+}
+.ticket-corner.is-br::after {
+  bottom: -2px;
+  right: -2px;
+}
+
+/* === Furos decorativos laterais === */
+.ticket-hole {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--dash-bg-page, #f3ecd6);
+  box-shadow:
+    inset 0 1px 2px rgba(11, 11, 11, 0.18),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.45);
+  z-index: 3;
+  pointer-events: none;
+  top: 50%;
+}
+.ticket-hole.is-left {
+  left: -6px;
+  transform: translateY(-50%);
+}
+.ticket-hole.is-right {
+  right: -6px;
+  transform: translateY(-50%);
+}
+
+/* === Micro-header === */
+.ticket-head {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+.ticket-head-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.ticket-eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(11, 11, 11, 0.55);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.ticket-eyebrow-sep {
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  background: var(--fortuno-gold-intense);
+  border-radius: 50%;
+  margin: 0 2px;
+  opacity: 0.75;
+}
+.ticket-id {
+  font-size: 10px;
+  color: rgba(11, 11, 11, 0.55);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* === Status pill === */
+.ticket-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  background: var(--status-open-bg);
+  border: 1px solid var(--status-open-border);
+  color: var(--status-open-fg);
+  white-space: nowrap;
+}
+.ticket-status .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 0 2px rgba(184, 150, 63, 0.18);
+}
+.ticket-status svg {
+  width: 11px;
+  height: 11px;
+}
+
+/* === FAIXA DO NÚMERO — o herói === */
+.voucher-number-band {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 4px;
+  min-width: 0;
+}
+.voucher-number-band::before,
+.voucher-number-band::after {
+  content: '';
+  flex: 0 1 28px;
+  height: 1px;
+  background: var(--voucher-rule-line);
+  min-width: 12px;
+  margin: 0 10px;
+  opacity: 0.9;
+}
+.voucher-number {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 800;
+  font-style: italic;
+  font-size: var(--voucher-number-size);
+  line-height: 0.95;
+  letter-spacing: var(--voucher-number-ls);
+  background: var(--ticket-numeral-grad-open);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: visible;
+  min-width: 0;
+  flex: 0 1 auto;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(255, 250, 232, 0.3);
+}
+.voucher-number[data-length='long'] {
+  font-size: var(--voucher-number-size-long);
+  letter-spacing: var(--voucher-number-ls-long);
+}
+.voucher-number[data-length='xlong'] {
+  font-size: var(--voucher-number-size-xlong);
+  letter-spacing: var(--voucher-number-ls-xlong);
+  font-weight: 700;
+}
+.voucher-number .voucher-number-sep {
+  display: inline-block;
+  opacity: 0.55;
+  margin: 0 0.08em;
+  font-weight: 500;
+  font-style: normal;
+  transform: translateY(-0.06em);
+}
+
+/* === Meta (abaixo do número) === */
+.ticket-meta {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 14px;
+  font-size: 11px;
+  color: rgba(11, 11, 11, 0.62);
+}
+.ticket-meta .meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.ticket-meta .meta-item svg {
+  width: 12px;
+  height: 12px;
+  color: var(--fortuno-gold-intense);
+}
+.ticket-meta .meta-item.is-prize {
+  color: var(--fortuno-green-elegant);
+  font-weight: 700;
+  font-size: 12px;
+}
+.ticket-meta .meta-item.is-prize svg {
+  color: var(--fortuno-green-elegant);
+}
+
+/* === Foot (compra + selo "autenticado") === */
+.ticket-foot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 6px;
+  border-top: 1px dashed rgba(11, 11, 11, 0.1);
+}
+.ticket-purchase-date {
+  font-size: 10px;
+  color: rgba(11, 11, 11, 0.48);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+.ticket-foot-auth {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(110, 68, 33, 0.72);
+  font-weight: 700;
+}
+.ticket-foot-auth svg {
+  width: 11px;
+  height: 11px;
+  color: var(--fortuno-gold-intense);
+}
+
+/* === Selo circular art-déco (canto inferior direito) === */
+.ticket-seal {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--seal-bg-open);
+  border: 1.5px solid var(--seal-border);
+  box-shadow: var(--seal-shadow);
+  display: grid;
+  place-items: center;
+  transform: rotate(-12deg);
+  z-index: 2;
+  opacity: 0.82;
+  pointer-events: none;
+}
+.ticket-seal-inner {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 250, 232, 0.55);
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+.ticket-seal-text {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-style: italic;
+  font-size: 7px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 250, 232, 0.96);
+  line-height: 1;
+}
+.ticket-seal-text strong {
+  display: block;
+  font-size: 11px;
+  font-style: italic;
+  letter-spacing: 0.04em;
+  margin-top: 1px;
+}
+
+/* === Shimmer ao hover === */
+.ticket-shimmer {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity var(--duration-base) var(--easing-out);
+}
+.ticket:hover .ticket-shimmer {
+  opacity: 1;
+}
+.ticket-shimmer::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -100%;
+  width: 60%;
+  height: 200%;
+  background: var(--ticket-shimmer-bg);
+  transform: skewX(-18deg);
+  animation: voucher-shimmer 1.6s var(--easing-out) infinite;
+}
+@keyframes voucher-shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+@keyframes ticket-stagger-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ===========================================================
+   VARIANTES DE ESTADO — data-state
+   =========================================================== */
+
+/* GOLD (default, open/em jogo) — já está no base .ticket */
+
+/* GREEN — sorteio fechado */
+.ticket[data-state='green'] {
+  background: var(--ticket-frame-bg-closed);
+}
+.ticket[data-state='green'] .voucher-number {
+  background: var(--ticket-numeral-grad-closed);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.ticket[data-state='green'] .ticket-status {
+  background: var(--status-closed-bg);
+  border-color: var(--status-closed-border);
+  color: var(--status-closed-fg);
+}
+.ticket[data-state='green'] .ticket-seal {
+  background: var(--seal-bg-closed);
+  border-color: rgba(10, 42, 32, 0.55);
+}
+.ticket[data-state='green'] .ticket-corner {
+  border-color: rgba(19, 68, 54, 0.55);
+}
+.ticket[data-state='green'] .ticket-corner::after {
+  background: var(--fortuno-green-elegant);
+  box-shadow: 0 0 0 1px rgba(19, 68, 54, 0.45);
+}
+
+/* WINNER — gold saturado + selo ouro */
+.ticket[data-state='green'][data-winner='true'] {
+  background: var(--ticket-frame-bg-open);
+}
+.ticket[data-state='green'][data-winner='true'] .voucher-number {
+  background: var(--ticket-numeral-grad-open);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.ticket[data-state='green'][data-winner='true'] .ticket-status {
+  background: linear-gradient(180deg, #f5dc8b, #d4af37);
+  border-color: #8a6f2b;
+  color: var(--fortuno-black);
+}
+.ticket[data-state='green'][data-winner='true'] .ticket-seal {
+  background: var(--seal-bg-open);
+  border-color: var(--seal-border);
+}
+.ticket[data-state='green'][data-winner='true'] .ticket-corner {
+  border-color: var(--ticket-corner-color);
+}
+.ticket[data-state='green'][data-winner='true'] .ticket-corner::after {
+  background: var(--fortuno-gold-soft);
+  box-shadow: 0 0 0 1px rgba(184, 150, 63, 0.45);
+}
+
+/* COPPER — reembolsado */
+.ticket[data-state='copper'] {
+  background: var(--ticket-frame-bg-refunded);
+}
+.ticket[data-state='copper'] .voucher-number {
+  background: var(--ticket-numeral-grad-refunded);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.ticket[data-state='copper'] .ticket-status {
+  background: var(--status-refunded-bg);
+  border-color: var(--status-refunded-border);
+  color: var(--status-refunded-fg);
+}
+.ticket[data-state='copper'] .ticket-seal {
+  background: var(--seal-bg-refunded);
+  border-color: var(--seal-border);
+}
+/* Carimbo diagonal "REEMBOLSADO" */
+.ticket[data-state='copper']::after {
+  content: 'REEMBOLSADO';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-14deg);
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 800;
+  font-style: italic;
+  font-size: clamp(22px, 6cqi, 34px);
+  letter-spacing: 0.18em;
+  color: rgba(110, 68, 33, 0.32);
+  border: 3px solid rgba(110, 68, 33, 0.32);
+  padding: 4px 14px;
+  border-radius: 6px;
+  pointer-events: none;
+  z-index: 4;
+  white-space: nowrap;
+  text-transform: uppercase;
+  mix-blend-mode: multiply;
+}
+
+/* ===========================================================
+   GRID + SKELETON + EMPTY
+   =========================================================== */
+.tickets-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) {
+  .tickets-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .tickets-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+  }
+}
+@media (min-width: 1280px) {
+  .tickets-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+}
+
+.ticket-skel {
+  width: 100%;
+  aspect-ratio: 1.9 / 1;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fdfaf0 0%, #f3ecd6 100%);
+  border: 1px solid rgba(184, 150, 63, 0.18);
+  overflow: hidden;
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 16px 22px 14px;
+  gap: 8px;
+}
+.ticket-skel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ticket-skel-shimmer);
+  background-size: 200% 100%;
+  animation: skel-shimmer 1.4s linear infinite;
+  mix-blend-mode: overlay;
+}
+@keyframes skel-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+.ticket-skel-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+.ticket-skel-block {
+  background: var(--ticket-skel-base);
+  border-radius: 6px;
+}
+.ticket-skel-block.is-id {
+  width: 60px;
+  height: 10px;
+}
+.ticket-skel-block.is-status {
+  width: 84px;
+  height: 16px;
+  border-radius: 999px;
+}
+.ticket-skel-block.is-numeral {
+  width: 72%;
+  height: 48px;
+  border-radius: 8px;
+  margin: auto;
+}
+.ticket-skel-block.is-meta-1 {
+  width: 80px;
+  height: 11px;
+}
+.ticket-skel-block.is-meta-2 {
+  width: 100px;
+  height: 11px;
+}
+
+/* Empty state principal (reusa .empty-card de lottery-list.css, amplia com
+   tipografia editorial + ícone grande em ouro). */
+.empty-card .empty-card-icon {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at 40% 35%,
+      rgba(255, 250, 232, 0.5) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 60% 70%,
+      rgba(184, 150, 63, 0.2) 0%,
+      transparent 70%
+    ),
+    rgba(184, 150, 63, 0.1);
+  border: 1px solid rgba(184, 150, 63, 0.35);
+  display: grid;
+  place-items: center;
+  color: var(--fortuno-gold-intense);
+}
+.empty-card .empty-card-icon svg {
+  width: 44px;
+  height: 44px;
+}
+.empty-card h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: clamp(22px, 2.4vw, 30px);
+  line-height: 1.15;
+  color: var(--fortuno-black);
+  letter-spacing: -0.01em;
+  max-width: 32ch;
+  margin: 0 auto;
+}
+.empty-card p {
+  margin: 12px auto 0;
+  max-width: 44ch;
+  font-size: 14px;
+  color: rgba(11, 11, 11, 0.62);
+  line-height: 1.55;
+}
+.empty-card .my-numbers-cta-primary {
+  margin-top: 24px;
+}
+
+/* Empty state compacto (filtered) */
+.empty-filtered {
+  padding: 32px 20px;
+  text-align: center;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.7) 0%,
+    rgba(247, 243, 236, 0.6) 100%
+  );
+  border: 1px dashed rgba(184, 150, 63, 0.4);
+  border-radius: 20px;
+}
+.empty-filtered h4 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--fortuno-black);
+}
+.empty-filtered p {
+  font-size: 13px;
+  color: rgba(11, 11, 11, 0.6);
+  margin-top: 6px;
+}
+.empty-filtered button {
+  margin-top: 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--fortuno-green-elegant);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: rgba(184, 150, 63, 0.55);
+  text-decoration-thickness: 1.5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.empty-filtered button:hover {
+  color: var(--fortuno-gold-intense);
+}
+
+/* Trust bar discreto abaixo do grid */
+.trust-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(184, 150, 63, 0.22);
+  color: rgba(11, 11, 11, 0.65);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.trust-bar svg {
+  width: 13px;
+  height: 13px;
+  color: var(--fortuno-green-elegant);
+}
+
+/* CTA primário reutilizado na toolbar/empty */
+.my-numbers-cta-primary {
+  background: var(--fortuno-gold-intense);
+  color: var(--fortuno-black);
+  border-radius: 999px;
+  padding: 11px 22px;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  box-shadow:
+    0 8px 22px -6px rgba(212, 175, 55, 0.45),
+    0 1px 0 rgba(255, 255, 255, 0.35) inset;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  transition:
+    background var(--duration-fast) var(--easing-out),
+    transform var(--duration-fast) var(--easing-out);
+}
+.my-numbers-cta-primary:hover {
+  background: var(--fortuno-gold-soft);
+  transform: translateY(-1px);
+}
+.my-numbers-cta-primary:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-gold-focus);
+}
+.my-numbers-cta-primary svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* ===========================================================
+   MODAL — TicketDetailModal (detalhes do bilhete)
+   =========================================================== */
+.ticket-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px 12px;
+}
+.ticket-modal-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--fortuno-gold-intense);
+  font-weight: 700;
+}
+.ticket-modal-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(11, 11, 11, 0.06);
+  color: rgba(11, 11, 11, 0.65);
+  display: grid;
+  place-items: center;
+  border: none;
+  cursor: pointer;
+}
+.ticket-modal-close:hover {
+  background: rgba(184, 150, 63, 0.18);
+  color: var(--fortuno-black);
+}
+.ticket-modal-body {
+  padding: 4px 22px 22px;
+  overflow-y: auto;
+}
+.ticket-modal-divider {
+  height: 1px;
+  margin: 18px 0;
+  background: var(--gold-divider-soft);
+}
+.ticket-modal-detail-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 18px;
+}
+.ticket-modal-detail-item .detail-label {
+  font-size: 9px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(11, 11, 11, 0.5);
+  font-weight: 600;
+}
+.ticket-modal-detail-item .detail-value {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--fortuno-black);
+  margin-top: 2px;
+  font-variant-numeric: tabular-nums;
+}
+.ticket-modal-qr {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(184, 150, 63, 0.32);
+  border-radius: 14px;
+  box-shadow: 0 8px 18px -10px rgba(10, 42, 32, 0.18);
+}
+.ticket-modal-qr-caption {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(11, 11, 11, 0.55);
+  font-weight: 600;
+}
+
+/* ===========================================================
+   Reduced motion — desliga transformações hover e animações
+   =========================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .ticket:hover {
+    transform: none;
+  }
+  .ticket-shimmer::before {
+    animation: none;
+  }
+  .ticket,
+  .ticket-skel::before {
+    animation: none !important;
+  }
+}
