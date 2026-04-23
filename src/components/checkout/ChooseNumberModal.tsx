@@ -45,10 +45,28 @@ export const ChooseNumberModal = (props: ChooseNumberModalProps): JSX.Element | 
     return t('checkout.modal.placeholderComposed', { size });
   }, [isComposed, lottery.ticketNumIni, lottery.ticketNumEnd, size, t]);
 
+  const maxIntDigits = useMemo(
+    () => String(Math.max(lottery.ticketNumEnd ?? 0, 0)).length,
+    [lottery.ticketNumEnd],
+  );
+
+  const applyMask = (raw: string): string => {
+    const digits = raw.replace(/\D/g, '');
+    if (!isComposed) {
+      return maxIntDigits > 0 ? digits.slice(0, maxIntDigits) : digits;
+    }
+    const capped = digits.slice(0, size * 2);
+    const pairs: string[] = [];
+    for (let i = 0; i < capped.length; i += 2) {
+      pairs.push(capped.slice(i, i + 2));
+    }
+    return pairs.join('-');
+  };
+
   if (!open) return null;
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    setInput(e.target.value);
+    setInput(applyMask(e.target.value));
     if (feedback) setFeedback(null);
   };
 

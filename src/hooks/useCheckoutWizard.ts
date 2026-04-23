@@ -83,8 +83,7 @@ export const useCheckoutWizard = (): UseCheckoutWizardReturn => {
     if (!profileComplete) {
       return 'register';
     }
-    // Perfil completo → cart (a menos que o usuário já tenha avançado)
-    if (checkout.currentStep === 'payment') return 'pix';
+    // Perfil completo + step 'payment' mas sem QR → volta ao cart para não travar.
     return 'cart';
   }, [checkout.currentStep, checkout.qrCode, checkout.lastStatus, profileComplete]);
 

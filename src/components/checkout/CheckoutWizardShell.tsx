@@ -88,7 +88,7 @@ export const CheckoutWizardShell = (): JSX.Element => {
           />
         </div>
         <section
-          key={wizard.currentStepId}
+          key={`${wizard.currentStepId}-${checkout.qrCode?.invoiceId ?? 'none'}`}
           role="region"
           aria-labelledby="step-title"
           className="paper-card mt-[-1px] rounded-t-none border-t-0 p-6 md:p-10 animate-step-slide-in"

@@ -76,12 +76,9 @@ export const useQRCodePolling = (
           schedule();
         } catch (err) {
           if (cancelled) return;
+          // Erro do backend — suspende o polling e expõe a mensagem ao usuário.
           setError(err instanceof Error ? err.message : 'Erro ao consultar status.');
-          currentDelayRef.current = Math.min(
-            Math.round(currentDelayRef.current * 2),
-            MAX_INTERVAL,
-          );
-          schedule();
+          setEnded(true);
         }
       }, currentDelayRef.current) as unknown as number;
     };

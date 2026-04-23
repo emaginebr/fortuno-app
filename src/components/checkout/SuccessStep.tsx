@@ -6,8 +6,7 @@ import { toast } from 'sonner';
 import { useCheckout } from '@/hooks/useCheckout';
 import { useLottery } from '@/hooks/useLottery';
 import { TrustSeals } from '@/components/common/TrustSeals';
-import { TicketMiniCard } from './TicketMiniCard';
-import { TicketOrderMode } from '@/types/enums';
+import { TicketCardPremium } from '@/components/tickets/TicketCardPremium';
 
 const MAX_VISIBLE = 9;
 
@@ -108,20 +107,14 @@ export const SuccessStep = (): JSX.Element => {
 
       {visibleTickets.length > 0 ? (
         <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
-          {visibleTickets.map((ticket) => {
-            const isManual =
-              typeof ticket.ticketValue === 'string' && checkout.mode === TicketOrderMode.Manual;
-            return (
-              <TicketMiniCard
-                key={ticket.ticketId}
-                number={ticket.ticketNumber}
-                lotteryName={currentLottery?.name ?? ''}
-                nextRaffleLabel={nextRaffleLabel}
-                kind={isManual ? 'manual' : 'random'}
-                numberType={currentLottery?.numberType ?? 1}
-              />
-            );
-          })}
+          {visibleTickets.map((ticket, idx) => (
+            <TicketCardPremium
+              key={ticket.ticketId}
+              ticket={ticket}
+              drawDate={nextRaffleLabel}
+              index={idx}
+            />
+          ))}
           {overflowCount > 0 ? (
             <Link
               to="/meus-numeros"

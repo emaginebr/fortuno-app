@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Info, Plus, ShieldCheck } from 'lucide-react';
+import { Info, Loader2, Plus, ShieldCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useCheckout } from '@/hooks/useCheckout';
 import { useLottery } from '@/hooks/useLottery';
@@ -21,6 +21,7 @@ export const CartStep = ({ comboName, comboDiscountPercent = 0 }: CartStepProps)
   const checkout = useCheckout();
   const { currentLottery } = useLottery();
   const [modalOpen, setModalOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   if (!currentLottery) return null;
 
@@ -33,7 +34,12 @@ export const CartStep = ({ comboName, comboDiscountPercent = 0 }: CartStepProps)
   const total = Math.max(0, subtotal - discount);
 
   const handleConfirm = async (): Promise<void> => {
-    await checkout.startPayment();
+    setSubmitting(true);
+    try {
+      await checkout.startPayment();
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleAdd = (n: number): void => {
@@ -118,11 +124,16 @@ export const CartStep = ({ comboName, comboDiscountPercent = 0 }: CartStepProps)
           <button
             type="button"
             onClick={() => void handleConfirm()}
-            disabled={quantity < 1}
-            className="cta-gold w-full text-[17px] min-h-[56px] focus-visible:outline-none focus-visible:shadow-gold-focus"
+            disabled={quantity < 1 || submitting}
+            aria-busy={submitting}
+            className="cta-gold w-full text-[17px] min-h-[56px] focus-visible:outline-none focus-visible:shadow-gold-focus disabled:cursor-not-allowed disabled:opacity-75"
           >
-            <ShieldCheck className="w-5 h-5" aria-hidden="true" />
-            {t('checkout.cart.confirmCta')}
+            {submitting ? (
+              <Loader2 className="w-5 h-5 animate-spin motion-reduce:animate-none" aria-hidden="true" />
+            ) : (
+              <ShieldCheck className="w-5 h-5" aria-hidden="true" />
+            )}
+            {submitting ? t('checkout.cart.confirmingCta', { defaultValue: 'Gerando QR Code...' }) : t('checkout.cart.confirmCta')}
           </button>
           <TrustSeals variant="compact" />
         </aside>

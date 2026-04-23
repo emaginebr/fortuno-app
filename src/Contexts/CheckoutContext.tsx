@@ -136,17 +136,23 @@ export const CheckoutProvider = ({ children }: { children: ReactNode }): JSX.Ele
 
   const startPayment = useCallback(async (): Promise<TicketQRCodeInfo | null> => {
     if (!state.lotteryId) return null;
+    // API exige pickedNumbers.length === quantity no modo Manual; caso contrário envia Random.
+    const isManual =
+      state.mode === TicketOrderMode.Manual &&
+      state.pickedNumbers.length === state.quantity;
+    // Descarta QR/status anteriores para forçar geração de um novo invoice a cada clique.
+    setState((prev) => ({ ...prev, qrCode: null, lastStatus: null, tickets: null }));
+    const payload = {
+      lotteryId: state.lotteryId,
+      quantity: state.quantity,
+      mode: isManual ? TicketOrderMode.Manual : TicketOrderMode.Random,
+      pickedNumbers: isManual ? state.pickedNumbers : undefined,
+      referralCode: state.referralCode,
+    };
+    // eslint-disable-next-line no-console
+    console.log('[checkout] createQrCode payload', payload);
     try {
-      const qr = await ticketService.createQrCode({
-        lotteryId: state.lotteryId,
-        quantity: state.quantity,
-        mode: state.mode,
-        pickedNumbers:
-          state.pickedNumbers.length > 0 && state.mode === TicketOrderMode.Manual
-            ? state.pickedNumbers
-            : undefined,
-        referralCode: state.referralCode,
-      });
+      const qr = await ticketService.createQrCode(payload);
       setState((prev) => ({ ...prev, qrCode: qr, currentStep: 'payment' }));
       return qr;
     } catch (err) {

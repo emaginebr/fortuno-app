@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { ticketService } from '@/Services/ticketService';
 import { useCheckout } from '@/hooks/useCheckout';
 import { useLottery } from '@/hooks/useLottery';
 import { useQRCodePolling } from '@/hooks/useQRCodePolling';
@@ -97,6 +96,16 @@ export const PixStep = ({ comboDiscountPercent = 0 }: PixStepProps): JSX.Element
           {t('checkout.pix.title')}
         </h2>
       </header>
+
+      {polling.error ? (
+        <div
+          role="alert"
+          className="mb-6 rounded-xl border border-red-400/40 bg-red-50 px-5 py-4 text-sm text-red-800"
+        >
+          <p className="font-semibold">Verificação de pagamento interrompida</p>
+          <p className="mt-1 text-[13px] text-red-700">{polling.error}</p>
+        </div>
+      ) : null}
 
       <div className="grid lg:grid-cols-[auto_1fr] gap-8 lg:gap-12 items-start">
         {/* QR CARD */}
@@ -195,14 +204,15 @@ export const PixStep = ({ comboDiscountPercent = 0 }: PixStepProps): JSX.Element
         </div>
       </div>
 
-      {import.meta.env.DEV ? (
-        <PiSimulatorButton
-          onTrigger={() => {
-            if (!invoiceId) return Promise.resolve();
-            return ticketService.simulatePayment(invoiceId);
-          }}
-        />
-      ) : null}
+      <PiSimulatorButton
+        onTrigger={async () => {
+          if (!invoiceId) return;
+          await fetch(
+            `https://proxypay.online/api/payment/simulate-payment/${invoiceId}`,
+            { method: 'POST', headers: { 'x-tenant-id': 'fortuno' } },
+          );
+        }}
+      />
     </section>
   );
 };
