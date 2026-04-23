@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fortuno — Lista de sorteios (Editorial Casino Noir · light body)</title>
+
+  <!-- Tailwind CDN para preview standalone -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fonts: Inter + Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            fortuno: {
+              green: { deep: '#0a2a20', elegant: '#134436' },
+              gold:  { intense: '#b8963f', soft: '#d4af37' },
+              black: '#0b0b0b',
+              offwhite: '#ece8e1',
+              paper: '#f7f3ec',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['"Playfair Display"', 'Georgia', 'serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* ===========================================================
+       LOTTERY LIST — Editorial Casino Noir · LIGHT BODY
+       Reutiliza: tokens do wizard/home/dashboard.
+       Novos: ornamento do header, chip de paginação, skeleton shimmer,
+              empty state dourado tracejado.
+       =========================================================== */
+    :root {
+      --fortuno-green-deep:    #0a2a20;
+      --fortuno-green-elegant: #134436;
+      --fortuno-gold-intense:  #b8963f;
+      --fortuno-gold-soft:     #d4af37;
+      --fortuno-black:         #0b0b0b;
+      --fortuno-offwhite:      #ece8e1;
+
+      /* Fundo claro (coerente com dashboard/MyLotteries) */
+      --list-bg-page:
+        radial-gradient(1000px 500px at 85% -10%, rgba(184,150,63,0.05), transparent 65%),
+        radial-gradient(800px 500px at -10% 110%, rgba(19,68,54,0.04), transparent 55%),
+        linear-gradient(180deg, #f7f3ec 0%, #f1ece3 60%, #ece8e1 100%);
+
+      /* Topbar global simulada (placeholder) */
+      --topbar-bg:
+        linear-gradient(180deg, #061d17 0%, #0a2a20 100%);
+      --topbar-border-bottom: linear-gradient(90deg,
+        transparent 0%,
+        rgba(212,175,55,0.55) 20%,
+        rgba(212,175,55,0.75) 50%,
+        rgba(212,175,55,0.55) 80%,
+        transparent 100%);
+
+      /* Ornamento art déco do header da página (filete duplo com losango) */
+      --list-ornament: linear-gradient(90deg,
+        transparent 0%,
+        rgba(184,150,63,0.55) 45%,
+        rgba(184,150,63,0.55) 55%,
+        transparent 100%);
+
+      /* Card "passe de cassino" (dark sobre light) — reutiliza o metal da home */
+      --metal-card:
+        radial-gradient(140% 120% at 20% 0%, rgba(184,150,63,0.14) 0%, transparent 45%),
+        linear-gradient(180deg, rgba(19,68,54,0.96) 0%, rgba(7,32,26,0.98) 100%);
+
+      /* Sombras de elevação dos cards sobre o light body */
+      --shadow-card-light:
+        0 1px 0 rgba(255,255,255,0.06) inset,
+        0 22px 44px -22px rgba(10,42,32,0.35),
+        0 10px 22px -10px rgba(184,150,63,0.20);
+      --shadow-card-light-hover:
+        0 1px 0 rgba(255,255,255,0.08) inset,
+        0 36px 64px -26px rgba(10,42,32,0.50),
+        0 18px 32px -12px rgba(184,150,63,0.35);
+
+      /* Paginação pill */
+      --pagination-bg:
+        linear-gradient(180deg, rgba(255,255,255,0.9), rgba(247,243,236,0.85));
+      --pagination-border: rgba(11,11,11,0.10);
+      --pagination-shadow:
+        0 1px 0 rgba(255,255,255,0.8) inset,
+        0 8px 22px -14px rgba(10,42,32,0.22);
+      --pagination-chip-ghost-bg:      transparent;
+      --pagination-chip-ghost-hover:   rgba(184,150,63,0.10);
+      --pagination-chip-active-bg:
+        linear-gradient(180deg, var(--fortuno-gold-soft), var(--fortuno-gold-intense));
+      --pagination-chip-active-fg:     #0a2a20;
+      --pagination-chip-disabled-fg:   rgba(11,11,11,0.35);
+
+      /* Skeleton shimmer sobre superfície dark (mesmo metal do card) */
+      --skeleton-block:     rgba(236,232,225,0.06);
+      --skeleton-shimmer:
+        linear-gradient(90deg,
+          transparent 0%,
+          rgba(212,175,55,0.10) 40%,
+          rgba(212,175,55,0.18) 50%,
+          rgba(212,175,55,0.10) 60%,
+          transparent 100%);
+
+      /* Empty state (card dourado tracejado sobre light body) */
+      --empty-bg:
+        radial-gradient(420px 220px at 50% 0%, rgba(184,150,63,0.10), transparent 70%),
+        linear-gradient(180deg, rgba(255,255,255,0.7), rgba(247,243,236,0.55));
+      --empty-border: rgba(184,150,63,0.55);
+
+      /* Ordenação chip (placeholder sorting) */
+      --sort-chip-bg:     rgba(255,255,255,0.85);
+      --sort-chip-border: rgba(11,11,11,0.10);
+      --sort-chip-hover:  rgba(184,150,63,0.35);
+
+      /* Focus ring global ouro */
+      --shadow-gold-focus: 0 0 0 3px rgba(212,175,55,0.55);
+
+      /* Durations / easing (alinhado com home/wizard) */
+      --duration-fast: 160ms;
+      --duration-base: 240ms;
+      --easing-out:    cubic-bezier(0.2, 0.6, 0.2, 1);
+      --easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+      --gold-divider: linear-gradient(90deg, transparent, rgba(184,150,63,0.45), transparent);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--list-bg-page);
+      color: var(--fortuno-black);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===========================================================
+       TOPBAR GLOBAL (placeholder do <Header /> global)
+       =========================================================== */
+    .topbar-placeholder {
+      background: var(--topbar-bg);
+      color: rgba(236,232,225,0.88);
+      border-bottom: 1px solid rgba(212,175,55,0.25);
+      position: relative;
+    }
+    .topbar-placeholder::after {
+      content: '';
+      position: absolute; left: 0; right: 0; bottom: -1px;
+      height: 1px;
+      background: var(--topbar-border-bottom);
+    }
+
+    /* ===========================================================
+       PAGE HEADER — ornamento + title + subhead + sort chip
+       =========================================================== */
+    .list-ornament {
+      display: flex; align-items: center; gap: 14px;
+      justify-content: center;
+    }
+    .list-ornament::before,
+    .list-ornament::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--list-ornament);
+      max-width: 120px;
+    }
+    .list-ornament .diamond {
+      width: 8px; height: 8px;
+      transform: rotate(45deg);
+      background: var(--fortuno-gold-intense);
+      box-shadow: 0 0 10px rgba(184,150,63,0.55);
+    }
+
+    .eyebrow-gold {
+      font-size: 11px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--fortuno-gold-intense);
+      font-weight: 600;
+    }
+
+    .h-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--fortuno-black);
+    }
+    .h-title em {
+      font-style: italic;
+      color: var(--fortuno-green-elegant);
+    }
+
+    .h-subhead {
+      color: rgba(11,11,11,0.68);
+    }
+    .h-subhead strong {
+      color: var(--fortuno-green-elegant);
+      font-weight: 600;
+    }
+
+    .sort-chip {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: var(--sort-chip-bg);
+      border: 1px solid var(--sort-chip-border);
+      color: var(--fortuno-black);
+      font-size: 13px;
+      font-weight: 500;
+      transition: border-color var(--duration-base) var(--easing-out),
+                  transform var(--duration-base) var(--easing-out);
+      cursor: pointer;
+    }
+    .sort-chip:hover { border-color: var(--sort-chip-hover); transform: translateY(-1px); }
+    .sort-chip:focus-visible { outline: none; box-shadow: var(--shadow-gold-focus); }
+    .sort-chip .label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: rgba(11,11,11,0.5);
+      margin-right: 2px;
+    }
+
+    /* ===========================================================
+       LOTTERY CARD PREMIUM — reaproveitado da home
+       =========================================================== */
+    .lottery-card {
+      position: relative;
+      background: var(--metal-card);
+      border: 1px solid rgba(212,175,55,0.32);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow-card-light);
+      transition: transform var(--duration-base) var(--easing-spring),
+                  box-shadow var(--duration-base) var(--easing-out),
+                  border-color var(--duration-base) var(--easing-out);
+    }
+    .lottery-card::before {
+      /* filete interno dourado (casino ticket) */
+      content: '';
+      position: absolute; inset: 8px;
+      border: 1px solid rgba(212,175,55,0.18);
+      border-radius: 14px;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .lottery-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-card-light-hover);
+      border-color: rgba(212,175,55,0.6);
+    }
+    .lottery-card:focus-within {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.55), var(--shadow-card-light-hover);
+    }
+
+    /* Badge ABERTO pulsando (igual home) */
+    .badge-live {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 12px 5px 10px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      background: rgba(212,175,55,0.15);
+      border: 1px solid rgba(212,175,55,0.5);
+      color: var(--fortuno-gold-soft);
+      backdrop-filter: blur(8px);
+    }
+    .badge-live .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #e7c05c;
+      box-shadow: 0 0 0 0 rgba(212,175,55,0.7);
+      animation: live-pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes live-pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(212,175,55,0.65); }
+      70%  { box-shadow: 0 0 0 8px rgba(212,175,55,0); }
+      100% { box-shadow: 0 0 0 0 rgba(212,175,55,0); }
+    }
+
+    /* Chip de deadline (canto superior direito do card) */
+    .deadline-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      background: rgba(0,0,0,0.55);
+      color: var(--fortuno-gold-soft);
+      border: 1px solid rgba(212,175,55,0.32);
+      backdrop-filter: blur(6px);
+    }
+    .deadline-chip.urgent {
+      color: #f0d27a;
+      border-color: rgba(240,210,122,0.6);
+      background: rgba(0,0,0,0.6);
+    }
+    .deadline-chip.urgent .pulse {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #f0d27a;
+      animation: live-pulse 1.8s ease-in-out infinite;
+    }
+
+    /* Numeral ouro editorial */
+    .gold-numeral {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-weight: 800;
+      line-height: 0.9;
+      letter-spacing: -0.01em;
+      background: linear-gradient(180deg,
+        var(--fortuno-gold-soft) 0%,
+        var(--fortuno-gold-intense) 60%,
+        rgba(184,150,63,0.25) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Progress rail (bilhetes vendidos) */
+    .progress-rail {
+      height: 5px; width: 100%;
+      background: rgba(236,232,225,0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-rail > span {
+      display: block; height: 100%;
+      background: linear-gradient(90deg, var(--fortuno-gold-soft), var(--fortuno-gold-intense));
+      box-shadow: 0 0 10px rgba(212,175,55,0.45);
+      position: relative;
+    }
+    .progress-rail > span::after {
+      content: '';
+      position: absolute; top: 0; left: -40%;
+      width: 30%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
+      animation: progress-shimmer 2.4s ease-in-out infinite;
+    }
+    @keyframes progress-shimmer {
+      0%   { left: -40%; }
+      100% { left: 110%; }
+    }
+
+    /* CTA primário dourado (dentro do card dark) */
+    .cta-primary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 12px 22px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #0a2a20;
+      background: linear-gradient(180deg, var(--fortuno-gold-soft), var(--fortuno-gold-intense));
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.35) inset,
+        0 12px 22px -12px rgba(184,150,63,0.65);
+      transition: transform var(--duration-fast) var(--easing-out),
+                  box-shadow var(--duration-base) var(--easing-out);
+    }
+    .cta-primary:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.5) inset,
+        0 18px 30px -12px rgba(184,150,63,0.75);
+    }
+    .cta-primary:focus-visible { outline: none; box-shadow: var(--shadow-gold-focus); }
+    .cta-primary:active { transform: translateY(0); }
+
+    /* CTA ghost (empty state / "voltar") */
+    .cta-ghost {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--fortuno-gold-intense);
+      background: transparent;
+      border: 1px solid rgba(184,150,63,0.55);
+      transition: background var(--duration-fast) var(--easing-out),
+                  border-color var(--duration-fast) var(--easing-out);
+    }
+    .cta-ghost:hover { background: rgba(184,150,63,0.08); border-color: rgba(184,150,63,0.85); }
+    .cta-ghost:focus-visible { outline: none; box-shadow: var(--shadow-gold-focus); }
+
+    /* ===========================================================
+       PAGINATION — pill ouro
+       =========================================================== */
+    .pagination {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px;
+      border-radius: 999px;
+      background: var(--pagination-bg);
+      border: 1px solid var(--pagination-border);
+      box-shadow: var(--pagination-shadow);
+      backdrop-filter: blur(6px);
+    }
+    .pagination .chip {
+      min-width: 40px;
+      height: 40px;
+      padding: 0 14px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--fortuno-black);
+      background: var(--pagination-chip-ghost-bg);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: background var(--duration-fast) var(--easing-out),
+                  color var(--duration-fast) var(--easing-out),
+                  transform var(--duration-fast) var(--easing-out);
+      font-variant-numeric: tabular-nums;
+    }
+    .pagination .chip:hover:not([aria-current="page"]):not(:disabled) {
+      background: var(--pagination-chip-ghost-hover);
+    }
+    .pagination .chip:focus-visible { outline: none; box-shadow: var(--shadow-gold-focus); }
+    .pagination .chip[aria-current="page"] {
+      background: var(--pagination-chip-active-bg);
+      color: var(--pagination-chip-active-fg);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.35) inset,
+        0 6px 14px -6px rgba(184,150,63,0.6);
+    }
+    .pagination .chip:disabled {
+      color: var(--pagination-chip-disabled-fg);
+      cursor: not-allowed;
+    }
+    .pagination .chip.arrow {
+      gap: 6px;
+      font-weight: 500;
+      font-size: 13px;
+    }
+    .pagination .ellipsis {
+      min-width: 28px;
+      text-align: center;
+      color: rgba(11,11,11,0.45);
+      letter-spacing: 0.05em;
+      user-select: none;
+    }
+
+    .pagination-mobile {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--pagination-bg);
+      border: 1px solid var(--pagination-border);
+      box-shadow: var(--pagination-shadow);
+      font-size: 13px;
+      color: var(--fortuno-black);
+    }
+    .pagination-mobile .current {
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+      color: var(--fortuno-green-elegant);
+    }
+
+    /* ===========================================================
+       EMPTY STATE — card dourado tracejado
+       =========================================================== */
+    .empty-card {
+      position: relative;
+      background: var(--empty-bg);
+      border: 2px dashed var(--empty-border);
+      border-radius: 24px;
+      padding: 48px 32px 56px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .empty-card::before {
+      /* glow sutil ouro no topo */
+      content: '';
+      position: absolute;
+      top: -40px; left: 50%;
+      transform: translateX(-50%);
+      width: 320px; height: 80px;
+      background: radial-gradient(closest-side, rgba(184,150,63,0.25), transparent 70%);
+      pointer-events: none;
+    }
+    .empty-card .icon-wrap {
+      display: inline-grid; place-items: center;
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background:
+        radial-gradient(closest-side, rgba(184,150,63,0.16), transparent 70%),
+        rgba(255,255,255,0.75);
+      border: 1px solid rgba(184,150,63,0.35);
+      color: var(--fortuno-gold-intense);
+      margin-bottom: 18px;
+    }
+
+    /* ===========================================================
+       SKELETON CARD
+       =========================================================== */
+    .skeleton-card {
+      position: relative;
+      background: var(--metal-card);
+      border: 1px solid rgba(212,175,55,0.22);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow-card-light);
+      min-height: 480px;
+    }
+    .skeleton-card::before {
+      /* filete interno idem lottery-card */
+      content: '';
+      position: absolute; inset: 8px;
+      border: 1px solid rgba(212,175,55,0.12);
+      border-radius: 14px;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .skeleton-block {
+      background: var(--skeleton-block);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .skeleton-block::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: var(--skeleton-shimmer);
+      transform: translateX(-100%);
+      animation: skeleton-slide 1.8s linear infinite;
+    }
+    @keyframes skeleton-slide {
+      0%   { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* ===========================================================
+       Accessibility — prefers-reduced-motion
+       =========================================================== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+      .lottery-card:hover { transform: none; }
+      .cta-primary:hover { transform: none; }
+      .sort-chip:hover { transform: none; }
+    }
+
+    /* Demo-only preview separator (apenas para este mockup, remove no handoff) */
+    .preview-section-label {
+      display: inline-flex; align-items: center; gap: 12px;
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: rgba(11,11,11,0.35);
+      font-weight: 600;
+    }
+    .preview-section-label::before,
+    .preview-section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(11,11,11,0.12);
+      min-width: 40px;
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- ================================================================
+       TOPBAR GLOBAL — placeholder (<Header /> do AuthenticatedShell)
+       ================================================================ -->
+  <header class="topbar-placeholder">
+    <div class="mx-auto max-w-7xl px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-6">
+        <span class="font-display italic text-lg text-fortuno-gold-soft">Fortuno</span>
+        <nav class="hidden md:flex items-center gap-5 text-sm text-fortuno-offwhite/70">
+          <span>Início</span>
+          <span class="text-fortuno-gold-soft font-semibold">Sorteios</span>
+          <span>Meus bilhetes</span>
+          <span>Como funciona</span>
+        </nav>
+      </div>
+      <div class="flex items-center gap-3 text-xs text-fortuno-offwhite/60">
+        <span class="hidden md:inline">placeholder: &lt;Header /&gt; global</span>
+        <span class="w-8 h-8 rounded-full bg-fortuno-gold-soft/20 border border-fortuno-gold-soft/30"></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================================================================
+       MAIN — LOTTERY LIST
+       ================================================================ -->
+  <main class="relative">
+
+    <!-- ============================================================
+         PAGE HEADER
+         ============================================================ -->
+    <section aria-labelledby="list-title" class="mx-auto max-w-7xl px-6 pt-10 md:pt-16 pb-4">
+
+      <!-- Ornamento + eyebrow -->
+      <div class="list-ornament mb-4" aria-hidden="true">
+        <span class="diamond"></span>
+      </div>
+
+      <div class="text-center">
+        <span class="eyebrow-gold inline-flex items-center gap-2 mb-3">
+          <i data-lucide="trophy" class="w-3.5 h-3.5"></i>
+          Vitrine de sorteios
+        </span>
+
+        <h1 id="list-title" class="h-title text-[clamp(34px,4.5vw,56px)]">
+          Sorteios em andamento
+        </h1>
+
+        <p class="h-subhead mt-3 text-base md:text-lg max-w-2xl mx-auto">
+          <strong>12 sorteios ativos</strong> · prêmios somando
+          <strong>R$ 3.400.000</strong>. Escolha a sua próxima sorte.
+        </p>
+
+        <!-- Announce acessível (page X de Y) -->
+        <span class="sr-only" aria-live="polite" id="page-announce">
+          Página 3 de 5. Exibindo 9 sorteios.
+        </span>
+      </div>
+
+      <!-- Faixa de ordenação (alinhada à direita) -->
+      <div class="mt-8 flex items-center justify-between gap-4 flex-wrap">
+        <div class="text-sm text-fortuno-black/60">
+          Exibindo <strong class="text-fortuno-green-elegant font-semibold">9 de 40</strong> sorteios
+        </div>
+
+        <button type="button" class="sort-chip" aria-haspopup="listbox" aria-label="Ordenar lista">
+          <span class="label">Ordenar</span>
+          <span>Prêmio maior</span>
+          <i data-lucide="chevron-down" class="w-4 h-4 text-fortuno-gold-intense"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         GRID — 9 LOTTERY CARDS (reuso do LotteryCardPremium)
+         ============================================================ -->
+    <section aria-label="Lista de sorteios abertos" class="mx-auto max-w-7xl px-6 pt-8 pb-12">
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+
+        <!-- CARD 1 — Ferrari (urgente, <7d) -->
+        <article class="lottery-card group flex flex-col">
+          <div class="relative aspect-[16/10] overflow-hidden" style="border-top-left-radius: 20px; border-top-right-radius: 20px;">
+            <img
+              src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80"
+              alt="Ferrari vermelha em estúdio — prêmio do sorteio Mega Fortuno Ouro"
+              class="w-full h-full object-cover"
+              loading="lazy" decoding="async" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"></div>
+            <div class="absolute top-4 left-4 z-[3]">
+              <span class="badge-live"><span class="dot"></span> Aberto</span>
+            </div>
+            <div class="absolute top-4 right-4 z-[3]">
+              <span class="deadline-chip urgent">
+                <span class="pulse"></span>
+                Encerra em 2d
+              </span>
+            </div>
+          </div>
+
+          <div class="relative p-6 flex-1 flex flex-col z-[3]">
+            <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55 mb-1">Edição Nº 048</div>
+            <h3 class="font-display text-2xl text-fortuno-offwhite mb-3">Mega Fortuno Ouro</h3>
+
+            <div class="mb-4 flex items-center gap-3 flex-wrap">
+              <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] uppercase tracking-[0.18em] bg-fortuno-gold-soft/10 border border-fortuno-gold-soft/30 text-fortuno-gold-soft">
+                <i data-lucide="calendar-clock" class="w-3 h-3"></i>
+                23 abr · 20h
+              </span>
+            </div>
+
+            <div class="mb-4">
+              <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55">Prêmio total</div>
+              <div class="gold-numeral" style="font-size: 34px;">R$ 1.240.000</div>
+            </div>
+
+            <div class="mb-5">
+              <div class="flex items-center justify-between text-xs text-fortuno-offwhite/60 mb-2">
+                <span>Bilhetes</span>
+                <span><span class="text-fortuno-gold-soft font-semibold">34.000</span> / 50.000</span>
+              </div>
+              <div class="progress-rail" role="progressbar" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100" aria-label="68 por cento dos bilhetes vendidos"><span style="width: 68%;"></span></div>
+              <div class="mt-2 text-[11px] text-fortuno-offwhite/50">
+                <span class="text-fortuno-gold-soft">16.000 restantes</span> · bilhete a partir de R$ 10
+              </div>
+            </div>
+
+            <a href="#" class="cta-primary w-full mt-auto">
+              Compre já <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </article>
+
+        <!-- CARD 2 — Garagem (moto) -->
+        <article class="lottery-card group flex flex-col">
+          <div class="relative aspect-[16/10] overflow-hidden" style="border-top-left-radius: 20px; border-top-right-radius: 20px;">
+            <img
+              src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=1200&q=80"
+              alt="Moto esportiva — prêmio do sorteio Garagem Fortuno"
+              class="w-full h-full object-cover"
+              loading="lazy" decoding="async" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"></div>
+            <div class="absolute top-4 left-4 z-[3]">
+              <span class="badge-live"><span class="dot"></span> Aberto</span>
+            </div>
+            <div class="absolute top-4 right-4 z-[3]">
+              <span class="deadline-chip">Encerra em 5d</span>
+            </div>
+          </div>
+          <div class="relative p-6 flex-1 flex flex-col z-[3]">
+            <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55 mb-1">Edição Nº 049</div>
+            <h3 class="font-display text-2xl text-fortuno-offwhite mb-3">Garagem Fortuno</h3>
+            <div class="mb-4 flex items-center gap-3 flex-wrap">
+              <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] uppercase tracking-[0.18em] bg-fortuno-gold-soft/10 border border-fortuno-gold-soft/30 text-fortuno-gold-soft">
+                <i data-lucide="calendar-clock" class="w-3 h-3"></i>
+                26 abr · 21h
+              </span>
+            </div>
+            <div class="mb-4">
+              <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55">Prêmio total</div>
+              <div class="gold-numeral" style="font-size: 34px;">R$ 480.000</div>
+            </div>
+            <div class="mb-5">
+              <div class="flex items-center justify-between text-xs text-fortuno-offwhite/60 mb-2">
+                <span>Bilhetes</span>
+                <span><span class="text-fortuno-gold-soft font-semibold">11.200</span> / 30.000</span>
+              </div>
+              <div class="progress-rail" role="progressbar" aria-valuenow="37" aria-valuemin="0" aria-valuemax="100" aria-label="37 por cento dos bilhetes vendidos"><span style="width: 37%;"></span></div>
+              <div class="mt-2 text-[11px] text-fortuno-offwhite/50">
+                <span class="text-fortuno-gold-soft">18.800 restantes</span> · bilhete a partir de R$ 5
+              </div>
+            </div>
+            <a href="#" class="cta-primary w-full mt-auto">
+              Compre já <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </article>
+
+        <!-- CARD 3 — Casa (imóvel) -->
+        <article class="lottery-card group flex flex-col">
+          <div class="relative aspect-[16/10] overflow-hidden" style="border-top-left-radius: 20px; border-top-right-radius: 20px;">
+            <img
+              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
+              alt="Casa moderna com piscina — prêmio do sorteio Casa Fortuno"
+              class="w-full h-full object-cover"
+              loading="lazy" decoding="async" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"></div>
+            <div class="absolute top-4 left-4 z-[3]">
+              <span class="badge-live"><span class="dot"></span> Aberto</span>
+            </div>
+            <div class="absolute top-4 right-4 z-[3]">
+              <span class="deadline-chip">Encerra em 9d</span>
+            </div>
+          </div>
+          <div class="relative p-6 flex-1 flex flex-col z-[3]">
+            <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55 mb-1">Edição Nº 050</div>
+            <h3 class="font-display text-2xl text-fortuno-offwhite mb-3">Casa Fortuno</h3>
+            <div class="mb-4 flex items-center gap-3 flex-wrap">
+              <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] uppercase tracking-[0.18em] bg-fortuno-gold-soft/10 border border-fortuno-gold-soft/30 text-fortuno-gold-soft">
+                <i data-lucide="calendar-clock" class="w-3 h-3"></i>
+                30 abr · 20h
+              </span>
+            </div>
+            <div class="mb-4">
+              <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55">Prêmio total</div>
+              <div class="gold-numeral" style="font-size: 34px;">R$ 850.000</div>
+            </div>
+            <div class="mb-5">
+              <div class="flex items-center justify-between text-xs text-fortuno-offwhite/60 mb-2">
+                <span>Bilhetes</span>
+                <span><span class="text-fortuno-gold-soft font-semibold">22.400</span> / 40.000</span>
+              </div>
+              <div class="progress-rail" role="progressbar" aria-valuenow="56" aria-valuemin="0" aria-valuemax="100" aria-label="56 por cento dos bilhetes vendidos"><span style="width: 56%;"></span></div>
+              <div class="mt-2 text-[11px] text-fortuno-offwhite/50">
+                <span class="text-fortuno-gold-soft">17.600 restantes</span> · bilhete a partir de R$ 8
+              </div>
+            </div>
+            <a href="#" class="cta-primary w-full mt-auto">
+              Compre já <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </article>
+
+        <!-- CARD 4 — Viagem -->
+        <article class="lottery-card group flex flex-col">
+          <div class="relative aspect-[16/10] overflow-hidden" style="border-top-left-radius: 20px; border-top-right-radius: 20px;">
+            <img
+              src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
+              alt="Praia tropical ao pôr do sol — prêmio do sorteio Viagem dos Sonhos"
+              class="w-full h-full object-cover"
+              loading="lazy" decoding="async" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"></div>
+            <div class="absolute top-4 left-4 z-[3]">
+              <span class="badge-live"><span class="dot"></span> Aberto</span>
+            </div>
+            <div class="absolute top-4 right-4 z-[3]">
+              <span class="deadline-chip">Encerra em 12d</span>
+            </div>
+          </div>
+          <div class="relative p-6 flex-1 flex flex-col z-[3]">
+            <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55 mb-1">Edição Nº 051</div>
+            <h3 class="font-display text-2xl text-fortuno-offwhite mb-3">Viagem dos Sonhos</h3>
+            <div class="mb-4 flex items-center gap-3 flex-wrap">
+              <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] uppercase tracking-[0.18em] bg-fortuno-gold-soft/10 border border-fortuno-gold-soft/30 text-fortuno-gold-soft">
+                <i data-lucide="calendar-clock" class="w-3 h-3"></i>
+                03 mai · 19h
+              </span>
+            </div>
+            <div class="mb-4">
+              <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55">Prêmio total</div>
+              <div class="gold-numeral" style="font-size: 34px;">R$ 180.000</div>
+            </div>
+            <div class="mb-5">
+              <div class="flex items-center justify-between text-xs text-fortuno-offwhite/60 mb-2">
+                <span>Bilhetes</span>
+                <span><span class="text-fortuno-gold-soft font-semibold">5.600</span> / 20.000</span>
+              </div>
+              <div class="progress-rail" role="progressbar" aria-valuenow="28" aria-valuemin="0" aria-valuemax="100" aria-label="28 por cento dos bilhetes vendidos"><span style="width: 28%;"></span></div>
+              <div class="mt-2 text-[11px] text-fortuno-offwhite/50">
+                <span class="text-fortuno-gold-soft">14.400 restantes</span> · bilhete a partir de R$ 3
+              </div>
+            </div>
+            <a href="#" class="cta-primary w-full mt-auto">
+              Compre já <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </article>
+
+        <!-- CARD 5 — Diamante (joias) -->
+        <article class="lottery-card group flex flex-col">
+          <div class="relative aspect-[16/10] overflow-hidden" style="border-top-left-radius: 20px; border-top-right-radius: 20px;">
+            <img
+              src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1200&q=80"
+              alt="Anel de diamante em display — prêmio do sorteio Fortuno Diamante"
+              class="w-full h-full object-cover"
+              loading="lazy" decoding="async" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"></div>
+            <div class="absolute top-4 left-4 z-[3]">
+              <span class="badge-live"><span class="dot"></span> Aberto</span>
+            </div>
+            <div class="absolute top-4 right-4 z-[3]">
+              <span class="deadline-chip">Encerra em 15d</span>
+            </div>
+          </div>
+          <div class="relative p-6 flex-1 flex flex-col z-[3]">
+            <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55 mb-1">Edição Nº 052</div>
+            <h3 class="font-display text-2xl text-fortuno-offwhite mb-3">Fortuno Diamante</h3>
+            <div class="mb-4 flex items-center gap-3 flex-wrap">
+              <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] uppercase tracking-[0.18em] bg-fortuno-gold-soft/10 border border-fortuno-gold-soft/30 text-fortuno-gold-soft">
+                <i data-lucide="calendar-clock" class="w-3 h-3"></i>
+                06 mai · 20h
+              </span>
+            </div>
+            <div class="mb-4">
+              <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55">Prêmio total</div>
+              <div class="gold-numeral" style="font-size: 34px;">R$ 320.000</div>
+            </div>
+            <div class="mb-5">
+              <div class="flex items-center justify-between text-xs text-fortuno-offwhite/60 mb-2">
+                <span>Bilhetes</span>
+                <span><span class="text-fortuno-gold-soft font-semibold">4.800</span> / 20.000</span>
+              </div>
+              <div class="progress-rail" role="progressbar" aria-valuenow="24" aria-valuemin="0" aria-valuemax="100" aria-label="24 por cento dos bilhetes vendidos"><span style="width: 24%;"></span></div>
+              <div class="mt-2 text-[11px] text-fortuno-offwhite/50">
+                <span class="text-fortuno-gold-soft">15.200 restantes</span> · bilhete a partir de R$ 3
+              </div>
+            </div>
+            <a href="#" class="cta-primary w-full mt-auto">
+              Compre já <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </article>
+
+        <!-- CARD 6 — Eletrônicos -->
+        <article class="lottery-card group flex flex-col">
+          <div class="relative aspect-[16/10] overflow-hidden" style="border-top-left-radius: 20px; border-top-right-radius: 20px;">
+            <img
+              src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?auto=format&fit=crop&w=1200&q=80"
+              alt="Setup gamer com monitor e periféricos — prêmio do sorteio Fortuno Tech"
+              class="w-full h-full object-cover"
+              loading="lazy" decoding="async" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"></div>
+            <div class="absolute top-4 left-4 z-[3]">
+              <span class="badge-live"><span class="dot"></span> Aberto</span>
+            </div>
+            <div class="absolute top-4 right-4 z-[3]">
+              <span class="deadline-chip">Encerra em 18d</span>
+            </div>
+          </div>
+          <div class="relative p-6 flex-1 flex flex-col z-[3]">
+            <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55 mb-1">Edição Nº 053</div>
+            <h3 class="font-display text-2xl text-fortuno-offwhite mb-3">Fortuno Tech</h3>
+            <div class="mb-4 flex items-center gap-3 flex-wrap">
+              <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] uppercase tracking-[0.18em] bg-fortuno-gold-soft/10 border border-fortuno-gold-soft/30 text-fortuno-gold-soft">
+                <i data-lucide="calendar-clock" class="w-3 h-3"></i>
+                09 mai · 20h
+              </span>
+            </div>
+            <div class="mb-4">
+              <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55">Prêmio total</div>
+              <div class="gold-numeral" style="font-size: 34px;">R$ 65.000</div>
+            </div>
+            <div class="mb-5">
+              <div class="flex items-center justify-between text-xs text-fortuno-offwhite/60 mb-2">
+                <span>Bilhetes</span>
+                <span><span class="text-fortuno-gold-soft font-semibold">7.200</span> / 15.000</span>
+              </div>
+              <div class="progress-rail" role="progressbar" aria-valuenow="48" aria-valuemin="0" aria-valuemax="100" aria-label="48 por cento dos bilhetes vendidos"><span style="width: 48%;"></span></div>
+              <div class="mt-2 text-[11px] text-fortuno-offwhite/50">
+                <span class="text-fortuno-gold-soft">7.800 restantes</span> · bilhete a partir de R$ 5
+              </div>
+            </div>
+            <a href="#" class="cta-primary w-full mt-auto">
+              Compre já <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </article>
+
+        <!-- CARD 7 — Carro popular -->
+        <article class="lottery-card group flex flex-col">
+          <div class="relative aspect-[16/10] overflow-hidden" style="border-top-left-radius: 20px; border-top-right-radius: 20px;">
+            <img
+              src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=1200&q=80"
+              alt="Sedan prateado em estrada — prêmio do sorteio Fortuno Popular"
+              class="w-full h-full object-cover"
+              loading="lazy" decoding="async" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"></div>
+            <div class="absolute top-4 left-4 z-[3]">
+              <span class="badge-live"><span class="dot"></span> Aberto</span>
+            </div>
+            <div class="absolute top-4 right-4 z-[3]">
+              <span class="deadline-chip">Encerra em 21d</span>
+            </div>
+          </div>
+          <div class="relative p-6 flex-1 flex flex-col z-[3]">
+            <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55 mb-1">Edição Nº 054</div>
+            <h3 class="font-display text-2xl text-fortuno-offwhite mb-3">Fortuno Popular</h3>
+            <div class="mb-4 flex items-center gap-3 flex-wrap">
+              <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] uppercase tracking-[0.18em] bg-fortuno-gold-soft/10 border border-fortuno-gold-soft/30 text-fortuno-gold-soft">
+                <i data-lucide="calendar-clock" class="w-3 h-3"></i>
+                12 mai · 20h
+              </span>
+            </div>
+            <div class="mb-4">
+              <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55">Prêmio total</div>
+              <div class="gold-numeral" style="font-size: 34px;">R$ 95.000</div>
+            </div>
+            <div class="mb-5">
+              <div class="flex items-center justify-between text-xs text-fortuno-offwhite/60 mb-2">
+                <span>Bilhetes</span>
+                <span><span class="text-fortuno-gold-soft font-semibold">9.600</span> / 25.000</span>
+              </div>
+              <div class="progress-rail" role="progressbar" aria-valuenow="38" aria-valuemin="0" aria-valuemax="100" aria-label="38 por cento dos bilhetes vendidos"><span style="width: 38%;"></span></div>
+              <div class="mt-2 text-[11px] text-fortuno-offwhite/50">
+                <span class="text-fortuno-gold-soft">15.400 restantes</span> · bilhete a partir de R$ 4
+              </div>
+            </div>
+            <a href="#" class="cta-primary w-full mt-auto">
+              Compre já <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </article>
+
+        <!-- CARD 8 — Relógio luxo -->
+        <article class="lottery-card group flex flex-col">
+          <div class="relative aspect-[16/10] overflow-hidden" style="border-top-left-radius: 20px; border-top-right-radius: 20px;">
+            <img
+              src="https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=80"
+              alt="Relógio de pulso suíço dourado — prêmio do sorteio Fortuno Tempo"
+              class="w-full h-full object-cover"
+              loading="lazy" decoding="async" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"></div>
+            <div class="absolute top-4 left-4 z-[3]">
+              <span class="badge-live"><span class="dot"></span> Aberto</span>
+            </div>
+            <div class="absolute top-4 right-4 z-[3]">
+              <span class="deadline-chip">Encerra em 24d</span>
+            </div>
+          </div>
+          <div class="relative p-6 flex-1 flex flex-col z-[3]">
+            <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55 mb-1">Edição Nº 055</div>
+            <h3 class="font-display text-2xl text-fortuno-offwhite mb-3">Fortuno Tempo</h3>
+            <div class="mb-4 flex items-center gap-3 flex-wrap">
+              <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] uppercase tracking-[0.18em] bg-fortuno-gold-soft/10 border border-fortuno-gold-soft/30 text-fortuno-gold-soft">
+                <i data-lucide="calendar-clock" class="w-3 h-3"></i>
+                15 mai · 19h
+              </span>
+            </div>
+            <div class="mb-4">
+              <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55">Prêmio total</div>
+              <div class="gold-numeral" style="font-size: 34px;">R$ 42.000</div>
+            </div>
+            <div class="mb-5">
+              <div class="flex items-center justify-between text-xs text-fortuno-offwhite/60 mb-2">
+                <span>Bilhetes</span>
+                <span><span class="text-fortuno-gold-soft font-semibold">2.100</span> / 12.000</span>
+              </div>
+              <div class="progress-rail" role="progressbar" aria-valuenow="17" aria-valuemin="0" aria-valuemax="100" aria-label="17 por cento dos bilhetes vendidos"><span style="width: 17%;"></span></div>
+              <div class="mt-2 text-[11px] text-fortuno-offwhite/50">
+                <span class="text-fortuno-gold-soft">9.900 restantes</span> · bilhete a partir de R$ 2
+              </div>
+            </div>
+            <a href="#" class="cta-primary w-full mt-auto">
+              Compre já <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </article>
+
+        <!-- CARD 9 — Prêmio em dinheiro -->
+        <article class="lottery-card group flex flex-col">
+          <div class="relative aspect-[16/10] overflow-hidden" style="border-top-left-radius: 20px; border-top-right-radius: 20px;">
+            <img
+              src="https://images.unsplash.com/photo-1621075160523-b936ad96132a?auto=format&fit=crop&w=1200&q=80"
+              alt="Maço de notas em espiral sobre fundo neutro — prêmio do sorteio Fortuno Cash"
+              class="w-full h-full object-cover"
+              loading="lazy" decoding="async" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"></div>
+            <div class="absolute top-4 left-4 z-[3]">
+              <span class="badge-live"><span class="dot"></span> Aberto</span>
+            </div>
+            <div class="absolute top-4 right-4 z-[3]">
+              <span class="deadline-chip">Encerra em 28d</span>
+            </div>
+          </div>
+          <div class="relative p-6 flex-1 flex flex-col z-[3]">
+            <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55 mb-1">Edição Nº 056</div>
+            <h3 class="font-display text-2xl text-fortuno-offwhite mb-3">Fortuno Cash</h3>
+            <div class="mb-4 flex items-center gap-3 flex-wrap">
+              <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] uppercase tracking-[0.18em] bg-fortuno-gold-soft/10 border border-fortuno-gold-soft/30 text-fortuno-gold-soft">
+                <i data-lucide="calendar-clock" class="w-3 h-3"></i>
+                19 mai · 21h
+              </span>
+            </div>
+            <div class="mb-4">
+              <div class="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55">Prêmio total</div>
+              <div class="gold-numeral" style="font-size: 34px;">R$ 220.000</div>
+            </div>
+            <div class="mb-5">
+              <div class="flex items-center justify-between text-xs text-fortuno-offwhite/60 mb-2">
+                <span>Bilhetes</span>
+                <span><span class="text-fortuno-gold-soft font-semibold">3.200</span> / 22.000</span>
+              </div>
+              <div class="progress-rail" role="progressbar" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" aria-label="15 por cento dos bilhetes vendidos"><span style="width: 15%;"></span></div>
+              <div class="mt-2 text-[11px] text-fortuno-offwhite/50">
+                <span class="text-fortuno-gold-soft">18.800 restantes</span> · bilhete a partir de R$ 5
+              </div>
+            </div>
+            <a href="#" class="cta-primary w-full mt-auto">
+              Compre já <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PAGINATION
+         ============================================================ -->
+    <nav aria-label="Paginação da lista de sorteios" class="mx-auto max-w-7xl px-6 pt-4 pb-16 flex flex-col items-center gap-4">
+
+      <!-- Desktop / tablet -->
+      <div class="pagination hidden sm:inline-flex" role="group" aria-label="Selecionar página">
+        <button type="button" class="chip arrow" aria-label="Página anterior">
+          <i data-lucide="chevron-left" class="w-4 h-4"></i>
+          <span>Anterior</span>
+        </button>
+
+        <button type="button" class="chip" aria-label="Ir para página 1">1</button>
+        <button type="button" class="chip" aria-label="Ir para página 2">2</button>
+        <button type="button" class="chip" aria-current="page" aria-label="Página 3 (atual)">3</button>
+        <button type="button" class="chip" aria-label="Ir para página 4">4</button>
+        <span class="ellipsis" aria-hidden="true">…</span>
+        <button type="button" class="chip" aria-label="Ir para página 12 (última)">12</button>
+
+        <button type="button" class="chip arrow" aria-label="Próxima página">
+          <span>Próxima</span>
+          <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Mobile -->
+      <div class="sm:hidden flex items-center gap-3 flex-wrap justify-center">
+        <button type="button" class="chip arrow pagination bg-white/85 !px-4" aria-label="Página anterior" style="padding: 8px 14px;">
+          <i data-lucide="chevron-left" class="w-4 h-4"></i>
+        </button>
+
+        <div class="pagination-mobile" role="status" aria-live="polite">
+          Página <span class="current">3</span> de <span class="current">12</span>
+        </div>
+
+        <button type="button" class="chip arrow pagination bg-white/85 !px-4" aria-label="Próxima página" style="padding: 8px 14px;">
+          <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <p class="text-xs text-fortuno-black/50">
+        Exibindo 9 sorteios por página · 12 páginas no total
+      </p>
+    </nav>
+
+  </main>
+
+
+  <!-- ================================================================
+       PREVIEWS ADICIONAIS (fora do main — apenas para o designer/dev)
+       ================================================================ -->
+  <section class="mx-auto max-w-7xl px-6 py-12 space-y-12">
+    <div class="preview-section-label">Estados complementares</div>
+
+    <!-- EMPTY STATE -->
+    <div>
+      <div class="text-xs uppercase tracking-[0.28em] text-fortuno-black/45 mb-3">Empty state</div>
+      <div class="empty-card max-w-2xl mx-auto">
+        <span class="icon-wrap">
+          <i data-lucide="sparkles" class="w-8 h-8"></i>
+        </span>
+        <h2 class="h-title text-3xl md:text-4xl">
+          Novos sorteios em <em>breve</em>
+        </h2>
+        <p class="mt-3 text-fortuno-black/65 max-w-md mx-auto">
+          Não há sorteios ativos no momento. Fique atento — logo aparecem novas edições com prêmios maiores.
+        </p>
+        <div class="mt-7 flex items-center justify-center gap-3 flex-wrap">
+          <a href="#" class="cta-ghost">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            Voltar para Home
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SKELETON CARD -->
+    <div>
+      <div class="text-xs uppercase tracking-[0.28em] text-fortuno-black/45 mb-3">Loading skeleton (1 card de 6 no grid)</div>
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+
+        <article class="skeleton-card flex flex-col" aria-busy="true" aria-live="polite" aria-label="Carregando sorteio">
+          <div class="relative aspect-[16/10] overflow-hidden" style="border-top-left-radius: 20px; border-top-right-radius: 20px;">
+            <div class="skeleton-block absolute inset-0 !rounded-none"></div>
+            <div class="absolute top-4 left-4 z-[3] skeleton-block" style="width: 80px; height: 22px; border-radius: 999px;"></div>
+            <div class="absolute top-4 right-4 z-[3] skeleton-block" style="width: 100px; height: 22px; border-radius: 999px;"></div>
+          </div>
+
+          <div class="relative p-6 flex-1 flex flex-col gap-4 z-[3]">
+            <div class="skeleton-block" style="width: 70px; height: 10px;"></div>
+            <div class="skeleton-block" style="width: 70%; height: 24px;"></div>
+
+            <div class="flex flex-col gap-2 mt-1">
+              <div class="skeleton-block" style="width: 80px; height: 10px;"></div>
+              <div class="skeleton-block" style="width: 60%; height: 34px;"></div>
+            </div>
+
+            <div class="flex flex-col gap-2 mt-2">
+              <div class="flex items-center justify-between">
+                <div class="skeleton-block" style="width: 55px; height: 10px;"></div>
+                <div class="skeleton-block" style="width: 90px; height: 10px;"></div>
+              </div>
+              <div class="skeleton-block" style="width: 100%; height: 5px; border-radius: 999px;"></div>
+              <div class="skeleton-block" style="width: 65%; height: 10px;"></div>
+            </div>
+
+            <div class="skeleton-block mt-auto" style="width: 100%; height: 44px; border-radius: 12px;"></div>
+          </div>
+        </article>
+
+        <!-- placeholders vazios só para exibir o grid na mesma linha -->
+        <div class="hidden sm:block opacity-0" aria-hidden="true"></div>
+        <div class="hidden lg:block opacity-0" aria-hidden="true"></div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       FOOTER GLOBAL — placeholder
+       ================================================================ -->
+  <footer class="topbar-placeholder">
+    <div class="mx-auto max-w-7xl px-6 py-6 text-center text-xs text-fortuno-offwhite/55">
+      placeholder: &lt;Footer /&gt; global (do AuthenticatedShell)
+    </div>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
