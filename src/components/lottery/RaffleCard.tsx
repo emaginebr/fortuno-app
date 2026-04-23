@@ -6,15 +6,18 @@ export interface RaffleCardProps {
   /** 1-based, exibido no marker do raffle. */
   index: number;
   raffle: RaffleInfo;
+  /** Override de contagem quando awards vêm de fora do objeto raffle. */
+  awardsCount?: number;
   onOpen: () => void;
 }
 
 export const RaffleCard = ({
   index,
   raffle,
+  awardsCount,
   onOpen,
 }: RaffleCardProps): JSX.Element => {
-  const awardsCount = raffle.awards?.length ?? 0;
+  const count = awardsCount ?? raffle.awards?.length ?? 0;
 
   return (
     <button
@@ -41,7 +44,7 @@ export const RaffleCard = ({
           </span>
           <span className="inline-flex items-center gap-1.5">
             <Trophy className="w-3 h-3 text-fortuno-gold-intense" aria-hidden="true" />
-            {awardsCount} {awardsCount === 1 ? 'prêmio' : 'prêmios'}
+            {count} {count === 1 ? 'prêmio' : 'prêmios'}
           </span>
           {raffle.descriptionMd && (
             <span className="inline-flex items-center gap-1.5">

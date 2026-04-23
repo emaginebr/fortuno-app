@@ -4,11 +4,14 @@ import { RaffleCard } from './RaffleCard';
 export interface RaffleTimelineProps {
   /** Já ordenados por data ascendente. */
   raffles: RaffleInfo[];
+  /** Contagem real de prêmios por raffleId (awards são carregados separadamente). */
+  awardsCountByRaffleId?: Record<number, number>;
   onOpenRaffle: (raffleId: number) => void;
 }
 
 export const RaffleTimeline = ({
   raffles,
+  awardsCountByRaffleId,
   onOpenRaffle,
 }: RaffleTimelineProps): JSX.Element => (
   <section aria-labelledby="raffles-title">
@@ -37,6 +40,7 @@ export const RaffleTimeline = ({
           <RaffleCard
             index={idx + 1}
             raffle={raffle}
+            awardsCount={awardsCountByRaffleId?.[raffle.raffleId]}
             onOpen={() => onOpenRaffle(raffle.raffleId)}
           />
         </li>

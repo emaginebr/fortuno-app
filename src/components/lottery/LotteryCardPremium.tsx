@@ -103,7 +103,7 @@ export const LotteryCardPremium = ({
 
   return (
     <article
-      className={`lottery-card group flex flex-col h-full ${wrapperShadowClass}`.trim()}
+      className={`lottery-card text-fortuno-offwhite group flex flex-col h-full ${wrapperShadowClass}`.trim()}
     >
       <div className="relative aspect-[16/10] overflow-hidden rounded-t-[20px]">
         {cover ? (

@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
-import { Calendar, Radio, ShieldCheck, Trophy, X } from 'lucide-react';
+import { Calendar, ShieldCheck, Trophy, Users, X } from 'lucide-react';
 import type { RaffleInfo } from '@/types/raffle';
+import type { RaffleAwardInfo } from '@/types/raffleAward';
 import { Modal } from '@/components/common/Modal';
 import { MarkdownView } from '@/components/lottery/MarkdownView';
 import { formatDateExtensive, formatTime } from '@/utils/datetime';
@@ -9,18 +10,21 @@ export interface RaffleDetailModalProps {
   raffle: RaffleInfo;
   /** Posição do raffle dentro do calendário (1-based) — exibido no eyebrow. */
   index?: number;
+  /** Prêmios carregados externamente quando não vêm inline em `raffle.awards`. */
+  awards?: RaffleAwardInfo[];
   onClose: () => void;
 }
 
 export const RaffleDetailModal = ({
   raffle,
   index = 1,
+  awards,
   onClose,
 }: RaffleDetailModalProps): JSX.Element => {
-  const sortedAwards = useMemo(
-    () => [...(raffle.awards ?? [])].sort((a, b) => a.position - b.position),
-    [raffle.awards],
-  );
+  const sortedAwards = useMemo(() => {
+    const source = awards && awards.length > 0 ? awards : raffle.awards ?? [];
+    return [...source].sort((a, b) => a.position - b.position);
+  }, [awards, raffle.awards]);
   const closeAriaLabel = 'Fechar detalhes do sorteio';
 
   return (
@@ -70,14 +74,16 @@ export const RaffleDetailModal = ({
 
           <div className="bg-white border border-[color:var(--card-paper-border)] rounded-xl p-4">
             <div className="text-[9px] font-semibold tracking-[0.26em] uppercase text-fortuno-gold-intense mb-1.5 inline-flex items-center gap-1.5">
-              <Radio className="w-3 h-3" aria-hidden="true" />
-              Transmissão
+              <Users className="w-3 h-3" aria-hidden="true" />
+              Ganhadores anteriores
             </div>
             <div className="font-display text-[15px] text-fortuno-black font-semibold leading-snug">
-              A definir
+              {raffle.includePreviousWinners ? 'Concorrem novamente' : 'Não concorrem'}
             </div>
             <div className="text-[11px] text-fortuno-black/55 mt-0.5">
-              Link disponibilizado em breve.
+              {raffle.includePreviousWinners
+                ? 'Inclui ganhadores de sorteios anteriores.'
+                : 'Apenas participantes ainda não sorteados.'}
             </div>
           </div>
         </div>
