@@ -1,0 +1,260 @@
+/* ===========================================================
+   LOTTERY LIST (/sorteios) — Editorial Casino Noir · light body
+   Classes utilitárias com seletores complexos que não valem a pena
+   compor inline via Tailwind (ornamento art déco, variantes do
+   deadline-chip, skeleton block, ellipsis). Tokens em `tokens.css`.
+   =========================================================== */
+
+/* --- Ornamento art déco (filete duplo + diamante central) --- */
+.list-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+.list-ornament::before,
+.list-ornament::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--list-ornament-line);
+  max-width: 120px;
+}
+.list-ornament .diamond {
+  width: 8px;
+  height: 8px;
+  transform: rotate(45deg);
+  background: var(--fortuno-gold-intense);
+  box-shadow: 0 0 10px rgba(184, 150, 63, 0.55);
+}
+
+/* --- Deadline chip (inside lottery card, over dark image) --- */
+.deadline-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.deadline-chip.urgent {
+  color: var(--deadline-urgent-fg);
+  border: 1px solid var(--deadline-urgent-border);
+  background: var(--deadline-urgent-bg);
+}
+.deadline-chip.urgent .pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--deadline-urgent-fg);
+  animation: live-pulse 1.8s ease-in-out infinite;
+}
+
+/* --- Skeleton block (shimmer sobre card dark) --- */
+.skeleton-block {
+  position: relative;
+  overflow: hidden;
+  background: var(--skeleton-block-bg);
+  border-radius: 8px;
+}
+.skeleton-block::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--skeleton-shimmer);
+  transform: translateX(-100%);
+  animation: skeleton-slide 1.8s linear infinite;
+}
+
+/* --- Pagination pill (wrapper dos chips) --- */
+.pagination-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 9999px;
+  background: var(--pagination-bg);
+  border: 1px solid var(--pagination-border);
+  box-shadow: var(--pagination-shadow);
+  backdrop-filter: blur(6px);
+}
+
+/* --- Pagination chip --- */
+.pagination-chip {
+  min-width: 40px;
+  height: 40px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fortuno-black);
+  background: var(--pagination-chip-ghost-bg);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--easing-out),
+    color var(--duration-fast) var(--easing-out),
+    transform var(--duration-fast) var(--easing-out);
+  font-variant-numeric: tabular-nums;
+}
+.pagination-chip:hover:not([aria-current='page']):not(:disabled) {
+  background: var(--pagination-chip-ghost-hover);
+}
+.pagination-chip:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-gold-focus);
+}
+.pagination-chip[aria-current='page'] {
+  background: var(--pagination-chip-active-bg);
+  color: var(--pagination-chip-active-fg);
+  box-shadow: var(--pagination-chip-active-shadow);
+}
+.pagination-chip:disabled {
+  color: var(--pagination-chip-disabled-fg);
+  cursor: not-allowed;
+}
+.pagination-chip.arrow {
+  gap: 6px;
+  font-weight: 500;
+  font-size: 13px;
+}
+.pagination-ellipsis {
+  min-width: 28px;
+  text-align: center;
+  color: rgba(11, 11, 11, 0.45);
+  letter-spacing: 0.05em;
+  user-select: none;
+}
+
+.pagination-mobile {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border-radius: 9999px;
+  background: var(--pagination-bg);
+  border: 1px solid var(--pagination-border);
+  box-shadow: var(--pagination-shadow);
+  font-size: 13px;
+  color: var(--fortuno-black);
+}
+.pagination-mobile .current {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--fortuno-green-elegant);
+}
+
+/* --- Sort chip (filtro de ordenação no header) --- */
+.sort-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 9999px;
+  background: var(--sort-chip-bg);
+  border: 1px solid var(--sort-chip-border);
+  color: var(--fortuno-black);
+  font-size: 13px;
+  font-weight: 500;
+  transition:
+    border-color var(--duration-base) var(--easing-out),
+    transform var(--duration-base) var(--easing-out);
+  cursor: pointer;
+}
+.sort-chip:hover {
+  border-color: var(--sort-chip-hover);
+  transform: translateY(-1px);
+}
+.sort-chip:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-gold-focus);
+}
+.sort-chip .label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: rgba(11, 11, 11, 0.5);
+}
+.sort-chip select {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  color: var(--fortuno-black);
+  font: inherit;
+  cursor: pointer;
+  padding-right: 4px;
+}
+.sort-chip select:focus {
+  outline: none;
+}
+
+/* --- Empty state card (dourado tracejado) --- */
+.empty-card {
+  position: relative;
+  background: var(--empty-bg);
+  border: 2px dashed var(--empty-border);
+  border-radius: 24px;
+  padding: 48px 32px 56px;
+  text-align: center;
+  overflow: hidden;
+}
+.empty-card::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 320px;
+  height: 80px;
+  background: radial-gradient(
+    closest-side,
+    rgba(184, 150, 63, 0.25),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+.empty-card .icon-wrap {
+  display: inline-grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--empty-icon-bg);
+  border: 1px solid var(--empty-icon-border);
+  color: var(--fortuno-gold-intense);
+  margin-bottom: 18px;
+}
+
+/* --- Skeleton card wrapper --- */
+.skeleton-card {
+  position: relative;
+  background: var(--metal-casino-card);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card-on-paper);
+  min-height: 480px;
+}
+.skeleton-card::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(212, 175, 55, 0.12);
+  border-radius: 14px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* --- Respeita prefers-reduced-motion --- */
+@media (prefers-reduced-motion: reduce) {
+  .sort-chip:hover {
+    transform: none;
+  }
+  .skeleton-block::after {
+    animation: none;
+  }
+  .deadline-chip.urgent .pulse {
+    animation: none;
+  }
+}

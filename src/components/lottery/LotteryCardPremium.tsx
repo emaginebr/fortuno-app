@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, Trophy, Car, Gem, Ticket } from 'lucide-react';
+import { ArrowRight, Trophy, Car, Gem, Ticket, CalendarClock } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { LotteryInfo } from '@/types/lottery';
 import { formatBRL } from '@/utils/currency';
@@ -7,6 +7,18 @@ import { GoldNumeral } from '@/components/common/GoldNumeral';
 
 export interface LotteryCardPremiumProps {
   lottery: LotteryInfo;
+  /**
+   * Variante visual do card.
+   * - `carousel` (default): comportamento original (home/carousel) — shadow-noir-card sobre fundo dark.
+   * - `grid`: usa `shadow-card-on-paper` para ganhar contraste sobre light body (`/sorteios`).
+   */
+  variant?: 'carousel' | 'grid';
+  /**
+   * Quando `true`, exibe um chip pequeno com `CalendarClock` + data/hora
+   * do próximo raffle (`lottery.raffles[0].raffleDatetime`).
+   * Se não houver raffles, o chip simplesmente não é renderizado.
+   */
+  showCalendarChip?: boolean;
 }
 
 const iconForName = (name: string): LucideIcon => {
@@ -23,6 +35,20 @@ const daysUntil = (iso?: string): number | null => {
   const diff = target - Date.now();
   if (diff <= 0) return 0;
   return Math.ceil(diff / 86_400_000);
+};
+
+const SHORT_DATETIME_FORMATTER = new Intl.DateTimeFormat('pt-BR', {
+  day: '2-digit',
+  month: 'short',
+  hour: '2-digit',
+  minute: '2-digit',
+});
+
+const formatShortDateTime = (iso: string): string => {
+  const d = new Date(iso);
+  if (!Number.isFinite(d.getTime())) return '';
+  // Saída: "23 abr., 20:00" — o "às" fica implícito no separador visual do chip.
+  return SHORT_DATETIME_FORMATTER.format(d).replace(',', ' ·');
 };
 
 const FallbackCover = ({ Icon }: { Icon: LucideIcon }): JSX.Element => (
@@ -44,11 +70,16 @@ const FallbackCover = ({ Icon }: { Icon: LucideIcon }): JSX.Element => (
   </>
 );
 
-export const LotteryCardPremium = ({ lottery }: LotteryCardPremiumProps): JSX.Element => {
+export const LotteryCardPremium = ({
+  lottery,
+  variant = 'carousel',
+  showCalendarChip = false,
+}: LotteryCardPremiumProps): JSX.Element => {
   const cover = lottery.images?.[0]?.imageUrl;
   const Icon = iconForName(lottery.name);
   const nextRaffle = lottery.raffles?.[0]?.raffleDatetime;
   const days = daysUntil(nextRaffle);
+  const isUrgent = days !== null && days <= 7;
 
   const totalTickets = Math.max(
     0,
@@ -62,8 +93,18 @@ export const LotteryCardPremium = ({ lottery }: LotteryCardPremiumProps): JSX.El
 
   const editionNumber = String(lottery.lotteryId).padStart(3, '0');
 
+  // Sombra conforme variante: em 'grid' rodamos sobre paper claro → usamos
+  // card-on-paper (tokens novos de /sorteios). Em 'carousel' mantemos o
+  // comportamento original (shadow-noir-card, herdado da home).
+  const wrapperShadowClass =
+    variant === 'grid'
+      ? 'shadow-card-on-paper hover:shadow-card-on-paper-hover'
+      : '';
+
   return (
-    <article className="lottery-card group flex flex-col h-full">
+    <article
+      className={`lottery-card group flex flex-col h-full ${wrapperShadowClass}`.trim()}
+    >
       <div className="relative aspect-[16/10] overflow-hidden rounded-t-[20px]">
         {cover ? (
           <img
@@ -76,24 +117,43 @@ export const LotteryCardPremium = ({ lottery }: LotteryCardPremiumProps): JSX.El
         ) : (
           <FallbackCover Icon={Icon} />
         )}
-        <div className="absolute top-4 left-4">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+        <div className="absolute top-4 left-4 z-[3]">
           <span className="badge-live">
             <span className="dot" aria-hidden="true" />
             Aberto
           </span>
         </div>
         {days !== null && (
-          <div className="absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] uppercase tracking-[0.22em] bg-black/50 backdrop-blur-sm border border-fortuno-gold-soft/25 text-fortuno-gold-soft">
-            {days === 0 ? 'Encerra hoje' : `Encerra em ${days}d`}
+          <div className="absolute top-4 right-4 z-[3]">
+            <span
+              className={
+                isUrgent
+                  ? 'deadline-chip urgent inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] uppercase tracking-[0.18em] font-semibold backdrop-blur-sm'
+                  : 'deadline-chip inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] uppercase tracking-[0.18em] font-semibold bg-black/55 border border-fortuno-gold-soft/32 text-fortuno-gold-soft backdrop-blur-sm'
+              }
+            >
+              {isUrgent && <span className="pulse" aria-hidden="true" />}
+              {days === 0 ? 'Encerra hoje' : `Encerra em ${days}d`}
+            </span>
           </div>
         )}
       </div>
 
-      <div className="relative p-6 flex-1 flex flex-col">
+      <div className="relative p-6 flex-1 flex flex-col z-[3]">
         <div className="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55 mb-1">
           Edição Nº {editionNumber}
         </div>
         <h3 className="font-display text-2xl text-fortuno-offwhite mb-3">{lottery.name}</h3>
+
+        {showCalendarChip && nextRaffle && (
+          <div className="mb-4 flex items-center gap-3 flex-wrap">
+            <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] uppercase tracking-[0.18em] bg-fortuno-gold-soft/10 border border-fortuno-gold-soft/30 text-fortuno-gold-soft">
+              <CalendarClock className="w-3 h-3" aria-hidden="true" />
+              {formatShortDateTime(nextRaffle)}
+            </span>
+          </div>
+        )}
 
         <div className="mb-4">
           <div className="text-[10px] uppercase tracking-[0.24em] text-fortuno-offwhite/55">

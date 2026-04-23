@@ -1,73 +1,143 @@
-import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLottery } from '@/hooks/useLottery';
-import { LoadingSpinner } from '@/components/common/LoadingSpinner';
-import { formatBRL } from '@/utils/currency';
+import { LotteryCardPremium } from '@/components/lottery/LotteryCardPremium';
+import {
+  LotteryListHeader,
+  type LotteryListSort,
+} from '@/components/lottery/LotteryListHeader';
+import { LotteryCardSkeleton } from '@/components/lottery/LotteryCardSkeleton';
+import { LotteryEmptyState } from '@/components/lottery/LotteryEmptyState';
+import { Pagination } from '@/components/common/Pagination';
+import type { LotteryInfo } from '@/types/lottery';
+
+const PAGE_SIZE = 9; // 3x3 em desktop, 2 col tablet, 1 col mobile
+const SKELETON_COUNT = 6; // exibidos durante o primeiro load
+
+const prefersReducedMotion = (): boolean => {
+  if (typeof window === 'undefined' || !window.matchMedia) return false;
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+};
 
 export const LotteryListPage = (): JSX.Element => {
+  const { t } = useTranslation();
   const { openLotteries, loading, loadOpen } = useLottery();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sort, setSort] = useState<LotteryListSort>('prize-desc');
 
   useEffect(() => {
     void loadOpen();
   }, [loadOpen]);
 
-  if (loading && openLotteries.length === 0) {
-    return <LoadingSpinner label="Carregando sorteios..." />;
-  }
+  // Reset página ao 1 quando o tamanho da lista muda (primeiro load ou refresh).
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [openLotteries.length]);
+
+  // Estatísticas do header — derivadas do array (sem rede extra).
+  const stats = useMemo(
+    () => ({
+      total: openLotteries.length,
+      prizeSum: openLotteries.reduce(
+        (acc, lot) => acc + (lot.totalPrizeValue ?? 0),
+        0,
+      ),
+    }),
+    [openLotteries],
+  );
+
+  // Ordenação CLIENT-SIDE (placeholder — ver MOCKS.md para o server-side).
+  const sorted = useMemo<LotteryInfo[]>(() => {
+    const arr = [...openLotteries];
+    if (sort === 'prize-desc') {
+      arr.sort((a, b) => (b.totalPrizeValue ?? 0) - (a.totalPrizeValue ?? 0));
+    } else if (sort === 'prize-asc') {
+      arr.sort((a, b) => (a.totalPrizeValue ?? 0) - (b.totalPrizeValue ?? 0));
+    } else if (sort === 'recent') {
+      arr.sort((a, b) => {
+        const aTs = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bTs = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return bTs - aTs;
+      });
+    }
+    return arr;
+  }, [openLotteries, sort]);
+
+  const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
+
+  const pageSlice = useMemo<LotteryInfo[]>(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return sorted.slice(start, start + PAGE_SIZE);
+  }, [sorted, currentPage]);
+
+  const handlePageChange = (next: number): void => {
+    setCurrentPage(next);
+    window.scrollTo({
+      top: 0,
+      behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+    });
+  };
+
+  const handleSortChange = (next: LotteryListSort): void => {
+    setSort(next);
+    setCurrentPage(1);
+  };
+
+  const firstLoad = loading && openLotteries.length === 0;
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-10">
-      <header className="mb-8 text-center">
-        <h1 className="font-display text-4xl text-fortuno-black">Sorteios em andamento</h1>
-        <p className="mt-2 text-fortuno-black/70">
-          Escolha uma das loterias abaixo e concorra a prêmios reais.
-        </p>
-      </header>
+    <div className="relative">
+      <LotteryListHeader
+        totalLotteries={stats.total}
+        totalPrize={stats.prizeSum}
+        shownCount={pageSlice.length}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        sort={sort}
+        onSortChange={handleSortChange}
+      />
 
-      {openLotteries.length === 0 ? (
-        <div className="rounded-xl border border-dashed p-10 text-center text-fortuno-black/60">
-          Nenhum sorteio em andamento no momento. Volte em breve.
-        </div>
+      {firstLoad ? (
+        <section
+          aria-label={t('lotteryList.loadingAria')}
+          className="mx-auto max-w-7xl px-6 pt-8 pb-12"
+        >
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+              <LotteryCardSkeleton key={i} />
+            ))}
+          </div>
+        </section>
+      ) : openLotteries.length === 0 ? (
+        <section className="mx-auto max-w-7xl px-6 pt-8 pb-16">
+          <LotteryEmptyState />
+        </section>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {openLotteries.map((lottery) => {
-            const cover = lottery.images?.[0]?.imageUrl;
-            return (
-              <Link
-                key={lottery.lotteryId}
-                to={`/sorteios/${lottery.slug}`}
-                className="group overflow-hidden rounded-xl border border-fortuno-black/10 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
-              >
-                <div className="aspect-video bg-fortuno-green-deep">
-                  {cover ? (
-                    <img src={cover} alt={lottery.name} className="h-full w-full object-cover" />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center text-fortuno-gold-soft">
-                      <span className="font-display text-5xl">🎟</span>
-                    </div>
-                  )}
-                </div>
-                <div className="p-5">
-                  <h2 className="font-display text-xl text-fortuno-black">{lottery.name}</h2>
-                  <p className="mt-2 text-sm text-fortuno-black/70">
-                    Prêmio total:{' '}
-                    <strong className="text-fortuno-gold-intense">
-                      {formatBRL(lottery.totalPrizeValue)}
-                    </strong>
-                  </p>
-                  <p className="mt-1 text-sm text-fortuno-black/70">
-                    Bilhete a partir de{' '}
-                    <strong>{formatBRL(lottery.ticketPrice)}</strong>
-                  </p>
-                  <span className="mt-4 inline-flex items-center gap-1 font-semibold text-fortuno-gold-intense group-hover:underline">
-                    Ver sorteio →
-                  </span>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
+        <>
+          <section
+            aria-label={t('lotteryList.gridAria')}
+            className="mx-auto max-w-7xl px-6 pt-8 pb-12"
+          >
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {pageSlice.map((lottery) => (
+                <LotteryCardPremium
+                  key={lottery.lotteryId}
+                  lottery={lottery}
+                  variant="grid"
+                  showCalendarChip
+                />
+              ))}
+            </div>
+          </section>
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            ariaLabel={t('lotteryList.paginationAria')}
+          />
+        </>
       )}
-    </section>
+    </div>
   );
 };

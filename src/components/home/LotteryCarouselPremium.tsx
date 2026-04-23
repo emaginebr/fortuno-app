@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useKeenSlider } from 'keen-slider/react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import type { LotteryInfo } from '@/types/lottery';
-import { LotteryCardPremium } from './LotteryCardPremium';
+import { LotteryCardPremium } from '@/components/lottery/LotteryCardPremium';
 
 export interface LotteryCarouselPremiumProps {
   lotteries: LotteryInfo[];

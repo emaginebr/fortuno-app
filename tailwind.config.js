@@ -44,6 +44,10 @@ export default {
         'combo-card-hover': 'var(--combo-card-shadow-hover)',
         'modal': 'var(--modal-shadow)',
         'qr-card': 'var(--qr-card-shadow)',
+        'card-on-paper': 'var(--shadow-card-on-paper)',
+        'card-on-paper-hover': 'var(--shadow-card-on-paper-hover)',
+        'pagination': 'var(--pagination-shadow)',
+        'pagination-chip': 'var(--pagination-chip-active-shadow)',
       },
       backgroundImage: {
         'noir-page': 'var(--noir-bg-page)',
@@ -91,6 +95,12 @@ export default {
         'billet-icon-manual': 'var(--billet-icon-bg-manual)',
         'ticket-numeral': 'var(--ticket-numeral-gradient)',
         'ornament-line': 'var(--ornament-line)',
+        'list-ornament-line': 'var(--list-ornament-line)',
+        'pagination': 'var(--pagination-bg)',
+        'pagination-chip-active': 'var(--pagination-chip-active-bg)',
+        'empty-card': 'var(--empty-bg)',
+        'empty-icon': 'var(--empty-icon-bg)',
+        'skeleton-shimmer': 'var(--skeleton-shimmer)',
       },
       transitionTimingFunction: {
         'noir-out': 'cubic-bezier(0.22, 1, 0.36, 1)',
@@ -215,6 +225,10 @@ export default {
           '0%': { opacity: '1', transform: 'translateX(0)' },
           '100%': { opacity: '0', transform: 'translateX(-24px)' },
         },
+        'skeleton-slide': {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
       },
       animation: {
         'marker-breath': 'marker-breath 2.6s ease-in-out infinite',
@@ -242,6 +256,7 @@ export default {
           'step-slide-in 280ms cubic-bezier(0.22, 1, 0.36, 1) both',
         'step-slide-out':
           'step-slide-out 200ms cubic-bezier(0.22, 1, 0.36, 1) both',
+        'skeleton-slide': 'skeleton-slide 1.8s linear infinite',
       },
     },
   },

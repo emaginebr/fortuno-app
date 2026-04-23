@@ -523,6 +523,98 @@
   --confetti-gold-a: var(--fortuno-gold-soft);
   --confetti-gold-b: var(--fortuno-gold-intense);
   --confetti-green: var(--fortuno-green-elegant);
+
+  /* ===========================================================
+     LOTTERY LIST (/sorteios) — Editorial Casino Noir · light body
+     Tokens específicos da lista pública paginada.
+     =========================================================== */
+
+  /* --- Ornamento art déco do header da página (filete horizontal) --- */
+  --list-ornament-line: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(184, 150, 63, 0.55) 45%,
+    rgba(184, 150, 63, 0.55) 55%,
+    transparent 100%
+  );
+
+  /* --- Sombras do card premium exibido sobre light body --- */
+  --shadow-card-on-paper:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 22px 44px -22px rgba(10, 42, 32, 0.35),
+    0 10px 22px -10px rgba(184, 150, 63, 0.2);
+  --shadow-card-on-paper-hover:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 36px 64px -26px rgba(10, 42, 32, 0.5),
+    0 18px 32px -12px rgba(184, 150, 63, 0.35);
+
+  /* --- Pill de paginação (base glass papel) --- */
+  --pagination-bg: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.9),
+    rgba(247, 243, 236, 0.85)
+  );
+  --pagination-border: rgba(11, 11, 11, 0.1);
+  --pagination-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 8px 22px -14px rgba(10, 42, 32, 0.22);
+
+  /* --- Chip de página --- */
+  --pagination-chip-ghost-bg: transparent;
+  --pagination-chip-ghost-hover: rgba(184, 150, 63, 0.1);
+  --pagination-chip-active-bg: linear-gradient(
+    180deg,
+    #d4af37,
+    #b8963f
+  );
+  --pagination-chip-active-fg: #0a2a20;
+  --pagination-chip-active-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.35) inset,
+    0 6px 14px -6px rgba(184, 150, 63, 0.6);
+  --pagination-chip-disabled-fg: rgba(11, 11, 11, 0.35);
+
+  /* --- Chip "Ordenar" (sort placeholder, client-side) --- */
+  --sort-chip-bg: rgba(255, 255, 255, 0.85);
+  --sort-chip-border: rgba(11, 11, 11, 0.1);
+  --sort-chip-hover: rgba(184, 150, 63, 0.35);
+
+  /* --- Deadline chip urgente (card, <7 dias) --- */
+  --deadline-urgent-fg: #f0d27a;
+  --deadline-urgent-border: rgba(240, 210, 122, 0.6);
+  --deadline-urgent-bg: rgba(0, 0, 0, 0.6);
+
+  /* --- Empty state (card dourado tracejado) --- */
+  --empty-bg:
+    radial-gradient(
+      420px 220px at 50% 0%,
+      rgba(184, 150, 63, 0.1),
+      transparent 70%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.7),
+      rgba(247, 243, 236, 0.55)
+    );
+  --empty-border: rgba(184, 150, 63, 0.55);
+  --empty-icon-bg:
+    radial-gradient(
+      closest-side,
+      rgba(184, 150, 63, 0.16),
+      transparent 70%
+    ),
+    rgba(255, 255, 255, 0.75);
+  --empty-icon-border: rgba(184, 150, 63, 0.35);
+
+  /* --- Skeleton shimmer para card de loading --- */
+  --skeleton-block-bg: rgba(236, 232, 225, 0.06);
+  --skeleton-shimmer: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(212, 175, 55, 0.1) 40%,
+    rgba(212, 175, 55, 0.18) 50%,
+    rgba(212, 175, 55, 0.1) 60%,
+    transparent 100%
+  );
 }
 
 .dark {

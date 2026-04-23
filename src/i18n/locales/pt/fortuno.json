@@ -237,5 +237,41 @@
     "previous": "Anterior",
     "empty": "Nenhum registro encontrado.",
     "required": "Campo obrigatório"
+  },
+  "lotteryList": {
+    "eyebrow": "Vitrine de sorteios",
+    "title": "Sorteios em andamento",
+    "subheadCount": "{{count}} sorteios ativos",
+    "subheadCount_one": "{{count}} sorteio ativo",
+    "subheadCount_other": "{{count}} sorteios ativos",
+    "subheadPrize": "prêmios somando",
+    "subheadInvitation": "Escolha a sua próxima sorte.",
+    "pageAnnounce": "Página {{page}} de {{total}}. Exibindo {{shown}} sorteios.",
+    "showing": "Exibindo",
+    "showingCount": "{{shown}} de {{total}}",
+    "showingTrailing": "sorteios",
+    "sortLabel": "Ordenar",
+    "sortAria": "Ordenar lista de sorteios",
+    "sortPrizeDesc": "Prêmio maior",
+    "sortPrizeAsc": "Prêmio menor",
+    "sortRecent": "Mais recentes",
+    "loadingAria": "Carregando sorteios",
+    "gridAria": "Lista de sorteios abertos",
+    "paginationAria": "Paginação da lista de sorteios",
+    "skeletonAria": "Carregando sorteio",
+    "emptyTitlePrefix": "Novos sorteios em",
+    "emptyTitleEmphasis": "breve",
+    "emptySubtitle": "Não há sorteios ativos no momento. Fique atento — logo aparecem novas edições com prêmios maiores.",
+    "emptyCta": "Voltar para Home"
+  },
+  "pagination": {
+    "navAria": "Paginação",
+    "groupAria": "Selecionar página",
+    "previous": "Anterior",
+    "next": "Próxima",
+    "currentAria": "Página {{page}} (atual)",
+    "goToAria": "Ir para página {{page}}",
+    "ofLabelPrefix": "Página",
+    "ofLabelMiddle": "de"
   }
 }
