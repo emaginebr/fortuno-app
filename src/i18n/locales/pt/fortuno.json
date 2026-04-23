@@ -316,6 +316,147 @@
       "signature": "Sua sorte é séria."
     }
   },
+  "contact": {
+    "hero": {
+      "eyebrow": "Fortuno · Canais oficiais",
+      "titleLine1": "Estamos",
+      "titleLine2": "por perto.",
+      "subheadPart1": "Escolha o canal que preferir. Respondemos em até",
+      "subheadEmphasis": "1 dia útil",
+      "subheadPart2": "— e, no WhatsApp, geralmente em menos de 4 horas.",
+      "trustHours": "Seg. a sex., 9h às 18h",
+      "trustRegion": "Brasil · Fuso BRT",
+      "trustLgpd": "LGPD · dados protegidos"
+    },
+    "channels": {
+      "eyebrow": "Capítulo I · Canais",
+      "titleLine1": "Escolha como prefere",
+      "titleLine2": "conversar.",
+      "whatsapp": {
+        "label": "WhatsApp",
+        "description": "Canal mais rápido. Atendimento humano de segunda a sexta, das 9h às 18h.",
+        "cta": "Abrir WhatsApp",
+        "ariaCta": "Abrir WhatsApp em nova aba",
+        "slaLabel": "Resposta em 4h",
+        "slaAria": "Tempo médio de resposta: menos de 4 horas"
+      },
+      "instagram": {
+        "label": "Instagram",
+        "description": "Acompanhe novidades, sorteios em andamento e fale com a gente no direct.",
+        "cta": "Abrir @fortuno",
+        "ariaCta": "Abrir Instagram em nova aba",
+        "slaLabel": "Resposta em 1 dia",
+        "slaAria": "Tempo médio de resposta: em 1 dia útil"
+      },
+      "email": {
+        "label": "E-mail",
+        "description": "Para demandas formais, parcerias e documentos. Respondemos pelo mesmo canal.",
+        "ariaCta": "Enviar e-mail para o canal oficial",
+        "slaLabel": "Resposta em 1 dia",
+        "slaAria": "Tempo médio de resposta: em 1 dia útil"
+      }
+    },
+    "form": {
+      "eyebrow": "Capítulo II · Mensagem",
+      "titleLine1": "Envie sua",
+      "titleLine2": "mensagem.",
+      "subhead": "Prefere deixar registrado por aqui? Conte com uma resposta por e-mail em até 1 dia útil.",
+      "disclaimer": "Resposta por e-mail em até 1 dia útil.",
+      "name": {
+        "label": "Nome completo",
+        "placeholder": "Como podemos te chamar?",
+        "error": "Informe seu nome (mínimo 2 caracteres)."
+      },
+      "email": {
+        "label": "E-mail",
+        "placeholder": "seu.melhor@email.com",
+        "help": "Usaremos este e-mail para responder.",
+        "error": "Informe um e-mail válido."
+      },
+      "phone": {
+        "label": "Telefone (opcional)",
+        "placeholder": "(11) 99999-9999",
+        "error": "Telefone inválido. Use DDD + número."
+      },
+      "subject": {
+        "label": "Assunto",
+        "placeholder": "Selecione um assunto",
+        "options": {
+          "duvida": "Dúvida geral",
+          "suporte": "Suporte",
+          "parceria": "Parceria",
+          "sugestao": "Sugestão",
+          "outro": "Outro"
+        },
+        "error": "Selecione um assunto."
+      },
+      "message": {
+        "label": "Mensagem",
+        "placeholder": "Descreva sua dúvida, sugestão ou solicitação.",
+        "help": "Mínimo 10 caracteres. Detalhes ajudam a respondermos com precisão.",
+        "error": "Descreva sua mensagem (mínimo 10 caracteres)."
+      },
+      "lgpd": {
+        "labelPrefix": "Li e concordo com a",
+        "labelLink": "Política de Privacidade",
+        "labelSuffix": "e autorizo o uso dos meus dados para resposta desta mensagem.",
+        "error": "É necessário aceitar a Política de Privacidade."
+      },
+      "submit": "Enviar mensagem",
+      "submitLoading": "Enviando…",
+      "successToast": "Mensagem enviada! Responderemos em até 1 dia útil.",
+      "errorToast": "Não foi possível enviar. Tente novamente ou use o WhatsApp.",
+      "successCardTitle": "Recebemos sua mensagem.",
+      "successCardBody": "Nossa equipe responde por e-mail em até 1 dia útil. Enquanto isso, sinta-se à vontade para abrir o WhatsApp para algo urgente.",
+      "successCardCta": "Enviar outra mensagem"
+    },
+    "institutional": {
+      "eyebrow": "Dados oficiais",
+      "title": "Fortuno — registro e atendimento.",
+      "labelCompany": "Razão social",
+      "labelCnpj": "CNPJ",
+      "labelHours": "Horário de atendimento",
+      "labelAddress": "Endereço",
+      "fallbackCompany": "FORTUNO SORTEIOS E PREMIAÇÕES LTDA",
+      "fallbackCnpj": "00.000.000/0001-00",
+      "fallbackHours": "Seg. a sex., 9h às 18h (horário de Brasília)",
+      "fallbackAddress": "A definir",
+      "footnote": "Aos finais de semana, retornamos no próximo dia útil."
+    },
+    "faq": {
+      "eyebrow": "Capítulo III · Antes de mandar",
+      "titleLine1": "Talvez já tenha a",
+      "titleLine2": "resposta.",
+      "subtitle": "Dúvidas mais comuns dos participantes Fortuno. Se a sua não estiver aqui, use os canais acima.",
+      "items": {
+        "premio": {
+          "question": "Como recebo meu prêmio?",
+          "answer": "O prêmio é transferido via PIX diretamente para a conta do CPF registrado no bilhete em até 3 dias úteis após a ata pública do sorteio. Nenhum valor é solicitado do ganhador: não pagamos taxas, impostos ou qualquer tipo de antecipação. Todo o contato é feito exclusivamente pelos canais oficiais (WhatsApp e e-mail cadastrados no perfil) e, em casos específicos, por videochamada registrada."
+        },
+        "pagamento": {
+          "question": "Quanto tempo demora a confirmação do pagamento?",
+          "answer": "O PIX é confirmado em segundos. O bilhete é atribuído automaticamente ao seu CPF assim que a instituição financeira autorizada (Mercado Pago, Efí ou Gerencianet) devolve o webhook de pagamento. Se após 2 minutos o bilhete não aparecer em \"Meus números\", basta atualizar a página — se persistir, abra o WhatsApp informando o código do QR Code."
+        },
+        "cancelar": {
+          "question": "Posso cancelar um bilhete após a compra?",
+          "answer": "O cancelamento é possível em até 7 dias corridos após a compra, conforme o Código de Defesa do Consumidor, desde que o sorteio ainda não tenha sido realizado. O valor pago é devolvido pelo mesmo meio (PIX), descontadas eventuais taxas da instituição de pagamento. Cancelamentos após o sorteio não são possíveis."
+        },
+        "sorteado": {
+          "question": "Como saber se fui sorteado?",
+          "answer": "Você é notificado por e-mail e WhatsApp assim que a ata pública é publicada. O resultado também aparece na sua área logada em \"Meus números\", com o hash verificável do sorteio. Nunca enviamos links de \"confirmação de premiação\" por SMS ou chamadas de voz — qualquer contato fora dos canais oficiais é suspeito e deve ser ignorado."
+        }
+      }
+    },
+    "closing": {
+      "eyebrow": "Ainda em dúvida?",
+      "titleLine1": "Nossa equipe está",
+      "titleLine2": "a um clique de distância.",
+      "subhead": "O WhatsApp é o caminho mais rápido. Resposta em média em menos de 4 horas úteis.",
+      "ctaPrimary": "Abrir WhatsApp",
+      "ctaSecondary": "Enviar mensagem",
+      "signature": "Sua sorte é séria."
+    }
+  },
   "common": {
     "loading": "Carregando...",
     "error": "Ocorreu um erro. Tente novamente.",

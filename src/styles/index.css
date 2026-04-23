@@ -6,6 +6,7 @@
 @import './lottery-list.css';
 @import './my-numbers.css';
 @import './about.css';
+@import './contact.css';
 
 @tailwind base;
 @tailwind components;

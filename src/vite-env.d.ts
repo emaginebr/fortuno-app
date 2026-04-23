@@ -10,6 +10,10 @@ interface ImportMetaEnv {
   readonly VITE_WHATSAPP_URL: string;
   readonly VITE_INSTAGRAM_URL: string;
   readonly VITE_CONTACT_EMAIL: string;
+  readonly VITE_COMPANY_NAME?: string;
+  readonly VITE_COMPANY_CNPJ?: string;
+  readonly VITE_COMPANY_ADDRESS?: string;
+  readonly VITE_COMPANY_BUSINESS_HOURS?: string;
 }
 
 interface ImportMeta {

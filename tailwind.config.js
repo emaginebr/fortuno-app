@@ -48,6 +48,8 @@ export default {
         'card-on-paper-hover': 'var(--shadow-card-on-paper-hover)',
         'pagination': 'var(--pagination-shadow)',
         'pagination-chip': 'var(--pagination-chip-active-shadow)',
+        'input-focus': 'var(--input-shadow-focus)',
+        'faq-open': 'var(--faq-shadow-open)',
       },
       backgroundImage: {
         'noir-page': 'var(--noir-bg-page)',
@@ -106,6 +108,8 @@ export default {
         'about-timeline-marker': 'var(--about-timeline-marker)',
         'about-dropcap': 'var(--about-dropcap-gradient)',
         'about-vault-paper': 'var(--about-vault-paper)',
+        'contact-hero-halo': 'var(--contact-hero-halo)',
+        'inst-halo': 'var(--inst-halo)',
       },
       transitionTimingFunction: {
         'noir-out': 'cubic-bezier(0.22, 1, 0.36, 1)',

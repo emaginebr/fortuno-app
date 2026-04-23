@@ -108,6 +108,26 @@ Registro vivo dos endpoints que o frontend consome em modo MOCK até que o backe
 - **Descrição**: a página institucional `/quem-somos` exibe 4 numerais editoriais com valores hardcoded (`2025`, `R$ 12,4M`, `248`, `15.3k+`). Quando o endpoint existir, alimentar via `useEffect` + estado local e manter os labels i18n em `about.stats.*`.
 - **Item de acompanhamento**: pendente de abertura.
 
+### Contato — Envio de mensagem
+
+- **Arquivo**: `src/components/contact/ContactForm.tsx` (função local `submitContact`)
+- **Rota esperada**: `POST /contact/messages` (a confirmar com o backend; alternativa `POST /v1/contact`)
+- **Payload**:
+  ```json
+  {
+    "name": "string",
+    "email": "string (email)",
+    "phone": "string | null",
+    "subject": "duvida | suporte | parceria | sugestao | outro",
+    "message": "string (>= 10 chars)",
+    "consent": true
+  }
+  ```
+- **Response esperado**: `201 Created` com `{ "id": "uuid", "createdAt": "ISO-8601" }`.
+- **Descrição**: formulário público de contato em `/fale-conosco`. Enquanto o endpoint não existir, usa `setTimeout(900ms)` com ~10% de falha simulada para validar estados loading / success / error. Toast via sonner. Após sucesso, o card mostra um snapshot verde de confirmação e permite reabrir o form. Quando integrar, criar `src/Services/contactService.ts` consumindo `apiHelpers.getHeaders()` (injeta `X-Tenant-Id: fortuno` + Bearer NAuth).
+- **Bruno collection**: pendente — adicionar entry em `c:/repos/Fortuno/Fortuno/bruno` quando o endpoint for definido.
+- **Item de acompanhamento**: pendente de abertura.
+
 ### Home — Imagem de fallback do hero
 
 - **Arquivo**: `public/images/hero-fallback.jpg` (asset estático pendente)

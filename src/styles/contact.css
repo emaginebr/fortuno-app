@@ -1,0 +1,608 @@
+/* ===========================================================
+   CONTACT — /fale-conosco · Editorial Casino Noir (light body)
+   Classes específicas da página institucional curta.
+   Reaproveita tokens declarados em tokens.css (bloco CONTACT).
+   =========================================================== */
+
+/* ---------------------------------------------------------
+   1. HERO compacto — mesmo padrão do about, raios menores
+   --------------------------------------------------------- */
+.contact-hero {
+  position: relative;
+  background: var(--contact-hero-halo);
+  isolation: isolate;
+}
+.contact-hero::before,
+.contact-hero::after {
+  content: '';
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: var(--gold-divider);
+  pointer-events: none;
+}
+.contact-hero::before {
+  top: 0;
+}
+.contact-hero::after {
+  bottom: 0;
+  left: 22%;
+  right: 22%;
+  background: var(--gold-divider-soft);
+}
+
+/* Glyph art-déco da coluna direita do hero */
+.contact-hero-glyph {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(184, 150, 63, 0.24);
+  border-radius: 24px;
+  background:
+    radial-gradient(120% 120% at 30% 20%, rgba(212, 175, 55, 0.14) 0%, transparent 55%),
+    linear-gradient(180deg, #faf5e8 0%, #ece8e1 100%);
+  overflow: hidden;
+  box-shadow: var(--shadow-paper);
+}
+.contact-hero-glyph::before {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(184, 150, 63, 0.22);
+  border-radius: 16px;
+  pointer-events: none;
+}
+.contact-hero-glyph::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 68%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  border: 1px dashed rgba(184, 150, 63, 0.28);
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------
+   2. CHANNEL CARD — papel branco com hover lift e SLA chip
+   --------------------------------------------------------- */
+.channel-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 28px 26px 26px;
+  background: #ffffff;
+  border: 1px solid var(--card-paper-border);
+  border-radius: 20px;
+  box-shadow: var(--shadow-paper);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform var(--duration-base) var(--easing-spring),
+    border-color var(--duration-base) var(--easing-out),
+    box-shadow var(--duration-base) var(--easing-out);
+}
+.channel-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--card-gold-bar);
+  opacity: 0.85;
+}
+.channel-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--card-paper-border-hover);
+  box-shadow: var(--shadow-paper-hover);
+}
+.channel-card:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 3px rgba(212, 175, 55, 0.55),
+    var(--shadow-paper-hover);
+  border-color: rgba(184, 150, 63, 0.55);
+}
+
+.channel-icon-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, #faf3e1 0%, #f0e3b8 100%);
+  color: var(--fortuno-gold-intense);
+  border: 1px solid rgba(184, 150, 63, 0.32);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.85) inset,
+    0 6px 14px -6px rgba(184, 150, 63, 0.35);
+}
+
+/* SLA chip absoluto */
+.sla-chip {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--sla-chip-fg);
+  background: var(--sla-chip-bg);
+  border: 1px solid var(--sla-chip-border);
+  border-radius: 999px;
+}
+.sla-chip .sla-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--fortuno-gold-intense);
+  box-shadow: 0 0 0 3px rgba(184, 150, 63, 0.18);
+}
+
+/* ---------------------------------------------------------
+   3. FORM CARD — bordas ouro duplas, fundo papel sutil
+   --------------------------------------------------------- */
+.contact-form-card {
+  position: relative;
+  background: linear-gradient(180deg, #ffffff 0%, #fbf7ef 100%);
+  border: 1px solid rgba(184, 150, 63, 0.28);
+  border-radius: 22px;
+  box-shadow: var(--shadow-paper);
+  overflow: hidden;
+}
+.contact-form-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--card-gold-bar);
+  opacity: 0.9;
+}
+.contact-form-card::after {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(184, 150, 63, 0.1);
+  border-radius: 14px;
+  pointer-events: none;
+}
+
+/* Form fields */
+.contact-form-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(11, 11, 11, 0.62);
+  margin-bottom: 8px;
+}
+.contact-form-label .req {
+  color: var(--fortuno-gold-intense);
+  margin-left: 4px;
+}
+
+.contact-form-input,
+.contact-form-select,
+.contact-form-textarea {
+  width: 100%;
+  padding: 13px 14px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 15px;
+  color: var(--fortuno-black);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 10px;
+  transition:
+    border-color var(--duration-base) var(--easing-out),
+    box-shadow var(--duration-base) var(--easing-out);
+}
+.contact-form-input::placeholder,
+.contact-form-textarea::placeholder {
+  color: var(--input-placeholder);
+}
+.contact-form-input:hover,
+.contact-form-select:hover,
+.contact-form-textarea:hover {
+  border-color: var(--input-border-hover);
+}
+.contact-form-input:focus,
+.contact-form-select:focus,
+.contact-form-textarea:focus {
+  outline: none;
+  border-color: var(--input-border-focus);
+  box-shadow: var(--input-shadow-focus);
+}
+.contact-form-input[aria-invalid='true'],
+.contact-form-select[aria-invalid='true'],
+.contact-form-textarea[aria-invalid='true'] {
+  border-color: rgba(192, 57, 43, 0.6);
+}
+.contact-form-input[aria-invalid='true']:focus,
+.contact-form-select[aria-invalid='true']:focus,
+.contact-form-textarea[aria-invalid='true']:focus {
+  box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.18);
+}
+
+.contact-form-textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.55;
+}
+
+/* Select com chevron customizado (sem SVG, via two-gradient) */
+.contact-form-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--fortuno-gold-intense) 50%),
+    linear-gradient(135deg, var(--fortuno-gold-intense) 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) 18px,
+    calc(100% - 13px) 18px;
+  background-size:
+    5px 5px,
+    5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 36px;
+}
+
+.contact-form-help {
+  margin-top: 6px;
+  font-size: 12px;
+  color: rgba(11, 11, 11, 0.55);
+}
+.contact-form-error {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #8a2a1f;
+  font-weight: 600;
+}
+
+/* Checkbox LGPD custom */
+.contact-checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgba(184, 150, 63, 0.06);
+  border: 1px dashed rgba(184, 150, 63, 0.32);
+  border-radius: 10px;
+  cursor: pointer;
+}
+.contact-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  flex-shrink: 0;
+  background: #ffffff;
+  border: 1.5px solid rgba(184, 150, 63, 0.55);
+  border-radius: 5px;
+  cursor: pointer;
+  position: relative;
+  transition:
+    border-color var(--duration-base) var(--easing-out),
+    background var(--duration-base) var(--easing-out);
+}
+.contact-checkbox:hover {
+  border-color: var(--fortuno-gold-intense);
+}
+.contact-checkbox:checked {
+  background: linear-gradient(180deg, #f0d27a 0%, #c79b41 55%, #8a6a25 100%);
+  border-color: var(--fortuno-gold-intense);
+}
+.contact-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 6px;
+  height: 10px;
+  border: solid #0b0b0b;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.contact-checkbox:focus-visible {
+  outline: none;
+  box-shadow: var(--input-shadow-focus);
+}
+
+/* Snapshot verde de confirmação após envio */
+.contact-form-success {
+  position: relative;
+  z-index: 10;
+  padding: 32px 28px;
+  background:
+    radial-gradient(420px 220px at 50% 0%, rgba(45, 106, 79, 0.12), transparent 70%),
+    linear-gradient(180deg, #ffffff 0%, #f5fbf7 100%);
+  border: 1px solid rgba(45, 106, 79, 0.32);
+  border-radius: 14px;
+  text-align: center;
+  color: var(--fortuno-black);
+}
+
+/* ---------------------------------------------------------
+   4. INSTITUTIONAL CARD — borda dupla ornamental, cantos art-déco
+   --------------------------------------------------------- */
+.inst-card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid var(--inst-border-outer);
+  border-radius: 22px;
+  padding: 44px 32px 36px;
+  overflow: hidden;
+}
+.inst-card::before {
+  content: '';
+  position: absolute;
+  inset: 14px;
+  border: 1px solid var(--inst-border-inner);
+  border-radius: 14px;
+  pointer-events: none;
+}
+.inst-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--inst-halo);
+  pointer-events: none;
+}
+
+.inst-deco-corner {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--fortuno-gold-intense);
+  opacity: 0.75;
+  pointer-events: none;
+}
+.inst-deco-corner.tl {
+  top: 22px;
+  left: 22px;
+  border-right: 0;
+  border-bottom: 0;
+  border-top-left-radius: 3px;
+}
+.inst-deco-corner.tr {
+  top: 22px;
+  right: 22px;
+  border-left: 0;
+  border-bottom: 0;
+  border-top-right-radius: 3px;
+}
+.inst-deco-corner.bl {
+  bottom: 22px;
+  left: 22px;
+  border-right: 0;
+  border-top: 0;
+  border-bottom-left-radius: 3px;
+}
+.inst-deco-corner.br {
+  bottom: 22px;
+  right: 22px;
+  border-left: 0;
+  border-top: 0;
+  border-bottom-right-radius: 3px;
+}
+
+.inst-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  justify-content: center;
+  margin: 16px 0 24px;
+}
+.inst-divider::before,
+.inst-divider::after {
+  content: '';
+  flex: 1;
+  max-width: 100px;
+  height: 1px;
+  background: var(--gold-divider-soft);
+}
+.inst-divider .diamond {
+  width: 8px;
+  height: 8px;
+  transform: rotate(45deg);
+  background: var(--fortuno-gold-intense);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+}
+
+.inst-item dt {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--fortuno-gold-intense);
+  margin-bottom: 6px;
+}
+.inst-item dd {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--fortuno-black);
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------
+   5. FAQ — acordeão nativo <details>/<summary>
+   --------------------------------------------------------- */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faq-item {
+  background: #ffffff;
+  border: 1px solid var(--faq-border);
+  border-radius: 14px;
+  overflow: hidden;
+  transition:
+    border-color var(--duration-base) var(--easing-out),
+    box-shadow var(--duration-base) var(--easing-out);
+}
+.faq-item:hover {
+  border-color: var(--faq-border-hover);
+}
+.faq-item[open] {
+  border-color: var(--faq-border-hover);
+  background: var(--faq-bg-open);
+  box-shadow: var(--faq-shadow-open);
+}
+
+.faq-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--fortuno-black);
+  user-select: none;
+  transition: color var(--duration-base) var(--easing-out);
+}
+.faq-summary::-webkit-details-marker {
+  display: none;
+}
+.faq-summary:hover {
+  color: var(--fortuno-gold-intense);
+}
+.faq-summary:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 3px rgba(212, 175, 55, 0.55);
+}
+
+.faq-summary-text {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+}
+
+.faq-chevron {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(184, 150, 63, 0.08);
+  border: 1px solid rgba(184, 150, 63, 0.32);
+  color: var(--fortuno-gold-intense);
+  flex-shrink: 0;
+  transition:
+    transform var(--duration-base) var(--easing-out),
+    background var(--duration-base) var(--easing-out);
+}
+.faq-item[open] .faq-chevron {
+  transform: rotate(180deg);
+  background: rgba(184, 150, 63, 0.18);
+}
+
+.faq-body {
+  padding: 16px 22px 20px;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: rgba(11, 11, 11, 0.72);
+  border-top: 1px solid rgba(184, 150, 63, 0.18);
+}
+
+/* ---------------------------------------------------------
+   6. CLOSING CTA (variante compacta — reuso do about closing)
+   --------------------------------------------------------- */
+.contact-closing {
+  position: relative;
+  background: var(--noir-bg-final-cta);
+  color: var(--fortuno-offwhite);
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  overflow: hidden;
+  isolation: isolate;
+}
+.contact-closing::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    rgba(212, 175, 55, 0.04) 70deg,
+    transparent 140deg,
+    rgba(212, 175, 55, 0.03) 220deg,
+    transparent 360deg
+  );
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------
+   7. Reduced motion overrides
+   --------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .channel-card:hover {
+    transform: none;
+  }
+  .faq-item[open] .faq-chevron {
+    transform: none;
+  }
+}
+
+/* ---------------------------------------------------------
+   8. Mobile fine-tuning
+   --------------------------------------------------------- */
+@media (max-width: 767px) {
+  .contact-hero-glyph {
+    max-width: 200px;
+    margin: 0 auto;
+  }
+  .sla-chip {
+    top: 14px;
+    right: 14px;
+    font-size: 9.5px;
+    padding: 4px 8px;
+  }
+  .inst-deco-corner {
+    width: 16px;
+    height: 16px;
+  }
+  .inst-deco-corner.tl,
+  .inst-deco-corner.tr {
+    top: 14px;
+  }
+  .inst-deco-corner.bl,
+  .inst-deco-corner.br {
+    bottom: 14px;
+  }
+  .inst-deco-corner.tl,
+  .inst-deco-corner.bl {
+    left: 14px;
+  }
+  .inst-deco-corner.tr,
+  .inst-deco-corner.br {
+    right: 14px;
+  }
+  .inst-card {
+    padding: 36px 22px 28px;
+  }
+}
