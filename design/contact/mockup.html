@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fortuno — Fale Conosco (Editorial Casino Noir)</title>
+
+  <!-- Tailwind CDN (preview standalone) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Inter + Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700&display=swap" rel="stylesheet" />
+
+  <!-- Lucide -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            fortuno: {
+              green: { deep: '#0a2a20', elegant: '#134436' },
+              gold:  { intense: '#b8963f', soft: '#d4af37' },
+              black: '#0b0b0b',
+              offwhite: '#ece8e1',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['"Playfair Display"', 'Georgia', 'serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* ===========================================================
+       CONTACT — Editorial Casino Noir (variante LIGHT BODY)
+       Reuso total de tokens do about/home/dashboard/wizard.
+       Apenas blocos específicos desta página curta são novos aqui:
+       - Badge de SLA por canal
+       - Campos de formulário (input/textarea/select/checkbox)
+       - Acordeão FAQ (nativo <details>)
+       - Bloco institucional com borda dupla ornamental
+       =========================================================== */
+    :root {
+      --fortuno-green-deep:    #0a2a20;
+      --fortuno-green-elegant: #134436;
+      --fortuno-gold-intense:  #b8963f;
+      --fortuno-gold-soft:     #d4af37;
+      --fortuno-black:         #0b0b0b;
+      --fortuno-offwhite:      #ece8e1;
+
+      /* Body claro — MESMA base do about (coerência entre páginas institucionais curtas) */
+      --contact-bg-page:
+        radial-gradient(900px 460px at 80% -10%, rgba(184,150,63,0.06), transparent 65%),
+        radial-gradient(700px 460px at -10% 110%, rgba(19,68,54,0.04), transparent 55%),
+        linear-gradient(180deg, #f7f3ec 0%, #f1ece3 60%, #ece8e1 100%);
+
+      /* Topbar escura (igual ao resto do site) */
+      --topbar-bg:
+        linear-gradient(180deg, #061d17 0%, #0a2a20 100%);
+
+      /* Divisores compartilhados */
+      --gold-divider:      linear-gradient(90deg, transparent, rgba(212,175,55,0.55), transparent);
+      --gold-divider-soft: linear-gradient(90deg, transparent, rgba(184,150,63,0.28), transparent);
+
+      /* Card papel (reuso do dashboard) */
+      --card-paper-border:       rgba(11,11,11,0.08);
+      --card-paper-border-hover: rgba(184,150,63,0.45);
+      --shadow-paper:
+        0 1px 0 rgba(255,255,255,0.85) inset,
+        0 10px 22px -16px rgba(10,42,32,0.18),
+        0 3px 7px -3px rgba(184,150,63,0.10);
+      --shadow-paper-hover:
+        0 1px 0 rgba(255,255,255,0.9) inset,
+        0 22px 38px -22px rgba(10,42,32,0.28),
+        0 6px 14px -5px rgba(184,150,63,0.30);
+
+      /* Linha ouro no topo de cards claros */
+      --card-gold-bar: linear-gradient(90deg,
+        rgba(212,175,55,0) 0%,
+        rgba(212,175,55,0.85) 30%,
+        rgba(19,68,54,0.85) 70%,
+        rgba(212,175,55,0) 100%);
+
+      /* Hero compacto: halo ouro lateral (mesma lógica do about, menor) */
+      --contact-hero-halo:
+        radial-gradient(500px 260px at 88% 50%, rgba(184,150,63,0.12), transparent 65%),
+        radial-gradient(700px 380px at 10% 110%, rgba(19,68,54,0.05), transparent 55%);
+
+      /* Closing CTA (reuso do about) */
+      --noir-closing-bg:
+        radial-gradient(700px 400px at 50% 100%, rgba(212,175,55,0.14), transparent 70%),
+        radial-gradient(900px 500px at 20% 0%, rgba(19,68,54,0.7), transparent 60%),
+        linear-gradient(180deg, #07201a 0%, #0a2a20 100%);
+
+      --track-eyebrow: 0.28em;
+
+      /* -----------------------------------------------------------
+         NOVOS — exclusivos desta página
+         ----------------------------------------------------------- */
+
+      /* SLA chip (badge no canto superior direito do channel card) */
+      --sla-chip-bg:     rgba(184,150,63,0.10);
+      --sla-chip-border: rgba(184,150,63,0.38);
+      --sla-chip-fg:     #7a5f20;
+
+      /* Form input (estado base + focus) */
+      --input-bg:           #ffffff;
+      --input-border:       rgba(11,11,11,0.14);
+      --input-border-hover: rgba(184,150,63,0.50);
+      --input-border-focus: rgba(184,150,63,0.75);
+      --input-shadow-focus: 0 0 0 3px rgba(212,175,55,0.25);
+      --input-placeholder:  rgba(11,11,11,0.38);
+
+      /* Institutional card — borda dupla ornamentada */
+      --inst-border-outer: rgba(184,150,63,0.38);
+      --inst-border-inner: rgba(184,150,63,0.20);
+
+      /* FAQ accordion */
+      --faq-border:        rgba(184,150,63,0.28);
+      --faq-border-hover:  rgba(184,150,63,0.55);
+      --faq-bg-open:       #ffffff;
+      --faq-shadow-open:
+        0 1px 0 rgba(255,255,255,0.85) inset,
+        0 12px 24px -16px rgba(10,42,32,0.18),
+        0 4px 10px -4px rgba(184,150,63,0.18);
+
+      --duration-fast: 160ms;
+      --duration-base: 240ms;
+      --duration-slow: 420ms;
+      --easing-out:    cubic-bezier(0.22, 1, 0.36, 1);
+      --easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    html, body { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--contact-bg-page);
+      color: var(--fortuno-black);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      pointer-events: none;
+      opacity: 0.04;
+      mix-blend-mode: multiply;
+      background-image: radial-gradient(rgba(10,42,32,0.5) 1px, transparent 1px);
+      background-size: 3px 3px;
+      z-index: 0;
+    }
+
+    .font-display { font-family: 'Playfair Display', Georgia, serif; letter-spacing: -0.01em; }
+
+    /* ===========================================================
+       TOPBAR global (placeholder — AuthenticatedShell.tsx real)
+       =========================================================== */
+    .topbar {
+      background: var(--topbar-bg);
+      color: var(--fortuno-offwhite);
+      position: relative;
+      isolation: isolate;
+    }
+    .topbar::after {
+      content: '';
+      position: absolute; left: 0; right: 0; bottom: 0;
+      height: 1px;
+      background: var(--gold-divider);
+      opacity: 0.75;
+    }
+
+    /* ===========================================================
+       EYEBROW compartilhado
+       =========================================================== */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: var(--track-eyebrow);
+      color: var(--fortuno-gold-intense);
+      font-weight: 600;
+    }
+    .eyebrow .rule {
+      display: inline-block;
+      width: 32px; height: 1px;
+      background: var(--fortuno-gold-intense);
+      opacity: 0.7;
+    }
+
+    /* ===========================================================
+       1. HERO institucional COMPACTO
+       Variante encolhida do about-hero: mesmo halo + linhas ouro,
+       sem stats band embaixo. Altura reduzida.
+       =========================================================== */
+    .contact-hero {
+      position: relative;
+      background: var(--contact-hero-halo);
+      isolation: isolate;
+    }
+    .contact-hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 12%; right: 12%;
+      height: 1px;
+      background: var(--gold-divider);
+    }
+    .contact-hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 22%; right: 22%;
+      height: 1px;
+      background: var(--gold-divider-soft);
+    }
+
+    /* Ícone decorativo grande na coluna direita (ouro translúcido) */
+    .hero-glyph {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(184,150,63,0.24);
+      border-radius: 24px;
+      background:
+        radial-gradient(120% 120% at 30% 20%, rgba(212,175,55,0.14) 0%, transparent 55%),
+        linear-gradient(180deg, #faf5e8 0%, #ece8e1 100%);
+      overflow: hidden;
+      box-shadow: var(--shadow-paper);
+    }
+    .hero-glyph::before {
+      content: '';
+      position: absolute; inset: 12px;
+      border: 1px solid rgba(184,150,63,0.22);
+      border-radius: 16px;
+      pointer-events: none;
+    }
+    .hero-glyph i {
+      width: 44%; height: 44%;
+      color: var(--fortuno-gold-intense);
+      opacity: 0.92;
+      stroke-width: 1.25;
+    }
+    .hero-glyph::after {
+      content: '';
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      width: 68%; aspect-ratio: 1/1;
+      border-radius: 50%;
+      border: 1px dashed rgba(184,150,63,0.28);
+      pointer-events: none;
+    }
+
+    /* ===========================================================
+       2. CHANNEL CARDS — elevados, com SLA chip
+       =========================================================== */
+    .channel-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 28px 26px 26px;
+      background: #ffffff;
+      border: 1px solid var(--card-paper-border);
+      border-radius: 20px;
+      box-shadow: var(--shadow-paper);
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      transition:
+        transform var(--duration-base) var(--easing-spring),
+        border-color var(--duration-base) var(--easing-out),
+        box-shadow var(--duration-base) var(--easing-out);
+    }
+    .channel-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--card-gold-bar);
+      opacity: 0.85;
+    }
+    .channel-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--card-paper-border-hover);
+      box-shadow: var(--shadow-paper-hover);
+    }
+    .channel-card:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.55), var(--shadow-paper-hover);
+      border-color: rgba(184,150,63,0.55);
+    }
+
+    /* Ícone grande em círculo ouro translúcido (estilo pillar-icon do about) */
+    .channel-icon {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      display: grid; place-items: center;
+      background: linear-gradient(180deg, #faf3e1 0%, #f0e3b8 100%);
+      color: var(--fortuno-gold-intense);
+      border: 1px solid rgba(184,150,63,0.32);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.85) inset,
+        0 6px 14px -6px rgba(184,150,63,0.35);
+    }
+    .channel-icon i { width: 28px; height: 28px; }
+
+    .channel-label {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-weight: 700;
+      font-size: 24px;
+      line-height: 1.1;
+      color: var(--fortuno-black);
+      letter-spacing: -0.01em;
+    }
+    .channel-desc {
+      font-size: 14px;
+      line-height: 1.65;
+      color: rgba(11,11,11,0.68);
+    }
+    .channel-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: auto;
+      padding-top: 10px;
+      font-weight: 600;
+      font-size: 13.5px;
+      letter-spacing: 0.02em;
+      color: var(--fortuno-gold-intense);
+      border-top: 1px solid rgba(184,150,63,0.22);
+    }
+    .channel-cta i { width: 14px; height: 14px; }
+
+    /* SLA badge — canto superior direito */
+    .sla-chip {
+      position: absolute;
+      top: 18px; right: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--sla-chip-fg);
+      background: var(--sla-chip-bg);
+      border: 1px solid var(--sla-chip-border);
+      border-radius: 999px;
+    }
+    .sla-chip i { width: 11px; height: 11px; }
+    .sla-chip .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--fortuno-gold-intense);
+      box-shadow: 0 0 0 3px rgba(184,150,63,0.18);
+    }
+
+    /* ===========================================================
+       3. FORM — card grande com bordas ouro, fundo sutil
+       =========================================================== */
+    .form-card {
+      position: relative;
+      background:
+        linear-gradient(180deg, #ffffff 0%, #fbf7ef 100%);
+      border: 1px solid rgba(184,150,63,0.28);
+      border-radius: 22px;
+      box-shadow: var(--shadow-paper);
+      overflow: hidden;
+    }
+    .form-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--card-gold-bar);
+      opacity: 0.9;
+    }
+    .form-card::after {
+      content: '';
+      position: absolute; inset: 12px;
+      border: 1px solid rgba(184,150,63,0.10);
+      border-radius: 14px;
+      pointer-events: none;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(11,11,11,0.62);
+      margin-bottom: 8px;
+    }
+    .form-label .req {
+      color: var(--fortuno-gold-intense);
+      margin-left: 4px;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: 13px 14px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 15px;
+      color: var(--fortuno-black);
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 10px;
+      transition:
+        border-color var(--duration-base) var(--easing-out),
+        box-shadow var(--duration-base) var(--easing-out);
+    }
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: var(--input-placeholder);
+    }
+    .form-input:hover,
+    .form-select:hover,
+    .form-textarea:hover {
+      border-color: var(--input-border-hover);
+    }
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--input-border-focus);
+      box-shadow: var(--input-shadow-focus);
+    }
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+      font-family: 'Inter', system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    .form-select {
+      appearance: none;
+      background-image:
+        linear-gradient(45deg, transparent 50%, var(--fortuno-gold-intense) 50%),
+        linear-gradient(135deg, var(--fortuno-gold-intense) 50%, transparent 50%);
+      background-position:
+        calc(100% - 18px) 18px,
+        calc(100% - 13px) 18px;
+      background-size:
+        5px 5px,
+        5px 5px;
+      background-repeat: no-repeat;
+      padding-right: 36px;
+    }
+    .form-help {
+      margin-top: 6px;
+      font-size: 12px;
+      color: rgba(11,11,11,0.55);
+    }
+
+    /* Checkbox LGPD custom */
+    .form-checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 14px;
+      background: rgba(184,150,63,0.06);
+      border: 1px dashed rgba(184,150,63,0.32);
+      border-radius: 10px;
+    }
+    .form-checkbox {
+      appearance: none;
+      width: 20px; height: 20px;
+      margin-top: 1px;
+      flex-shrink: 0;
+      background: #ffffff;
+      border: 1.5px solid rgba(184,150,63,0.55);
+      border-radius: 5px;
+      cursor: pointer;
+      position: relative;
+      transition: border-color var(--duration-base) var(--easing-out),
+                  background var(--duration-base) var(--easing-out);
+    }
+    .form-checkbox:hover { border-color: var(--fortuno-gold-intense); }
+    .form-checkbox:checked {
+      background: linear-gradient(180deg, #f0d27a 0%, #c79b41 55%, #8a6a25 100%);
+      border-color: var(--fortuno-gold-intense);
+    }
+    .form-checkbox:checked::after {
+      content: '';
+      position: absolute;
+      left: 5px; top: 2px;
+      width: 6px; height: 10px;
+      border: solid #0b0b0b;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    .form-checkbox:focus-visible {
+      outline: none;
+      box-shadow: var(--input-shadow-focus);
+    }
+    .form-checkbox-label {
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: rgba(11,11,11,0.75);
+      cursor: pointer;
+    }
+    .form-checkbox-label a {
+      color: var(--fortuno-gold-intense);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      font-weight: 600;
+    }
+    .form-checkbox-label a:hover { color: #8a6a25; }
+
+    /* ===========================================================
+       4. INSTITUTIONAL CARD — borda dupla ornamental (reuso padrão
+       do FraudCertificate mas em contexto claro)
+       =========================================================== */
+    .inst-card {
+      position: relative;
+      background: #ffffff;
+      border: 1px solid var(--inst-border-outer);
+      border-radius: 22px;
+      padding: 44px 32px 36px;
+      overflow: hidden;
+    }
+    .inst-card::before {
+      /* borda interna (filete ouro fino) */
+      content: '';
+      position: absolute;
+      inset: 14px;
+      border: 1px solid var(--inst-border-inner);
+      border-radius: 14px;
+      pointer-events: none;
+    }
+    .inst-card::after {
+      /* halo radial sutil */
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(600px 260px at 50% 0%, rgba(184,150,63,0.08), transparent 70%);
+      pointer-events: none;
+    }
+
+    .inst-deco-corner {
+      position: absolute;
+      width: 22px; height: 22px;
+      border: 1.5px solid var(--fortuno-gold-intense);
+      opacity: 0.75;
+      pointer-events: none;
+    }
+    .inst-deco-corner.tl { top: 22px; left: 22px;   border-right: 0; border-bottom: 0; border-top-left-radius: 3px; }
+    .inst-deco-corner.tr { top: 22px; right: 22px;  border-left:  0; border-bottom: 0; border-top-right-radius: 3px; }
+    .inst-deco-corner.bl { bottom: 22px; left: 22px; border-right: 0; border-top:    0; border-bottom-left-radius: 3px; }
+    .inst-deco-corner.br { bottom: 22px; right: 22px; border-left: 0; border-top:    0; border-bottom-right-radius: 3px; }
+
+    .inst-divider {
+      display: flex; align-items: center; gap: 14px;
+      justify-content: center;
+      margin: 16px 0 24px;
+    }
+    .inst-divider::before,
+    .inst-divider::after {
+      content: '';
+      flex: 1;
+      max-width: 100px;
+      height: 1px;
+      background: var(--gold-divider-soft);
+    }
+    .inst-divider .diamond {
+      width: 8px; height: 8px;
+      transform: rotate(45deg);
+      background: var(--fortuno-gold-intense);
+      box-shadow: 0 0 10px rgba(212,175,55,0.6);
+    }
+
+    .inst-item dt {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--fortuno-gold-intense);
+      margin-bottom: 6px;
+    }
+    .inst-item dt i { width: 12px; height: 12px; }
+    .inst-item dd {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--fortuno-black);
+      line-height: 1.45;
+      letter-spacing: 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ===========================================================
+       5. FAQ — acordeão nativo <details>/<summary>
+       =========================================================== */
+    .faq-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .faq-item {
+      background: #ffffff;
+      border: 1px solid var(--faq-border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition:
+        border-color var(--duration-base) var(--easing-out),
+        box-shadow var(--duration-base) var(--easing-out);
+    }
+    .faq-item:hover { border-color: var(--faq-border-hover); }
+    .faq-item[open] {
+      border-color: var(--faq-border-hover);
+      background: var(--faq-bg-open);
+      box-shadow: var(--faq-shadow-open);
+    }
+
+    .faq-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 22px;
+      cursor: pointer;
+      list-style: none;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--fortuno-black);
+      user-select: none;
+      transition: color var(--duration-base) var(--easing-out);
+    }
+    .faq-summary::-webkit-details-marker { display: none; }
+    .faq-summary:hover { color: var(--fortuno-gold-intense); }
+
+    .faq-summary-text {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 600;
+      line-height: 1.4;
+      letter-spacing: -0.005em;
+    }
+
+    .faq-chevron {
+      display: grid; place-items: center;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: rgba(184,150,63,0.08);
+      border: 1px solid rgba(184,150,63,0.32);
+      color: var(--fortuno-gold-intense);
+      flex-shrink: 0;
+      transition: transform var(--duration-base) var(--easing-out),
+                  background var(--duration-base) var(--easing-out);
+    }
+    .faq-chevron i { width: 16px; height: 16px; }
+    .faq-item[open] .faq-chevron {
+      transform: rotate(180deg);
+      background: rgba(184,150,63,0.18);
+    }
+
+    .faq-body {
+      padding: 0 22px 20px;
+      font-size: 14.5px;
+      line-height: 1.7;
+      color: rgba(11,11,11,0.72);
+      border-top: 1px solid rgba(184,150,63,0.18);
+      padding-top: 16px;
+    }
+
+    .faq-summary:focus-visible {
+      outline: none;
+      box-shadow: inset 0 0 0 3px rgba(212,175,55,0.55);
+    }
+
+    /* ===========================================================
+       6. CLOSING CTA (reuso compacto do about)
+       =========================================================== */
+    .closing-cta {
+      position: relative;
+      background: var(--noir-closing-bg);
+      color: var(--fortuno-offwhite);
+      border-top: 1px solid rgba(212,175,55,0.2);
+      border-bottom: 1px solid rgba(212,175,55,0.2);
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .closing-cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: conic-gradient(from 0deg at 50% 50%,
+        transparent 0deg,
+        rgba(212,175,55,0.04) 70deg,
+        transparent 140deg,
+        rgba(212,175,55,0.03) 220deg,
+        transparent 360deg);
+      pointer-events: none;
+    }
+
+    /* CTAs globais */
+    .cta-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 26px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      background: linear-gradient(180deg, #f0d27a 0%, #c79b41 55%, #8a6a25 100%);
+      color: var(--fortuno-black);
+      border: 1px solid rgba(255,255,255,0.3);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.45) inset,
+        0 8px 20px -6px rgba(184,150,63,0.5);
+      transition: transform var(--duration-base) var(--easing-spring),
+                  box-shadow var(--duration-base) var(--easing-out);
+      text-decoration: none;
+      cursor: pointer;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    .cta-primary:hover { transform: translateY(-1px); box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, 0 12px 26px -6px rgba(184,150,63,0.65); }
+    .cta-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .cta-primary i { width: 18px; height: 18px; }
+
+    .cta-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 24px;
+      border-radius: 999px;
+      font-weight: 500;
+      font-size: 14px;
+      background: transparent;
+      color: var(--fortuno-offwhite);
+      border: 1px solid rgba(212,175,55,0.45);
+      transition: background var(--duration-base) var(--easing-out),
+                  border-color var(--duration-base) var(--easing-out);
+      text-decoration: none;
+    }
+    .cta-ghost:hover { background: rgba(212,175,55,0.08); border-color: rgba(212,175,55,0.7); }
+
+    /* Global focus ring */
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.55);
+      border-radius: 6px;
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition-duration: 1ms !important;
+      }
+      .channel-card:hover { transform: none; }
+      .cta-primary:hover { transform: none; }
+    }
+
+    /* ===========================================================
+       Mobile
+       =========================================================== */
+    @media (max-width: 767px) {
+      .hero-glyph { max-width: 200px; margin: 0 auto; }
+      .sla-chip { top: 14px; right: 14px; font-size: 9.5px; padding: 4px 8px; }
+      .inst-deco-corner { width: 16px; height: 16px; }
+      .inst-deco-corner.tl, .inst-deco-corner.tr { top: 14px; }
+      .inst-deco-corner.bl, .inst-deco-corner.br { bottom: 14px; }
+      .inst-deco-corner.tl, .inst-deco-corner.bl { left: 14px; }
+      .inst-deco-corner.tr, .inst-deco-corner.br { right: 14px; }
+      .inst-card { padding: 36px 22px 28px; }
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- ============================================================
+       TOPBAR (placeholder — AuthenticatedShell)
+       ============================================================ -->
+  <header class="topbar relative z-20">
+    <div class="mx-auto max-w-7xl px-6 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl grid place-items-center"
+             style="background: radial-gradient(120% 120% at 30% 20%, #f0d27a 0%, #c79b41 45%, #8a6a25 100%); color: #0b0b0b;">
+          <span class="font-display italic font-extrabold text-lg leading-none">F</span>
+        </div>
+        <span class="font-display text-xl tracking-wide text-fortuno-offwhite">Fortuno</span>
+      </a>
+      <nav class="hidden md:flex items-center gap-8 text-sm text-fortuno-offwhite/80">
+        <a href="/" class="hover:text-fortuno-gold-soft transition-colors">Início</a>
+        <a href="/sorteios" class="hover:text-fortuno-gold-soft transition-colors">Sorteios</a>
+        <a href="/quem-somos" class="hover:text-fortuno-gold-soft transition-colors">Quem somos</a>
+        <a href="/fale-conosco" class="text-fortuno-gold-soft">Fale conosco</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a href="/login" class="cta-ghost text-sm hidden sm:inline-flex" style="border-color: rgba(212,175,55,0.45); color: var(--fortuno-offwhite);">Entrar</a>
+        <a href="/sorteios" class="cta-primary text-sm">Ver sorteios</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       1. HERO institucional COMPACTO
+       ============================================================ -->
+  <section class="contact-hero relative z-10 pt-14 md:pt-20 pb-14 md:pb-20" aria-labelledby="contact-hero-title">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="grid md:grid-cols-[1.4fr_0.8fr] gap-10 md:gap-14 items-center">
+
+        <!-- Texto -->
+        <div>
+          <span class="eyebrow">
+            <span class="rule"></span>
+            Fortuno · Canais oficiais
+            <span class="rule"></span>
+          </span>
+
+          <h1 id="contact-hero-title"
+              class="font-display mt-5 md:mt-6 text-fortuno-black leading-[1.02]"
+              style="font-size: clamp(36px, 5vw, 58px); letter-spacing: -0.02em;">
+            Estamos <span class="italic text-fortuno-gold-intense">por perto.</span>
+          </h1>
+
+          <p class="mt-5 md:mt-6 text-[16px] md:text-[17px] leading-relaxed text-fortuno-black/70 max-w-lg">
+            Escolha o canal que preferir. Respondemos em até <strong class="text-fortuno-black/85">1 dia útil</strong>
+            — e, no WhatsApp, geralmente em menos de 4 horas.
+          </p>
+
+          <!-- Mini trust bar -->
+          <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs text-fortuno-black/55">
+            <span class="inline-flex items-center gap-2">
+              <i data-lucide="clock-4" class="w-4 h-4 text-fortuno-gold-intense" aria-hidden="true"></i>
+              Seg. a sex., 9h às 18h
+            </span>
+            <span class="hidden sm:inline-block w-1 h-1 rounded-full bg-fortuno-gold-intense/40"></span>
+            <span class="inline-flex items-center gap-2">
+              <i data-lucide="map-pin" class="w-4 h-4 text-fortuno-gold-intense" aria-hidden="true"></i>
+              Brasil · Fuso BRT
+            </span>
+            <span class="hidden sm:inline-block w-1 h-1 rounded-full bg-fortuno-gold-intense/40"></span>
+            <span class="inline-flex items-center gap-2">
+              <i data-lucide="shield-check" class="w-4 h-4 text-fortuno-gold-intense" aria-hidden="true"></i>
+              LGPD · dados protegidos
+            </span>
+          </div>
+        </div>
+
+        <!-- Glyph decorativo -->
+        <figure class="hero-glyph order-first md:order-last" aria-hidden="true">
+          <i data-lucide="messages-square"></i>
+        </figure>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       2. CANAIS — 3 cards com SLA chip
+       ============================================================ -->
+  <section class="relative z-10 py-16 md:py-20" aria-labelledby="channels-title">
+    <div class="mx-auto max-w-6xl px-6">
+
+      <div class="max-w-2xl mb-10 md:mb-12">
+        <span class="eyebrow">
+          <span class="rule"></span>
+          Capítulo I · Canais
+        </span>
+        <h2 id="channels-title"
+            class="font-display mt-4 text-fortuno-black leading-[1.05]"
+            style="font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -0.02em;">
+          Escolha como prefere <span class="italic text-fortuno-gold-intense">conversar.</span>
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
+
+        <!-- WhatsApp -->
+        <a href="#" target="_blank" rel="noopener noreferrer"
+           class="channel-card"
+           aria-label="Abrir WhatsApp em nova aba">
+          <span class="sla-chip" aria-label="Tempo médio de resposta: menos de 4 horas">
+            <span class="dot" aria-hidden="true"></span>
+            Resposta em 4h
+          </span>
+          <div class="channel-icon" aria-hidden="true">
+            <i data-lucide="message-circle"></i>
+          </div>
+          <div>
+            <h3 class="channel-label">WhatsApp</h3>
+            <p class="channel-desc mt-2">
+              Canal mais rápido. Atendimento humano de segunda a sexta, das 9h às 18h.
+            </p>
+          </div>
+          <span class="channel-cta">
+            Abrir WhatsApp
+            <i data-lucide="arrow-up-right" aria-hidden="true"></i>
+          </span>
+        </a>
+
+        <!-- Instagram -->
+        <a href="#" target="_blank" rel="noopener noreferrer"
+           class="channel-card"
+           aria-label="Abrir Instagram em nova aba">
+          <span class="sla-chip" aria-label="Tempo médio de resposta: em 1 dia útil">
+            <span class="dot" aria-hidden="true"></span>
+            Resposta em 1 dia
+          </span>
+          <div class="channel-icon" aria-hidden="true">
+            <i data-lucide="instagram"></i>
+          </div>
+          <div>
+            <h3 class="channel-label">Instagram</h3>
+            <p class="channel-desc mt-2">
+              Acompanhe novidades, sorteios em andamento e fale com a gente no direct.
+            </p>
+          </div>
+          <span class="channel-cta">
+            Abrir @fortuno
+            <i data-lucide="arrow-up-right" aria-hidden="true"></i>
+          </span>
+        </a>
+
+        <!-- E-mail -->
+        <a href="mailto:contato@fortuno.com.br"
+           class="channel-card"
+           aria-label="Enviar e-mail para o canal oficial">
+          <span class="sla-chip" aria-label="Tempo médio de resposta: em 1 dia útil">
+            <span class="dot" aria-hidden="true"></span>
+            Resposta em 1 dia
+          </span>
+          <div class="channel-icon" aria-hidden="true">
+            <i data-lucide="mail"></i>
+          </div>
+          <div>
+            <h3 class="channel-label">E-mail</h3>
+            <p class="channel-desc mt-2">
+              Para demandas formais, parcerias e documentos. Respondemos pelo mesmo canal.
+            </p>
+          </div>
+          <span class="channel-cta">
+            contato@fortuno.com.br
+            <i data-lucide="arrow-up-right" aria-hidden="true"></i>
+          </span>
+        </a>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       3. FORMULÁRIO DE CONTATO
+       ============================================================ -->
+  <section id="mensagem" class="relative z-10 py-16 md:py-20" aria-labelledby="form-title">
+    <div class="mx-auto max-w-4xl px-6">
+
+      <div class="text-center mb-10 md:mb-12">
+        <span class="eyebrow justify-center">
+          <span class="rule"></span>
+          Capítulo II · Mensagem
+          <span class="rule"></span>
+        </span>
+        <h2 id="form-title"
+            class="font-display mt-4 text-fortuno-black leading-[1.05]"
+            style="font-size: clamp(28px, 3.8vw, 44px); letter-spacing: -0.02em;">
+          Envie sua <span class="italic text-fortuno-gold-intense">mensagem.</span>
+        </h2>
+        <p class="mt-4 text-fortuno-black/65 text-[15px] md:text-[16px] max-w-lg mx-auto">
+          Prefere deixar registrado por aqui? Conte com uma resposta por e-mail em até 1 dia útil.
+        </p>
+      </div>
+
+      <form class="form-card p-8 md:p-12" novalidate aria-labelledby="form-title">
+        <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+
+          <!-- Nome -->
+          <div>
+            <label for="contact-name" class="form-label">
+              Nome completo <span class="req" aria-hidden="true">*</span>
+            </label>
+            <input
+              type="text"
+              id="contact-name"
+              name="name"
+              required
+              autocomplete="name"
+              placeholder="Como podemos te chamar?"
+              class="form-input"
+              aria-required="true"
+            />
+          </div>
+
+          <!-- E-mail -->
+          <div>
+            <label for="contact-email" class="form-label">
+              E-mail <span class="req" aria-hidden="true">*</span>
+            </label>
+            <input
+              type="email"
+              id="contact-email"
+              name="email"
+              required
+              autocomplete="email"
+              placeholder="seu.melhor@email.com"
+              class="form-input"
+              aria-required="true"
+              aria-describedby="contact-email-help"
+            />
+            <p id="contact-email-help" class="form-help">Usaremos este e-mail para responder.</p>
+          </div>
+
+          <!-- Telefone -->
+          <div>
+            <label for="contact-phone" class="form-label">Telefone (opcional)</label>
+            <input
+              type="tel"
+              id="contact-phone"
+              name="phone"
+              autocomplete="tel"
+              placeholder="(11) 99999-9999"
+              class="form-input"
+              inputmode="tel"
+            />
+          </div>
+
+          <!-- Assunto -->
+          <div>
+            <label for="contact-subject" class="form-label">
+              Assunto <span class="req" aria-hidden="true">*</span>
+            </label>
+            <select
+              id="contact-subject"
+              name="subject"
+              required
+              class="form-select"
+              aria-required="true"
+              defaultValue=""
+            >
+              <option value="" disabled selected>Selecione um assunto</option>
+              <option value="duvida">Dúvida geral</option>
+              <option value="suporte">Suporte</option>
+              <option value="parceria">Parceria</option>
+              <option value="sugestao">Sugestão</option>
+              <option value="outro">Outro</option>
+            </select>
+          </div>
+
+          <!-- Mensagem (full-width) -->
+          <div class="md:col-span-2">
+            <label for="contact-message" class="form-label">
+              Mensagem <span class="req" aria-hidden="true">*</span>
+            </label>
+            <textarea
+              id="contact-message"
+              name="message"
+              rows="4"
+              required
+              placeholder="Descreva sua dúvida, sugestão ou solicitação."
+              class="form-textarea"
+              aria-required="true"
+              aria-describedby="contact-message-help"
+            ></textarea>
+            <p id="contact-message-help" class="form-help">
+              Mínimo 10 caracteres. Detalhes ajudam a respondermos com precisão.
+            </p>
+          </div>
+
+          <!-- LGPD Checkbox -->
+          <div class="md:col-span-2">
+            <label for="contact-consent" class="form-checkbox-row cursor-pointer">
+              <input
+                type="checkbox"
+                id="contact-consent"
+                name="consent"
+                required
+                class="form-checkbox"
+                aria-required="true"
+              />
+              <span class="form-checkbox-label">
+                Li e concordo com a <a href="/politica-de-privacidade">Política de Privacidade</a>
+                e autorizo o uso dos meus dados para resposta desta mensagem.
+              </span>
+            </label>
+          </div>
+
+          <!-- Submit -->
+          <div class="md:col-span-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-2">
+            <p class="text-[12px] uppercase tracking-[0.22em] text-fortuno-black/50">
+              Resposta por e-mail em até 1 dia útil.
+            </p>
+            <button type="submit" class="cta-primary">
+              <i data-lucide="send" aria-hidden="true"></i>
+              Enviar mensagem
+              <i data-lucide="arrow-right" aria-hidden="true"></i>
+            </button>
+          </div>
+
+        </div>
+      </form>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       4. BLOCO INSTITUCIONAL — razão social, CNPJ, horário, endereço
+       ============================================================ -->
+  <section class="relative z-10 py-16 md:py-20" aria-labelledby="institutional-title">
+    <div class="mx-auto max-w-5xl px-6">
+
+      <div class="inst-card">
+        <span class="inst-deco-corner tl" aria-hidden="true"></span>
+        <span class="inst-deco-corner tr" aria-hidden="true"></span>
+        <span class="inst-deco-corner bl" aria-hidden="true"></span>
+        <span class="inst-deco-corner br" aria-hidden="true"></span>
+
+        <div class="relative z-10 text-center">
+          <span class="eyebrow justify-center">
+            <span class="rule"></span>
+            Dados oficiais
+            <span class="rule"></span>
+          </span>
+          <h2 id="institutional-title"
+              class="font-display italic mt-3 text-fortuno-black"
+              style="font-size: clamp(24px, 3vw, 34px); letter-spacing: -0.02em;">
+            Fortuno — registro e atendimento.
+          </h2>
+          <div class="inst-divider">
+            <span class="diamond" aria-hidden="true"></span>
+          </div>
+        </div>
+
+        <dl class="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
+          <div class="inst-item">
+            <dt><i data-lucide="building-2" aria-hidden="true"></i> Razão social</dt>
+            <dd>FORTUNO SORTEIOS E PREMIAÇÕES LTDA</dd>
+          </div>
+          <div class="inst-item">
+            <dt><i data-lucide="scale" aria-hidden="true"></i> CNPJ</dt>
+            <dd>00.000.000/0001-00</dd>
+          </div>
+          <div class="inst-item">
+            <dt><i data-lucide="clock-4" aria-hidden="true"></i> Horário de atendimento</dt>
+            <dd>Seg. a sex., 9h às 18h (horário de Brasília)</dd>
+          </div>
+          <div class="inst-item">
+            <dt><i data-lucide="map-pin" aria-hidden="true"></i> Endereço</dt>
+            <dd>A definir</dd>
+          </div>
+        </dl>
+
+        <div class="relative z-10 mt-8 pt-6 border-t border-fortuno-gold-intense/20 text-center">
+          <p class="text-[12px] uppercase tracking-[0.28em] text-fortuno-black/50">
+            Aos finais de semana, retornamos no próximo dia útil.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       5. FAQ — acordeão nativo
+       ============================================================ -->
+  <section class="relative z-10 py-16 md:py-20" aria-labelledby="faq-title">
+    <div class="mx-auto max-w-3xl px-6">
+
+      <div class="text-center mb-10 md:mb-12">
+        <span class="eyebrow justify-center">
+          <span class="rule"></span>
+          Capítulo III · Antes de mandar
+          <span class="rule"></span>
+        </span>
+        <h2 id="faq-title"
+            class="font-display mt-4 text-fortuno-black leading-[1.05]"
+            style="font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -0.02em;">
+          Talvez já tenha a <span class="italic text-fortuno-gold-intense">resposta.</span>
+        </h2>
+        <p class="mt-4 text-fortuno-black/65 text-[15px]">
+          Dúvidas mais comuns dos participantes Fortuno. Se a sua não estiver aqui, use os canais acima.
+        </p>
+      </div>
+
+      <div class="faq-list">
+
+        <details class="faq-item" open>
+          <summary class="faq-summary">
+            <span class="faq-summary-text">Como recebo meu prêmio?</span>
+            <span class="faq-chevron" aria-hidden="true">
+              <i data-lucide="chevron-down"></i>
+            </span>
+          </summary>
+          <div class="faq-body">
+            O prêmio é transferido via PIX diretamente para a conta do CPF registrado no bilhete
+            em até 3 dias úteis após a ata pública do sorteio. Nenhum valor é solicitado do ganhador:
+            não pagamos taxas, impostos ou qualquer tipo de antecipação. Todo o contato é feito
+            exclusivamente pelos canais oficiais (WhatsApp e e-mail cadastrados no perfil) e, em
+            casos específicos, por videochamada registrada.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-summary">
+            <span class="faq-summary-text">Quanto tempo demora a confirmação do pagamento?</span>
+            <span class="faq-chevron" aria-hidden="true">
+              <i data-lucide="chevron-down"></i>
+            </span>
+          </summary>
+          <div class="faq-body">
+            O PIX é confirmado em segundos. O bilhete é atribuído automaticamente ao seu CPF assim
+            que a instituição financeira autorizada (Mercado Pago, Efí ou Gerencianet) devolve o
+            webhook de pagamento. Se após 2 minutos o bilhete não aparecer em "Meus números", basta
+            atualizar a página — se persistir, abra o WhatsApp informando o código do QR Code.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-summary">
+            <span class="faq-summary-text">Posso cancelar um bilhete após a compra?</span>
+            <span class="faq-chevron" aria-hidden="true">
+              <i data-lucide="chevron-down"></i>
+            </span>
+          </summary>
+          <div class="faq-body">
+            O cancelamento é possível em até 7 dias corridos após a compra, conforme o Código de
+            Defesa do Consumidor, desde que o sorteio ainda não tenha sido realizado. O valor pago
+            é devolvido pelo mesmo meio (PIX), descontadas eventuais taxas da instituição de
+            pagamento. Cancelamentos após o sorteio não são possíveis.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-summary">
+            <span class="faq-summary-text">Como saber se fui sorteado?</span>
+            <span class="faq-chevron" aria-hidden="true">
+              <i data-lucide="chevron-down"></i>
+            </span>
+          </summary>
+          <div class="faq-body">
+            Você é notificado por e-mail e WhatsApp assim que a ata pública é publicada. O resultado
+            também aparece na sua área logada em "Meus números", com o hash verificável do sorteio.
+            Nunca enviamos links de "confirmação de premiação" por SMS ou chamadas de voz —
+            qualquer contato fora dos canais oficiais é suspeito e deve ser ignorado.
+          </div>
+        </details>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       6. CLOSING CTA (dark compacto)
+       ============================================================ -->
+  <section class="closing-cta relative py-16 md:py-20" aria-labelledby="closing-title">
+    <div class="mx-auto max-w-3xl px-6 text-center relative z-10">
+
+      <span class="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.32em] text-fortuno-gold-soft mb-5">
+        <span class="h-px w-8 bg-fortuno-gold-soft"></span>
+        Ainda em dúvida?
+        <span class="h-px w-8 bg-fortuno-gold-soft"></span>
+      </span>
+
+      <h2 id="closing-title"
+          class="font-display italic leading-[1.02]"
+          style="font-size: clamp(32px, 4.6vw, 56px); letter-spacing: -0.02em; color: var(--fortuno-offwhite);">
+        Nossa equipe está <br class="hidden md:block" />
+        <span class="text-fortuno-gold-soft">a um clique de distância.</span>
+      </h2>
+
+      <p class="mt-6 text-fortuno-offwhite/75 text-[16px] md:text-[17px] leading-relaxed max-w-lg mx-auto">
+        O WhatsApp é o caminho mais rápido. Resposta em média em menos de 4 horas úteis.
+      </p>
+
+      <div class="mt-8 md:mt-10 flex flex-wrap justify-center gap-4">
+        <a href="#" target="_blank" rel="noopener noreferrer"
+           class="cta-primary" style="padding: 15px 28px; font-size: 15px;">
+          <i data-lucide="message-circle" aria-hidden="true"></i>
+          Abrir WhatsApp
+          <i data-lucide="arrow-up-right" aria-hidden="true"></i>
+        </a>
+        <a href="#mensagem" class="cta-ghost" style="padding: 14px 24px; font-size: 14px;">
+          <i data-lucide="pen-line" aria-hidden="true"></i>
+          Enviar mensagem
+        </a>
+      </div>
+
+      <div class="mt-10 flex items-center gap-4 justify-center">
+        <span class="h-px w-20 bg-gradient-to-r from-transparent to-fortuno-gold-soft/55"></span>
+        <span class="w-2 h-2 rotate-45 bg-fortuno-gold-intense" style="box-shadow: 0 0 12px rgba(212,175,55,0.6);"></span>
+        <span class="h-px w-20 bg-gradient-to-l from-transparent to-fortuno-gold-soft/55"></span>
+      </div>
+      <p class="mt-4 font-display italic text-fortuno-gold-soft/85" style="font-size: clamp(14px, 1.2vw, 16px);">
+        Sua sorte é séria.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER (placeholder — AuthenticatedShell)
+       ============================================================ -->
+  <footer class="bg-[#051610] border-t border-fortuno-gold-soft/10 text-fortuno-offwhite">
+    <div class="mx-auto max-w-7xl px-6 py-12">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg grid place-items-center"
+               style="background: radial-gradient(120% 120% at 30% 20%, #f0d27a 0%, #c79b41 45%, #8a6a25 100%); color: #0b0b0b;">
+            <span class="font-display italic font-extrabold leading-none">F</span>
+          </div>
+          <span class="font-display text-lg">Fortuno</span>
+          <span class="text-fortuno-offwhite/40 text-xs ml-2">Sua sorte é séria.</span>
+        </div>
+        <nav class="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-fortuno-offwhite/60">
+          <a href="/" class="hover:text-fortuno-gold-soft transition-colors">Início</a>
+          <a href="/sorteios" class="hover:text-fortuno-gold-soft transition-colors">Sorteios</a>
+          <a href="/quem-somos" class="hover:text-fortuno-gold-soft transition-colors">Quem somos</a>
+          <a href="/fale-conosco" class="hover:text-fortuno-gold-soft transition-colors">Fale conosco</a>
+        </nav>
+      </div>
+      <div class="mt-8 h-px" style="background: var(--gold-divider);"></div>
+      <p class="mt-6 text-[11px] text-fortuno-offwhite/40">
+        © 2026 FORTUNO SORTEIOS E PREMIAÇÕES LTDA · CNPJ 00.000.000/0001-00
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
