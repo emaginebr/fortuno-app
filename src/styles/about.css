@@ -1,0 +1,374 @@
+/* ===========================================================
+   ABOUT — /quem-somos · Editorial Casino Noir (light body)
+   Classes específicas da página institucional. Reaproveita
+   tokens declarados em tokens.css (bloco ABOUT).
+   =========================================================== */
+
+/* ---------------------------------------------------------
+   Hero: ornamentos art-déco superior e inferior da banda
+   --------------------------------------------------------- */
+.about-hero {
+  position: relative;
+  background: var(--about-hero-halo);
+  isolation: isolate;
+}
+.about-hero::before,
+.about-hero::after {
+  content: '';
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: var(--gold-divider);
+  pointer-events: none;
+}
+.about-hero::before { top: 0; }
+.about-hero::after {
+  bottom: 0;
+  left: 20%;
+  right: 20%;
+  background: var(--gold-divider-soft);
+}
+
+/* Art-déco divider (linha ouro + losango central) — reutilizável */
+.about-deco-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.about-deco-divider::before {
+  content: '';
+  flex: 0 0 48px;
+  height: 1px;
+  background: var(--fortuno-gold-intense);
+  opacity: 0.8;
+}
+.about-deco-divider .about-diamond {
+  width: 8px;
+  height: 8px;
+  transform: rotate(45deg);
+  background: var(--fortuno-gold-intense);
+  box-shadow: 0 0 10px rgba(184, 150, 63, 0.55);
+}
+
+/* ---------------------------------------------------------
+   Stats band institucional (LIGHT)
+   --------------------------------------------------------- */
+.about-stats {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0)),
+    linear-gradient(90deg, rgba(212, 175, 55, 0.04), rgba(212, 175, 55, 0.08) 50%, rgba(212, 175, 55, 0.04));
+  border-top: 1px solid rgba(184, 150, 63, 0.18);
+  border-bottom: 1px solid rgba(184, 150, 63, 0.18);
+}
+
+.about-stat-num {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1;
+  font-size: clamp(40px, 5.8vw, 68px);
+  letter-spacing: -0.02em;
+  background: linear-gradient(
+    180deg,
+    var(--fortuno-gold-soft) 0%,
+    var(--fortuno-gold-intense) 55%,
+    var(--fortuno-green-elegant) 130%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-variant-numeric: tabular-nums;
+}
+
+.about-stat-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.26em;
+  color: rgba(11, 11, 11, 0.55);
+  font-weight: 600;
+}
+
+.about-stat-divider {
+  width: 1px;
+  align-self: stretch;
+  background: linear-gradient(180deg, transparent, rgba(184, 150, 63, 0.4), transparent);
+}
+
+/* ---------------------------------------------------------
+   Mission editorial — drop cap + quote ornamental
+   --------------------------------------------------------- */
+.about-mission-body {
+  font-size: clamp(16px, 1.15vw, 18px);
+  line-height: 1.75;
+  color: var(--about-mission-text);
+  font-weight: 400;
+  max-width: 62ch;
+}
+.about-mission-body p + p { margin-top: 1.1em; }
+
+/* Drop cap editorial — primeira letra Playfair italic gigante */
+.about-drop-cap::first-letter {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 5.4em;
+  line-height: 0.82;
+  float: left;
+  margin: 0.08em 0.12em 0 -0.02em;
+  background: var(--about-dropcap-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  padding: 0 4px 0 0;
+}
+
+/* Quote ornamental (aspa tipográfica em cobre queimado) */
+.about-quote {
+  position: relative;
+  margin: 32px 0 8px;
+  padding: 24px 28px 24px 56px;
+  border-left: 2px solid var(--about-quote-border);
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(20px, 2vw, 26px);
+  line-height: 1.45;
+  color: var(--about-quote-copper);
+  letter-spacing: -0.01em;
+  max-width: 60ch;
+}
+.about-quote::before {
+  content: '\201C';
+  position: absolute;
+  top: -8px;
+  left: 8px;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 88px;
+  line-height: 1;
+  color: var(--about-quote-copper);
+  opacity: 0.38;
+  user-select: none;
+  pointer-events: none;
+}
+.about-quote cite {
+  display: block;
+  margin-top: 10px;
+  font-style: normal;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(11, 11, 11, 0.45);
+}
+
+/* ---------------------------------------------------------
+   Values pillars — paper cards (LIGHT)
+   --------------------------------------------------------- */
+.about-pillar {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 28px 26px 26px;
+  background: #ffffff;
+  border: 1px solid var(--card-paper-border);
+  border-radius: 18px;
+  box-shadow: var(--shadow-paper);
+  overflow: hidden;
+  transition:
+    transform var(--duration-base) var(--easing-spring),
+    border-color var(--duration-base) var(--easing-out),
+    box-shadow var(--duration-base) var(--easing-out);
+}
+.about-pillar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--card-gold-bar);
+  opacity: 0.85;
+}
+.about-pillar:hover {
+  transform: translateY(-4px);
+  border-color: var(--card-paper-border-hover);
+  box-shadow: var(--shadow-paper-hover);
+}
+.about-pillar:focus-within {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.55), var(--shadow-paper-hover);
+  border-color: rgba(184, 150, 63, 0.55);
+}
+
+.about-pillar-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: var(--about-value-icon-bg);
+  color: var(--fortuno-gold-intense);
+  border: 1px solid var(--about-value-icon-border);
+  box-shadow: var(--about-value-icon-shadow);
+  flex-shrink: 0;
+}
+
+.about-pillar-divider {
+  height: 1px;
+  background: var(--gold-divider-soft);
+  margin-top: auto;
+}
+
+/* ---------------------------------------------------------
+   How we work — timeline horizontal (LIGHT)
+   --------------------------------------------------------- */
+.about-how-rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 56px;
+  height: 1px;
+  background: var(--about-timeline-rail);
+  z-index: 0;
+}
+
+.about-how-num {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: clamp(56px, 6.5vw, 84px);
+  line-height: 0.85;
+  letter-spacing: -0.03em;
+  background: linear-gradient(
+    180deg,
+    var(--fortuno-gold-soft) 0%,
+    var(--fortuno-gold-intense) 55%,
+    var(--fortuno-green-elegant) 135%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-variant-numeric: tabular-nums;
+}
+
+.about-how-marker {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  margin: 10px auto 0;
+  background: var(--about-timeline-marker);
+  border: 2px solid #ffffff;
+  box-shadow:
+    0 0 0 1px rgba(184, 150, 63, 0.45),
+    0 4px 10px -2px rgba(184, 150, 63, 0.55);
+}
+
+.about-how-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--fortuno-gold-intense);
+  font-weight: 600;
+  margin-top: 18px;
+}
+
+/* ---------------------------------------------------------
+   Closing CTA (dark, ornamentado)
+   --------------------------------------------------------- */
+.about-closing {
+  position: relative;
+  background: var(--noir-bg-final-cta);
+  color: var(--fortuno-offwhite);
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  overflow: hidden;
+  isolation: isolate;
+}
+.about-closing::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    rgba(212, 175, 55, 0.04) 70deg,
+    transparent 140deg,
+    rgba(212, 175, 55, 0.03) 220deg,
+    transparent 360deg
+  );
+  pointer-events: none;
+}
+
+/* Ghost CTA sobre body claro (hero + secundários light) */
+.cta-ghost-light {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 26px;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  background: transparent;
+  color: var(--fortuno-black);
+  border: 1px solid rgba(184, 150, 63, 0.45);
+  transition:
+    background var(--duration-base) var(--easing-out),
+    border-color var(--duration-base) var(--easing-out);
+  text-decoration: none;
+}
+.cta-ghost-light:hover {
+  background: rgba(184, 150, 63, 0.1);
+  border-color: rgba(184, 150, 63, 0.7);
+}
+
+/* ---------------------------------------------------------
+   Mobile refinements
+   --------------------------------------------------------- */
+@media (max-width: 767px) {
+  .about-how-rail { display: none; }
+  .about-how-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .about-how-step {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    align-items: start;
+    gap: 18px;
+    text-align: left;
+  }
+  .about-how-step .about-how-num { font-size: 64px; }
+  .about-how-step .about-how-marker { display: none; }
+  .about-how-chip { margin-top: 4px; }
+  .about-how-desc {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .about-stat-divider { display: none; }
+
+  .about-drop-cap::first-letter {
+    font-size: 4em;
+    margin: 0.08em 0.1em 0 0;
+  }
+  .about-quote {
+    padding: 18px 20px 20px 44px;
+    font-size: 18px;
+  }
+  .about-quote::before {
+    font-size: 64px;
+    top: -4px;
+    left: 4px;
+  }
+}

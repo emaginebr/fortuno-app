@@ -222,6 +222,100 @@
     "easyTitle": "É FÁCIL PARTICIPAR!",
     "easySubtitle": "E o melhor de tudo é poder concorrer a esse super prêmio com apenas algumas moedas!"
   },
+  "about": {
+    "hero": {
+      "eyebrow": "Fortuno · Desde 2025",
+      "titleLine1": "A sorte ganha confiança",
+      "titleLine2": "quando é organizada.",
+      "subhead": "Plataforma brasileira de sorteios auditáveis — cada bilhete tem rastro, cada prêmio tem entrega, cada participante sabe exatamente o que comprou.",
+      "ctaPrimary": "Ver sorteios em andamento",
+      "ctaSecondary": "Conheça nossa história",
+      "trustAudit": "Auditoria externa",
+      "trustEncryption": "Dados criptografados",
+      "trustCnpj": "CNPJ 00.000.000/0001-00"
+    },
+    "stats": {
+      "heading": "Números que sustentam o Fortuno",
+      "founded": "Ano de fundação",
+      "distributed": "Distribuídos em prêmios",
+      "editions": "Sorteios realizados",
+      "winners": "Ganhadores atendidos",
+      "footnote": "Dados auditados e atualizados em tempo real. Resultados públicos disponíveis em cada edição."
+    },
+    "mission": {
+      "eyebrow": "Capítulo I",
+      "titleLine1": "Nossa",
+      "titleLine2": "missão.",
+      "tagline": "Transparência e entrega, em cada bilhete.",
+      "lead": "O Fortuno nasceu em 2025 para organizar algo que, no Brasil, sempre foi opaco: o universo dos sorteios online. Nossa plataforma registra cada bilhete com rastreabilidade completa — do clique inicial ao PIX confirmado, da ata pública do sorteio à entrega do prêmio ao ganhador. Cada etapa é auditável. Cada resultado, reprodutível.",
+      "quote": "A sorte deixa de ser loteria quando cada número tem dono, cada sorteio tem testemunha e cada prêmio tem contrato.",
+      "quoteCite": "— Manifesto Fortuno, 2025",
+      "paragraph2": "Construímos cada sorteio em parceria com organizadores que buscam profissionalismo, compradores que exigem previsibilidade, e reguladores que precisam de transparência. Nosso papel é intermediar — nunca especular. Nunca opacificar. Nunca surpreender.",
+      "paragraph3": "Cada edição do Fortuno é publicada com: CNPJ do organizador, instituição de pagamento autorizada, método de sorteio (Loteria Federal ou geração auditada), lista completa de bilhetes vendidos e hash verificável do resultado. Você não precisa confiar em nós — confie nos números."
+    },
+    "values": {
+      "eyebrow": "Capítulo II",
+      "titleLine1": "Nossos",
+      "titleLine2": "valores.",
+      "subtitle": "Quatro princípios que guiam cada decisão técnica, cada copy, cada parceria. Não são frases — são restrições de projeto.",
+      "transparency": {
+        "title": "Transparência",
+        "description": "Todo sorteio é auditado e os resultados são públicos. Cada edição publica ata, hash verificável e lista completa de bilhetes.",
+        "footnote": "Auditoria pública"
+      },
+      "trust": {
+        "title": "Confiança",
+        "description": "Seus dados são protegidos e os pagamentos são processados por instituições reguladas. LGPD por padrão, zero compartilhamento com terceiros.",
+        "footnote": "TLS 1.3 · AES-256"
+      },
+      "experience": {
+        "title": "Experiência",
+        "description": "Uma plataforma que respeita o seu tempo e o seu dinheiro. Interface editorial, sem fricção, sem poluição visual.",
+        "footnote": "Menos de 2 min para participar"
+      },
+      "audit": {
+        "title": "Auditoria",
+        "description": "Cada etapa é registrada com rastreabilidade completa e verificável. Resultado reprodutível por qualquer participante, sem caixas-pretas.",
+        "footnote": "Ata pública por edição"
+      }
+    },
+    "howItWorks": {
+      "eyebrow": "Capítulo III",
+      "titleLine1": "Como",
+      "titleLine2": "funcionamos.",
+      "subtitle": "Quatro etapas mapeadas, rastreáveis e auditáveis. Do cadastro do sorteio à entrega do prêmio — tudo em registro público.",
+      "listAria": "Etapas do fluxo Fortuno",
+      "step1": {
+        "chip": "Organizador",
+        "title": "Cadastra o sorteio",
+        "description": "Organizador validado define prêmio, CNPJ e método de sorteio."
+      },
+      "step2": {
+        "chip": "Bilhetes",
+        "title": "Disponibilizados ao público",
+        "description": "Edição publicada, numeração pública, limite de bilhetes declarado."
+      },
+      "step3": {
+        "chip": "Pagamento",
+        "title": "PIX confirmado em segundos",
+        "description": "Pagamento via instituição regulada. Bilhete atribuído automaticamente."
+      },
+      "step4": {
+        "chip": "Entrega",
+        "title": "Sorteio auditado e prêmio entregue",
+        "description": "Hash público, ata registrada, prêmio transferido ao ganhador."
+      }
+    },
+    "closing": {
+      "eyebrow": "Epílogo",
+      "titleLine1": "Pronto para entrar",
+      "titleLine2": "no jogo?",
+      "subhead": "Confira os sorteios em andamento e escolha a sua sorte. Cada bilhete tem rastro — inclusive o seu.",
+      "ctaPrimary": "Ver sorteios",
+      "ctaSecondary": "Fale conosco",
+      "signature": "Sua sorte é séria."
+    }
+  },
   "common": {
     "loading": "Carregando...",
     "error": "Ocorreu um erro. Tente novamente.",

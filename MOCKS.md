@@ -101,6 +101,13 @@ Registro vivo dos endpoints que o frontend consome em modo MOCK até que o backe
 - **Descrição**: o modal de detalhes do bilhete mostra um botão "Baixar como imagem" que hoje fica desabilitado com tooltip "em breve". `html2canvas` não está no `package.json` e a política do repo proíbe instalar libs nessa PR. Decisões possíveis: (a) serializar o voucher em SVG puro programaticamente e fazer download via Blob + `<a download>`; (b) adicionar `html2canvas` em PR separado.
 - **Item de acompanhamento**: pendente de abertura.
 
+### About — Stats institucionais (`AboutStatsBand`)
+
+- **Arquivo**: `src/components/about/AboutStatsBand.tsx` (constante `STATS`)
+- **Rota esperada**: `GET /stats/public` — mesmo endpoint aguardado pelo `StatsBand` da home. Deve expor: ano de fundação, total distribuído em prêmios (BRL), total de sorteios realizados, total de ganhadores atendidos.
+- **Descrição**: a página institucional `/quem-somos` exibe 4 numerais editoriais com valores hardcoded (`2025`, `R$ 12,4M`, `248`, `15.3k+`). Quando o endpoint existir, alimentar via `useEffect` + estado local e manter os labels i18n em `about.stats.*`.
+- **Item de acompanhamento**: pendente de abertura.
+
 ### Home — Imagem de fallback do hero
 
 - **Arquivo**: `public/images/hero-fallback.jpg` (asset estático pendente)

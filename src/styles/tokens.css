@@ -644,6 +644,59 @@
     rgba(184, 150, 63, 0.12)
   );
   --filter-pill-border-active: rgba(212, 175, 55, 0.65);
+
+  /* ===========================================================
+     ABOUT — Editorial Casino Noir (tokens exclusivos /quem-somos)
+     Anexar APÓS os blocos do wizard, home, dashboard e lottery-*.
+     =========================================================== */
+
+  /* --- Hero about: halo ouro lateral sutil sobre corpo claro --- */
+  --about-hero-halo:
+    radial-gradient(650px 350px at 88% 45%, rgba(184, 150, 63, 0.12), transparent 65%),
+    radial-gradient(900px 500px at 10% 110%, rgba(19, 68, 54, 0.05), transparent 55%);
+
+  /* --- Drop cap editorial (capitular — seção Missão) --- */
+  --about-dropcap-gradient: linear-gradient(
+    180deg,
+    var(--fortuno-gold-soft) 0%,
+    var(--fortuno-gold-intense) 60%,
+    var(--fortuno-green-elegant) 140%
+  );
+
+  /* --- Quote ornamental (cobre queimado, não vermelho, não ouro pleno) --- */
+  --about-quote-copper: #8a5a2b;
+  --about-quote-border: rgba(184, 150, 63, 0.35);
+
+  /* --- Timeline horizontal institucional (variante LIGHT clara) --- */
+  --about-timeline-rail: linear-gradient(
+    90deg,
+    transparent,
+    rgba(184, 150, 63, 0.55),
+    rgba(19, 68, 54, 0.55),
+    rgba(184, 150, 63, 0.55),
+    transparent
+  );
+  --about-timeline-marker: radial-gradient(
+    120% 120% at 30% 20%,
+    #f0d27a 0%,
+    #c79b41 45%,
+    #8a6a25 100%
+  );
+
+  /* --- SVG vault fills (cofre art-déco do hero) --- */
+  --about-vault-paper: linear-gradient(180deg, #faf3e1 0%, #ece8e1 100%);
+  --about-vault-glow: rgba(212, 175, 55, 0.18);
+
+  /* --- Mission body --- */
+  --about-mission-text: rgba(11, 11, 11, 0.82);
+  --about-value-desc: rgba(11, 11, 11, 0.68);
+
+  /* --- Value icon chip (light gold) --- */
+  --about-value-icon-bg: linear-gradient(180deg, #faf3e1 0%, #f0e3b8 100%);
+  --about-value-icon-border: rgba(184, 150, 63, 0.32);
+  --about-value-icon-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 6px 14px -6px rgba(184, 150, 63, 0.35);
 }
 
 .dark {

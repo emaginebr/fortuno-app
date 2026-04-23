@@ -101,6 +101,11 @@ export default {
         'empty-card': 'var(--empty-bg)',
         'empty-icon': 'var(--empty-icon-bg)',
         'skeleton-shimmer': 'var(--skeleton-shimmer)',
+        'about-hero-halo': 'var(--about-hero-halo)',
+        'about-timeline-rail': 'var(--about-timeline-rail)',
+        'about-timeline-marker': 'var(--about-timeline-marker)',
+        'about-dropcap': 'var(--about-dropcap-gradient)',
+        'about-vault-paper': 'var(--about-vault-paper)',
       },
       transitionTimingFunction: {
         'noir-out': 'cubic-bezier(0.22, 1, 0.36, 1)',
