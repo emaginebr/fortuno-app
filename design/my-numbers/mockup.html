@@ -1,0 +1,2437 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fortuno — Meus Números (Editorial Casino Noir · Vintage Casino Voucher · v2)</title>
+
+  <!-- Tailwind CDN para preview standalone -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fonts: Inter + Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700;1,800&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            fortuno: {
+              green: { deep: '#0a2a20', elegant: '#134436' },
+              gold:  { intense: '#b8963f', soft: '#d4af37' },
+              black: '#0b0b0b',
+              offwhite: '#ece8e1',
+              paper: '#f7f3ec',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['"Playfair Display"', 'Georgia', 'serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* ===========================================================
+       MEUS NÚMEROS — Editorial Casino Noir · "Vintage Casino Voucher"
+       Direção do TICKET: Proposta A reorganizada (v2).
+         - Número é a faixa horizontal dominante (Opção X).
+         - Nome do sorteio REMOVIDO do card.
+         - Tipografia fluida + modifier data-length p/ Composed 7/8.
+         - Layout vertical: micro-header · NÚMERO grande · metadata · foot.
+       Reuso total: tokens do dashboard/lottery-list/lottery-detail/checkout.
+       Novos tokens: ver tokens.md (apenas o que é genuinamente novo).
+       =========================================================== */
+    :root {
+      /* Marca */
+      --fortuno-green-deep:    #0a2a20;
+      --fortuno-green-elegant: #134436;
+      --fortuno-gold-intense:  #b8963f;
+      --fortuno-gold-soft:     #d4af37;
+      --fortuno-black:         #0b0b0b;
+      --fortuno-offwhite:      #ece8e1;
+      --fortuno-paper:         #f7f3ec;
+
+      /* === Body claro (REUSO dashboard/lottery-list) === */
+      --page-bg:
+        radial-gradient(1000px 500px at 80% -10%, rgba(184,150,63,0.06), transparent 65%),
+        radial-gradient(800px 500px at -10% 110%, rgba(19,68,54,0.04), transparent 55%),
+        linear-gradient(180deg, #f7f3ec 0%, #f1ece3 60%, #ece8e1 100%);
+
+      /* === Header escuro (REUSO dashboard) === */
+      --dash-header-bg:
+        radial-gradient(900px 300px at 85% 0%, rgba(212,175,55,0.14), transparent 60%),
+        radial-gradient(700px 400px at 15% 110%, rgba(184,150,63,0.10), transparent 65%),
+        linear-gradient(180deg, #061d17 0%, #0a2a20 55%, #07201a 100%);
+
+      /* === Topbar global (REUSO dashboard) === */
+      --topbar-bg:
+        linear-gradient(180deg, #061d17 0%, #0a2a20 100%);
+      --topbar-border-bottom: linear-gradient(90deg,
+        transparent 0%,
+        rgba(212,175,55,0.55) 20%,
+        rgba(212,175,55,0.75) 50%,
+        rgba(212,175,55,0.55) 80%,
+        transparent 100%);
+
+      /* === Footer band (REUSO dashboard) === */
+      --dash-footer-band-bg:
+        linear-gradient(180deg, #0a2a20 0%, #0f3a2d 100%);
+
+      /* === Dividers ouro (REUSO global) === */
+      --gold-divider: linear-gradient(90deg, transparent, rgba(212,175,55,0.55), transparent);
+      --gold-divider-soft: linear-gradient(90deg, transparent, rgba(184,150,63,0.28), transparent);
+
+      /* === HeaderChip (REUSO dashboard) === */
+      --chip-glass-bg:
+        linear-gradient(180deg, rgba(236,232,225,0.10), rgba(236,232,225,0.04));
+      --chip-glass-border: rgba(212,175,55,0.32);
+      --chip-glass-border-hover: rgba(212,175,55,0.55);
+
+      /* === Avatar ring (REUSO dashboard) === */
+      --avatar-ring: conic-gradient(from 220deg,
+        rgba(212,175,55,0) 0deg,
+        rgba(212,175,55,0.75) 120deg,
+        rgba(184,150,63,0.6) 220deg,
+        rgba(212,175,55,0) 360deg);
+
+      /* === CTA shadows (REUSO global) === */
+      --shadow-gold-focus: 0 0 0 3px rgba(212,175,55,0.55);
+
+      /* ============================================================
+         === TOOLBAR EDITORIAL — NOVO (genérico para listagens) ===
+         ============================================================ */
+      --toolbar-card-bg:
+        linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(247,243,236,0.82) 100%);
+      --toolbar-card-border: rgba(184,150,63,0.32);
+      --toolbar-card-shadow:
+        0 1px 0 rgba(255,255,255,0.85) inset,
+        0 12px 28px -18px rgba(10,42,32,0.18),
+        0 4px 10px -4px rgba(184,150,63,0.10);
+
+      --filter-pill-bg: rgba(255,255,255,0.65);
+      --filter-pill-border: rgba(184,150,63,0.30);
+      --filter-pill-bg-hover: rgba(212,175,55,0.10);
+      --filter-pill-border-hover: rgba(184,150,63,0.55);
+      --filter-pill-bg-active:
+        linear-gradient(180deg, rgba(212,175,55,0.18), rgba(184,150,63,0.12));
+      --filter-pill-border-active: rgba(212,175,55,0.65);
+
+      /* ============================================================
+         === TICKET PREMIUM v2 — peça-mestre reorganizada ===
+         Voucher de cassino vintage. 3 variantes via data-state.
+         Layout agora é VERTICAL com o NÚMERO em faixa horizontal.
+         ============================================================ */
+
+      /* Papel pergaminho do voucher (default open) */
+      --ticket-paper-bg:
+        radial-gradient(120% 100% at 0% 0%, rgba(255,250,232,0.95) 0%, transparent 55%),
+        radial-gradient(120% 100% at 100% 100%, rgba(247,243,236,0.85) 0%, transparent 60%),
+        linear-gradient(180deg, #fdfaf0 0%, #f3ecd6 100%);
+
+      /* Borda metálica externa (frame) — variante OPEN (ouro saturado) */
+      --ticket-frame-bg:
+        linear-gradient(135deg,
+          #d4af37 0%,
+          #b8963f 25%,
+          #f5dc8b 50%,
+          #b8963f 75%,
+          #8a6f2b 100%);
+
+      /* Watermark FORTUNO ao fundo */
+      --ticket-watermark-color: rgba(184,150,63,0.07);
+
+      /* Sombras */
+      --ticket-shadow:
+        0 1px 0 rgba(255,255,255,0.85) inset,
+        0 18px 32px -18px rgba(10,42,32,0.28),
+        0 6px 14px -4px rgba(184,150,63,0.18);
+      --ticket-shadow-hover:
+        0 1px 0 rgba(255,255,255,0.95) inset,
+        0 28px 48px -22px rgba(10,42,32,0.42),
+        0 14px 24px -8px rgba(184,150,63,0.40),
+        0 0 0 1px rgba(212,175,55,0.25);
+
+      /* Numeral — gradient ouro (open) */
+      --ticket-numeral-grad-open:
+        linear-gradient(180deg,
+          #d4af37 0%,
+          #b8963f 50%,
+          #6e4421 130%);
+
+      /* Numeral — variante CLOSED (verde-envelhecido) */
+      --ticket-numeral-grad-closed:
+        linear-gradient(180deg,
+          #2d5d4a 0%,
+          #1a4034 60%,
+          #0a2a20 130%);
+
+      /* Numeral — variante REFUNDED (cobre queimado) */
+      --ticket-numeral-grad-refunded:
+        linear-gradient(180deg,
+          #c08a4a 0%,
+          #8a5a2b 60%,
+          #4d3216 130%);
+
+      /* NOVO — Tipografia fluida do número (faixa horizontal central).
+         Curva agressiva: escala bem até ~clampzinho. Reforçada por
+         modifiers data-length={short|medium|long|xlong} para Composed 7/8. */
+      --voucher-number-size:         clamp(34px, 11cqi, 84px);  /* short/medium (Int64, Composed3-5) */
+      --voucher-number-size-long:    clamp(24px,  7.5cqi, 56px); /* Composed6 */
+      --voucher-number-size-xlong:   clamp(20px,  6cqi,   44px); /* Composed7/8 */
+
+      /* Espaçamento de letra do número por tamanho (tight para strings longas) */
+      --voucher-number-ls:           -0.03em;
+      --voucher-number-ls-long:      -0.02em;
+      --voucher-number-ls-xlong:     -0.015em;
+
+      /* Linhas horizontais ouro que "moldura" o número (art-déco) */
+      --voucher-rule-line:
+        linear-gradient(90deg, transparent, rgba(184,150,63,0.55), transparent);
+
+      /* Ornamento art-déco dos cantos */
+      --ticket-corner-color: rgba(184,150,63,0.55);
+
+      /* Selo "AUTENTICADO" */
+      --seal-bg:
+        radial-gradient(circle at 30% 30%, #f5dc8b 0%, #b8963f 60%, #6e4421 100%);
+      --seal-border: rgba(110,68,33,0.55);
+      --seal-shadow:
+        0 1px 0 rgba(255,255,255,0.5) inset,
+        0 4px 8px -4px rgba(110,68,33,0.45);
+
+      /* Shimmer da borda ouro (animação) */
+      --ticket-shimmer-bg:
+        linear-gradient(110deg,
+          transparent 30%,
+          rgba(255,236,180,0.55) 48%,
+          rgba(255,236,180,0.85) 50%,
+          rgba(255,236,180,0.55) 52%,
+          transparent 70%);
+
+      /* === Status pill (dentro do ticket) === */
+      --status-open-bg:       rgba(184,150,63,0.16);
+      --status-open-border:   rgba(184,150,63,0.50);
+      --status-open-fg:       #6e4421;
+
+      --status-closed-bg:     rgba(19,68,54,0.14);
+      --status-closed-border: rgba(19,68,54,0.45);
+      --status-closed-fg:     #134436;
+
+      --status-refunded-bg:     rgba(138,90,43,0.12);
+      --status-refunded-border: rgba(138,90,43,0.45);
+      --status-refunded-fg:     #6e4421;
+
+      /* === Empty state — REUSO lottery-list === */
+      --empty-bg:
+        radial-gradient(600px 320px at 50% -10%, rgba(212,175,55,0.10), transparent 65%),
+        linear-gradient(180deg, #fbf7ee 0%, #f3ecd6 100%);
+      --empty-border: rgba(184,150,63,0.55);
+
+      /* === Modal (REUSO lottery-detail) === */
+      --modal-overlay: rgba(6,29,23,0.72);
+      --modal-bg: linear-gradient(180deg, #fdfaf0 0%, #f3ecd6 100%);
+      --modal-border: rgba(184,150,63,0.45);
+      --modal-shadow:
+        0 2px 0 rgba(255,255,255,0.55) inset,
+        0 40px 80px -20px rgba(10,42,32,0.55),
+        0 16px 30px -10px rgba(184,150,63,0.30),
+        0 0 0 1px rgba(184,150,63,0.10);
+
+      /* === Pagination tokens (REUSO lottery-list) === */
+      --pagination-bg:
+        linear-gradient(180deg, rgba(255,255,255,0.9), rgba(247,243,236,0.85));
+      --pagination-border: rgba(11,11,11,0.10);
+      --pagination-shadow:
+        0 1px 0 rgba(255,255,255,0.8) inset,
+        0 8px 22px -14px rgba(10,42,32,0.22);
+      --pagination-chip-ghost-bg: transparent;
+      --pagination-chip-ghost-hover: rgba(184,150,63,0.10);
+      --pagination-chip-active-bg:
+        linear-gradient(180deg, var(--fortuno-gold-soft), var(--fortuno-gold-intense));
+      --pagination-chip-active-fg: #0a2a20;
+      --pagination-chip-disabled-fg: rgba(11,11,11,0.35);
+
+      /* === Skeleton === */
+      --skeleton-base:    rgba(184,150,63,0.10);
+      --skeleton-shimmer:
+        linear-gradient(90deg,
+          transparent 0%,
+          rgba(212,175,55,0.18) 40%,
+          rgba(212,175,55,0.32) 50%,
+          rgba(212,175,55,0.18) 60%,
+          transparent 100%);
+
+      /* === Easing/Duração (REUSO global) === */
+      --duration-fast: 160ms;
+      --duration-base: 240ms;
+      --duration-slow: 420ms;
+      --easing-out:    cubic-bezier(0.22, 1, 0.36, 1);
+      --easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--page-bg);
+      color: var(--fortuno-black);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      pointer-events: none;
+      opacity: 0.04;
+      mix-blend-mode: multiply;
+      background-image: radial-gradient(rgba(10,42,32,0.5) 1px, transparent 1px);
+      background-size: 3px 3px;
+      z-index: 0;
+    }
+
+    .font-display { font-family: 'Playfair Display', Georgia, serif; letter-spacing: -0.01em; }
+
+    /* ===========================================================
+       TOPBAR + HEADER ESCURO (REUSO compacto do dashboard)
+       =========================================================== */
+    .site-topbar {
+      background: var(--topbar-bg);
+      color: var(--fortuno-offwhite);
+      position: sticky; top: 0; z-index: 40;
+      isolation: isolate;
+    }
+    .site-topbar::after {
+      content: '';
+      position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+      background: var(--topbar-border-bottom);
+      opacity: 0.85;
+    }
+    .site-wordmark {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-size: 22px; letter-spacing: 0.01em;
+      color: var(--fortuno-offwhite);
+      display: inline-flex; align-items: center; line-height: 1; user-select: none;
+    }
+    .site-wordmark .dot-gold {
+      display: inline-block; width: 6px; height: 6px;
+      background: var(--fortuno-gold-soft); border-radius: 50%;
+      margin-left: 1px; transform: translateY(-11px);
+      box-shadow: 0 0 8px rgba(212,175,55,0.45);
+    }
+    .site-nav-link {
+      position: relative; display: inline-flex; align-items: center;
+      padding: 8px 14px; font-size: 13px; font-weight: 500; letter-spacing: 0.01em;
+      color: rgba(236,232,225,0.78); border-radius: 10px;
+      transition: color var(--duration-fast) var(--easing-out),
+                  background var(--duration-fast) var(--easing-out);
+    }
+    .site-nav-link:hover { color: var(--fortuno-gold-soft); }
+    .site-nav-link.is-active {
+      color: var(--fortuno-gold-soft);
+      background: rgba(212,175,55,0.10);
+      border: 1px solid rgba(212,175,55,0.35);
+      padding: 7px 13px;
+    }
+    .site-nav-link.is-active::after {
+      content: ''; position: absolute; left: 50%; bottom: -6px;
+      transform: translateX(-50%); width: 18px; height: 2px;
+      background: var(--fortuno-gold-soft); border-radius: 2px;
+      box-shadow: 0 0 6px rgba(212,175,55,0.6);
+    }
+    .user-trigger-min {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 5px 12px 5px 5px;
+      background: rgba(236,232,225,0.04);
+      border: 1px solid rgba(212,175,55,0.28);
+      border-radius: 999px; color: var(--fortuno-offwhite);
+      min-height: 44px;
+    }
+    .user-trigger-min .user-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(145deg, #1c5b48, #0a2a20);
+      border: 1.5px solid rgba(212,175,55,0.45);
+      display: grid; place-items: center;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-style: italic;
+      color: var(--fortuno-gold-soft); font-size: 14px;
+    }
+    .user-trigger-min .user-name {
+      font-size: 13px; font-weight: 600; color: var(--fortuno-offwhite);
+      max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+
+    .dash-header {
+      background: var(--dash-header-bg);
+      color: var(--fortuno-offwhite);
+      position: relative; overflow: hidden; isolation: isolate;
+    }
+    .dash-header::after {
+      content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+      background: var(--gold-divider); opacity: 0.65;
+    }
+    .avatar-frame {
+      position: relative; width: 52px; height: 52px;
+      border-radius: 50%; isolation: isolate; flex-shrink: 0;
+    }
+    .avatar-frame::before {
+      content: ''; position: absolute; inset: -2px; border-radius: 50%;
+      background: var(--avatar-ring);
+      animation: avatar-breath 6s ease-in-out infinite; z-index: -1;
+    }
+    .avatar-frame .avatar-core {
+      width: 100%; height: 100%; border-radius: 50%;
+      background: linear-gradient(145deg, #1c5b48, #0a2a20);
+      border: 2px solid rgba(212,175,55,0.32);
+      display: grid; place-items: center;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-style: italic;
+      color: var(--fortuno-gold-soft); font-size: 20px;
+    }
+    @keyframes avatar-breath {
+      0%, 100% { transform: rotate(0deg) scale(1); opacity: 0.75; }
+      50%      { transform: rotate(180deg) scale(1.03); opacity: 0.95; }
+    }
+    .header-chip {
+      position: relative; display: inline-flex; align-items: center;
+      gap: 10px; padding: 8px 10px 8px 14px; border-radius: 14px;
+      background: var(--chip-glass-bg);
+      border: 1px solid var(--chip-glass-border);
+      backdrop-filter: blur(10px) saturate(140%);
+      min-height: 56px;
+    }
+    .header-chip:hover { border-color: var(--chip-glass-border-hover); }
+    .header-chip .chip-lead {
+      width: 32px; height: 32px; border-radius: 10px;
+      background: rgba(212,175,55,0.12);
+      border: 1px solid rgba(212,175,55,0.32);
+      color: var(--fortuno-gold-soft);
+      display: grid; place-items: center; flex-shrink: 0;
+    }
+    .header-chip .chip-lead i { width: 16px; height: 16px; }
+    .header-chip .chip-label {
+      display: block; font-size: 9px; letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: rgba(236,232,225,0.65); line-height: 1;
+    }
+    .header-chip .chip-value {
+      display: block; font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-size: 22px; line-height: 1.05;
+      color: var(--fortuno-gold-soft);
+      font-variant-numeric: tabular-nums; margin-top: 3px;
+    }
+    .header-chip .chip-value .chip-value-unit {
+      font-size: 11px; font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 600; font-style: normal; letter-spacing: 0.12em;
+      text-transform: uppercase; color: rgba(212,175,55,0.75); margin-left: 4px;
+    }
+    .header-chip .chip-action {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 4px; padding: 0 10px; height: 32px; min-width: 44px;
+      border-radius: 999px;
+      background: rgba(212,175,55,0.12);
+      border: 1px solid rgba(212,175,55,0.40);
+      color: var(--fortuno-gold-soft);
+      font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+    }
+    .header-chip .chip-action:hover {
+      background: var(--fortuno-gold-soft); color: var(--fortuno-black);
+    }
+    .header-chip .chip-action i { width: 13px; height: 13px; }
+    .header-chip .chip-copy {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(212,175,55,0.12);
+      border: 1px solid rgba(212,175,55,0.40);
+      color: var(--fortuno-gold-soft);
+    }
+    .header-chip .chip-copy:hover {
+      background: var(--fortuno-gold-soft); color: var(--fortuno-black);
+    }
+    .header-chip .chip-copy i { width: 14px; height: 14px; }
+
+    .eyebrow {
+      font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase;
+      color: rgba(11,11,11,0.55); font-weight: 600;
+    }
+    .eyebrow.on-dark { color: rgba(236,232,225,0.60); }
+    .eyebrow.gold { color: var(--fortuno-gold-intense); }
+
+    /* ===========================================================
+       TOOLBAR EDITORIAL — pílulas de filtro
+       =========================================================== */
+    .tickets-toolbar {
+      position: relative;
+      background: var(--toolbar-card-bg);
+      border: 1px solid var(--toolbar-card-border);
+      border-radius: 20px;
+      padding: 18px 20px 16px;
+      box-shadow: var(--toolbar-card-shadow);
+      backdrop-filter: blur(8px);
+    }
+    .tickets-toolbar::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: var(--gold-divider); opacity: 0.7;
+      border-radius: 20px 20px 0 0;
+    }
+    .toolbar-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: clamp(24px, 2.6vw, 32px);
+      line-height: 1.05;
+      letter-spacing: -0.015em;
+      color: var(--fortuno-black);
+    }
+    .toolbar-title .italic { font-style: italic; color: var(--fortuno-gold-intense); }
+    .toolbar-lottery-context {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 6px;
+      font-size: 12px; font-weight: 500;
+      color: rgba(11,11,11,0.60);
+      letter-spacing: 0.02em;
+    }
+    .toolbar-lottery-context strong {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic; font-weight: 700;
+      color: var(--fortuno-green-elegant);
+      letter-spacing: -0.005em;
+    }
+    .toolbar-lottery-context i {
+      width: 13px; height: 13px; color: var(--fortuno-gold-intense);
+    }
+    .toolbar-counter {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 13px; font-weight: 500;
+      color: rgba(11,11,11,0.55);
+      letter-spacing: 0.02em;
+      margin-left: 8px;
+    }
+    .toolbar-counter strong {
+      color: var(--fortuno-green-elegant); font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .filter-pills {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 10px;
+    }
+    .filter-pill {
+      position: relative;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 14px 8px 12px;
+      min-height: 40px;
+      border-radius: 999px;
+      background: var(--filter-pill-bg);
+      border: 1px solid var(--filter-pill-border);
+      color: var(--fortuno-black);
+      font-size: 13px; font-weight: 500; letter-spacing: 0.01em;
+      transition: background var(--duration-fast) var(--easing-out),
+                  border-color var(--duration-fast) var(--easing-out),
+                  transform var(--duration-fast) var(--easing-out);
+      cursor: pointer;
+    }
+    .filter-pill:hover {
+      background: var(--filter-pill-bg-hover);
+      border-color: var(--filter-pill-border-hover);
+    }
+    .filter-pill:focus-visible,
+    .filter-pill:focus-within {
+      outline: none;
+      box-shadow: var(--shadow-gold-focus);
+      border-color: var(--filter-pill-border-active);
+    }
+    .filter-pill.is-active {
+      background: var(--filter-pill-bg-active);
+      border-color: var(--filter-pill-border-active);
+      color: var(--fortuno-black);
+    }
+    .filter-pill .pill-icon {
+      width: 16px; height: 16px;
+      color: var(--fortuno-gold-intense);
+      flex-shrink: 0;
+    }
+    .filter-pill .pill-label {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(11,11,11,0.55);
+    }
+    .filter-pill .pill-value {
+      font-weight: 600; color: var(--fortuno-black);
+      font-variant-numeric: tabular-nums;
+      max-width: 180px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .filter-pill .pill-chevron {
+      width: 14px; height: 14px;
+      color: rgba(11,11,11,0.45);
+      transition: transform var(--duration-fast) var(--easing-out);
+    }
+    .filter-pill .pill-clear {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: rgba(11,11,11,0.10);
+      color: rgba(11,11,11,0.55);
+      display: inline-grid; place-items: center;
+      transition: background var(--duration-fast) var(--easing-out),
+                  color var(--duration-fast) var(--easing-out);
+    }
+    .filter-pill .pill-clear:hover {
+      background: rgba(184,150,63,0.30);
+      color: var(--fortuno-black);
+    }
+    .filter-pill .pill-clear i { width: 11px; height: 11px; }
+
+    .filter-pill.is-search {
+      padding: 4px 6px 4px 14px;
+      gap: 6px;
+    }
+    .filter-pill.is-search input {
+      background: transparent; border: none; outline: none;
+      color: var(--fortuno-black);
+      font-size: 13px;
+      width: 160px;
+      font-variant-numeric: tabular-nums;
+    }
+    .filter-pill.is-search input::placeholder {
+      color: rgba(11,11,11,0.45);
+    }
+    .filter-pill.is-search .pill-search-btn {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(184,150,63,0.18);
+      border: 1px solid rgba(184,150,63,0.40);
+      color: var(--fortuno-gold-intense);
+      display: inline-grid; place-items: center;
+    }
+    .filter-pill.is-search .pill-search-btn i { width: 13px; height: 13px; }
+
+    .filter-pill .pill-native-select {
+      appearance: none;
+      -webkit-appearance: none;
+      background: transparent; border: none; outline: none;
+      color: var(--fortuno-black);
+      font-size: 13px; font-weight: 600;
+      padding: 0; margin: 0; cursor: pointer;
+      max-width: 180px;
+    }
+
+    .toolbar-clear-link {
+      font-size: 12px; font-weight: 600; letter-spacing: 0.04em;
+      color: var(--fortuno-green-elegant);
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px; border-radius: 999px;
+      transition: color var(--duration-fast) var(--easing-out),
+                  background var(--duration-fast) var(--easing-out);
+    }
+    .toolbar-clear-link:hover {
+      color: var(--fortuno-gold-intense);
+      background: rgba(184,150,63,0.10);
+    }
+    .toolbar-clear-link i { width: 13px; height: 13px; }
+
+    @media (max-width: 639px) {
+      .filter-pills-scroll {
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        flex-wrap: nowrap;
+        padding-bottom: 4px;
+      }
+      .filter-pills-scroll::-webkit-scrollbar { display: none; }
+      .filter-pill { flex-shrink: 0; }
+    }
+
+    /* ===========================================================
+       TICKET PREMIUM v2 — Vintage Casino Voucher (reorganizado)
+       Layout VERTICAL. Número em faixa horizontal ampla central.
+       Estrutura (top → bottom):
+         micro-header (#ID + eyebrow "Bilhete")
+         ─ rule line ─
+         NÚMERO (faixa horizontal dominante, Playfair italic)
+         ─ rule line ─
+         metadata (prêmio · data · status)
+         foot (data de compra · selo)
+       =========================================================== */
+
+    /* Cada ticket é um container de consulta — permite `cqi` no número */
+    .ticket {
+      position: relative;
+      isolation: isolate;
+      padding: 1.5px;
+      border-radius: 18px;
+      background: var(--ticket-frame-bg);
+      box-shadow: var(--ticket-shadow);
+      transition: transform var(--duration-base) var(--easing-spring),
+                  box-shadow var(--duration-base) var(--easing-out);
+      cursor: pointer;
+      width: 100%;
+      /* Voucher mais horizontal, sem o nome do sorteio o card compacta */
+      aspect-ratio: 1.9 / 1;
+      display: block;
+      animation: ticket-stagger-in 460ms var(--easing-out) both;
+      container-type: inline-size;      /* ← habilita cqi no numeral */
+    }
+    .ticket:hover {
+      transform: translateY(-3px) rotate(-0.3deg);
+      box-shadow: var(--ticket-shadow-hover);
+    }
+    .ticket:focus-visible {
+      outline: none;
+      box-shadow: var(--ticket-shadow-hover), var(--shadow-gold-focus);
+    }
+    @keyframes ticket-stagger-in {
+      from { opacity: 0; transform: translateY(8px) scale(0.985); }
+      to   { opacity: 1; transform: translateY(0)   scale(1); }
+    }
+    .ticket { animation-delay: calc(var(--ticket-index, 0) * 60ms); }
+
+    /* === Inner: o "papel" do voucher (agora em fluxo vertical) === */
+    .ticket-inner {
+      position: relative;
+      width: 100%; height: 100%;
+      border-radius: 16px;
+      background: var(--ticket-paper-bg);
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: 16px 22px 14px;
+      gap: 8px;
+    }
+    /* Watermark FORTUNO ao fundo */
+    .ticket-inner::before {
+      content: 'FORTUNO';
+      position: absolute;
+      bottom: -14px; right: -6px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 900; font-style: italic;
+      font-size: clamp(68px, 22cqi, 120px);
+      letter-spacing: -0.04em;
+      color: var(--ticket-watermark-color);
+      pointer-events: none;
+      line-height: 0.85;
+      user-select: none;
+      transform: rotate(-4deg);
+      z-index: 0;
+    }
+
+    /* === Cantos art-déco === */
+    .ticket-corner {
+      position: absolute;
+      width: 18px; height: 18px;
+      border-color: var(--ticket-corner-color);
+      pointer-events: none;
+      z-index: 2;
+    }
+    .ticket-corner.is-tl { top: 7px;    left: 7px;
+      border-top: 1.5px solid; border-left: 1.5px solid;
+      border-top-left-radius: 7px; }
+    .ticket-corner.is-tr { top: 7px;    right: 7px;
+      border-top: 1.5px solid; border-right: 1.5px solid;
+      border-top-right-radius: 7px; }
+    .ticket-corner.is-bl { bottom: 7px; left: 7px;
+      border-bottom: 1.5px solid; border-left: 1.5px solid;
+      border-bottom-left-radius: 7px; }
+    .ticket-corner.is-br { bottom: 7px; right: 7px;
+      border-bottom: 1.5px solid; border-right: 1.5px solid;
+      border-bottom-right-radius: 7px; }
+    .ticket-corner::after {
+      content: ''; position: absolute;
+      width: 4px; height: 4px;
+      background: var(--fortuno-gold-soft);
+      transform: rotate(45deg);
+      box-shadow: 0 0 0 1px rgba(184,150,63,0.45);
+    }
+    .ticket-corner.is-tl::after { top: -2px; left: -2px; }
+    .ticket-corner.is-tr::after { top: -2px; right: -2px; }
+    .ticket-corner.is-bl::after { bottom: -2px; left: -2px; }
+    .ticket-corner.is-br::after { bottom: -2px; right: -2px; }
+
+    /* === Furos laterais (agora somente decorativos, esquerda/direita) === */
+    .ticket-hole {
+      position: absolute;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--page-bg);
+      box-shadow:
+        inset 0 1px 2px rgba(11,11,11,0.18),
+        inset 0 -1px 0 rgba(255,255,255,0.45);
+      z-index: 3;
+      pointer-events: none;
+      top: 50%;
+    }
+    .ticket-hole.is-left  { left: -6px;  transform: translateY(-50%); }
+    .ticket-hole.is-right { right: -6px; transform: translateY(-50%); }
+
+    /* === Micro-header (topo) === */
+    .ticket-head {
+      position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px;
+      min-width: 0;
+    }
+    .ticket-head-left {
+      display: inline-flex; align-items: center; gap: 8px;
+      min-width: 0;
+    }
+    .ticket-eyebrow {
+      font-size: 9px; letter-spacing: 0.30em;
+      text-transform: uppercase;
+      color: rgba(11,11,11,0.55); font-weight: 700;
+      white-space: nowrap;
+    }
+    .ticket-eyebrow-sep {
+      display: inline-block; width: 3px; height: 3px;
+      background: var(--fortuno-gold-intense);
+      border-radius: 50%;
+      margin: 0 2px;
+      opacity: 0.75;
+    }
+    .ticket-id {
+      font-size: 10px;
+      color: rgba(11,11,11,0.55);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* === Status pill (permanece no topo-direito) === */
+    .ticket-status {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.10em; text-transform: uppercase;
+      flex-shrink: 0;
+      background: var(--status-open-bg);
+      border: 1px solid var(--status-open-border);
+      color: var(--status-open-fg);
+      white-space: nowrap;
+    }
+    .ticket-status .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 0 2px rgba(184,150,63,0.18);
+    }
+    .ticket-status i { width: 11px; height: 11px; }
+
+    /* === FAIXA DO NÚMERO — o herói ===
+       Uma linha, sem truncar, sem clipping. Usa cqi (container) +
+       clamp() + data-length modifiers para Composed 7/8. */
+    .voucher-number-band {
+      position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: center;
+      padding: 4px 4px;
+      min-width: 0;
+    }
+    .voucher-number-band::before,
+    .voucher-number-band::after {
+      content: '';
+      flex: 0 1 28px;
+      height: 1px;
+      background: var(--voucher-rule-line);
+      min-width: 12px;
+      margin: 0 10px;
+      opacity: 0.9;
+    }
+    .voucher-number {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 800; font-style: italic;
+      font-size: var(--voucher-number-size);
+      line-height: 0.95;
+      letter-spacing: var(--voucher-number-ls);
+      background: var(--ticket-numeral-grad-open);
+      -webkit-background-clip: text; background-clip: text;
+      color: transparent;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      overflow: visible;        /* nunca corta */
+      min-width: 0;
+      flex: 0 1 auto;
+      text-align: center;
+      /* sombra interna suave para contraste sobre o papel amarelado */
+      text-shadow: 0 1px 0 rgba(255,250,232,0.3);
+    }
+    /* Modifiers por comprimento (aplicados via JS conforme spec):
+       short  ≤ 5  chars  (Int64 curto / Composed3)
+       medium 6-10 chars  (Int64 longo / Composed3-5)
+       long   11-16 chars (Composed5/6)
+       xlong  17+  chars  (Composed7/8)  */
+    .voucher-number[data-length="long"] {
+      font-size: var(--voucher-number-size-long);
+      letter-spacing: var(--voucher-number-ls-long);
+    }
+    .voucher-number[data-length="xlong"] {
+      font-size: var(--voucher-number-size-xlong);
+      letter-spacing: var(--voucher-number-ls-xlong);
+      font-weight: 700;
+    }
+    /* Separadores "-" ligeiramente menores para não dominarem */
+    .voucher-number .voucher-number-sep {
+      display: inline-block;
+      opacity: 0.55;
+      margin: 0 0.08em;
+      font-weight: 500;
+      font-style: normal;
+      transform: translateY(-0.06em);
+    }
+
+    /* === Metadata (abaixo do número) === */
+    .ticket-meta {
+      position: relative; z-index: 1;
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: center;
+      gap: 4px 14px;
+      font-size: 11px;
+      color: rgba(11,11,11,0.62);
+    }
+    .ticket-meta .meta-item {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .ticket-meta .meta-item i {
+      width: 12px; height: 12px;
+      color: var(--fortuno-gold-intense);
+    }
+    .ticket-meta .meta-item.is-prize {
+      color: var(--fortuno-green-elegant);
+      font-weight: 700;
+      font-size: 12px;
+    }
+    .ticket-meta .meta-item.is-prize i { color: var(--fortuno-green-elegant); }
+
+    /* === Foot (compra + selo) === */
+    .ticket-foot {
+      position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px;
+      padding-top: 6px;
+      border-top: 1px dashed rgba(11,11,11,0.10);
+    }
+    .ticket-purchase-date {
+      font-size: 10px;
+      color: rgba(11,11,11,0.48);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.02em;
+    }
+    .ticket-foot-auth {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 9px; letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: rgba(110,68,33,0.72); font-weight: 700;
+    }
+    .ticket-foot-auth i {
+      width: 11px; height: 11px;
+      color: var(--fortuno-gold-intense);
+    }
+
+    /* === Selo "AUTENTICADO" (compacto, canto inferior direito) === */
+    .ticket-seal {
+      position: absolute;
+      bottom: 10px; right: 10px;
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: var(--seal-bg);
+      border: 1.5px solid var(--seal-border);
+      box-shadow: var(--seal-shadow);
+      display: grid; place-items: center;
+      transform: rotate(-12deg);
+      z-index: 2;
+      opacity: 0.82;
+      pointer-events: none;
+    }
+    .ticket-seal-inner {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1px dashed rgba(255,250,232,0.55);
+      display: grid; place-items: center;
+      text-align: center;
+    }
+    .ticket-seal-text {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-style: italic;
+      font-size: 7px; letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,250,232,0.96);
+      line-height: 1;
+    }
+    .ticket-seal-text strong {
+      display: block;
+      font-size: 11px; font-style: italic;
+      letter-spacing: 0.04em;
+      margin-top: 1px;
+    }
+
+    /* === Shimmer ao hover === */
+    .ticket .ticket-shimmer {
+      position: absolute; inset: 0;
+      border-radius: 18px;
+      pointer-events: none;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity var(--duration-base) var(--easing-out);
+    }
+    .ticket:hover .ticket-shimmer { opacity: 1; }
+    .ticket .ticket-shimmer::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -100%;
+      width: 60%; height: 200%;
+      background: var(--ticket-shimmer-bg);
+      transform: skewX(-18deg);
+      animation: ticket-shimmer 1.6s var(--easing-out) infinite;
+    }
+    @keyframes ticket-shimmer {
+      0%   { left: -100%; }
+      100% { left: 200%;  }
+    }
+
+    /* ===========================================================
+       VARIANTES DE ESTADO — TicketRefundState
+       =========================================================== */
+
+    /* CLOSED — verde envelhecido */
+    .ticket[data-state="closed"] {
+      background:
+        linear-gradient(135deg,
+          #2d5d4a 0%, #1a4034 25%, #4a7a68 50%, #1a4034 75%, #0a2a20 100%);
+    }
+    .ticket[data-state="closed"] .voucher-number {
+      background: var(--ticket-numeral-grad-closed);
+      -webkit-background-clip: text; background-clip: text;
+    }
+    .ticket[data-state="closed"] .ticket-status {
+      background: var(--status-closed-bg);
+      border-color: var(--status-closed-border);
+      color: var(--status-closed-fg);
+    }
+    .ticket[data-state="closed"] .ticket-seal {
+      background: radial-gradient(circle at 30% 30%, #6a9684 0%, #2d5d4a 60%, #0a2a20 100%);
+      border-color: rgba(10,42,32,0.55);
+    }
+    .ticket[data-state="closed"] .ticket-corner { border-color: rgba(19,68,54,0.55); }
+    .ticket[data-state="closed"] .ticket-corner::after {
+      background: var(--fortuno-green-elegant);
+      box-shadow: 0 0 0 1px rgba(19,68,54,0.45);
+    }
+
+    /* WINNER — ouro saturado + coroa */
+    .ticket[data-state="closed"][data-winner="true"] {
+      background:
+        linear-gradient(135deg,
+          #d4af37 0%, #b8963f 25%, #f5dc8b 50%, #b8963f 75%, #8a6f2b 100%);
+    }
+    .ticket[data-state="closed"][data-winner="true"] .voucher-number {
+      background: var(--ticket-numeral-grad-open);
+      -webkit-background-clip: text; background-clip: text;
+    }
+    .ticket[data-state="closed"][data-winner="true"] .ticket-status {
+      background: linear-gradient(180deg, #f5dc8b, #d4af37);
+      border-color: #8a6f2b;
+      color: var(--fortuno-black);
+    }
+    .ticket[data-state="closed"][data-winner="true"] .ticket-corner {
+      border-color: var(--ticket-corner-color);
+    }
+    .ticket[data-state="closed"][data-winner="true"] .ticket-corner::after {
+      background: var(--fortuno-gold-soft);
+      box-shadow: 0 0 0 1px rgba(184,150,63,0.45);
+    }
+
+    /* REFUNDED — cobre queimado */
+    .ticket[data-state="refunded"] {
+      background:
+        linear-gradient(135deg,
+          #c08a4a 0%, #8a5a2b 25%, #d8a672 50%, #8a5a2b 75%, #4d3216 100%);
+    }
+    .ticket[data-state="refunded"] .voucher-number {
+      background: var(--ticket-numeral-grad-refunded);
+      -webkit-background-clip: text; background-clip: text;
+    }
+    .ticket[data-state="refunded"] .ticket-status {
+      background: var(--status-refunded-bg);
+      border-color: var(--status-refunded-border);
+      color: var(--status-refunded-fg);
+    }
+    .ticket[data-state="refunded"] .ticket-seal {
+      background: radial-gradient(circle at 30% 30%, #d8a672 0%, #8a5a2b 60%, #4d3216 100%);
+    }
+    /* Carimbo diagonal "REEMBOLSADO" */
+    .ticket[data-state="refunded"]::after {
+      content: 'REEMBOLSADO';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) rotate(-14deg);
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 800; font-style: italic;
+      font-size: clamp(22px, 6cqi, 34px);
+      letter-spacing: 0.18em;
+      color: rgba(110,68,33,0.32);
+      border: 3px solid rgba(110,68,33,0.32);
+      padding: 4px 14px;
+      border-radius: 6px;
+      pointer-events: none;
+      z-index: 4;
+      white-space: nowrap;
+      text-transform: uppercase;
+      mix-blend-mode: multiply;
+    }
+
+    /* ===========================================================
+       GRID — v2 com duas densidades explícitas para teste
+       =========================================================== */
+    .tickets-grid {
+      display: grid;
+      gap: 22px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .tickets-grid.is-tight {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    @media (max-width: 1023px) {
+      .tickets-grid,
+      .tickets-grid.is-tight { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 639px) {
+      .tickets-grid,
+      .tickets-grid.is-tight { grid-template-columns: 1fr; }
+    }
+
+    /* Preview header das duas densidades (apenas mockup standalone) */
+    .grid-density-label {
+      display: inline-flex; align-items: baseline; gap: 10px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-size: 18px; font-style: italic;
+      color: var(--fortuno-green-elegant);
+      letter-spacing: -0.005em;
+    }
+    .grid-density-label .muted {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-style: normal; font-weight: 500;
+      font-size: 12px;
+      color: rgba(11,11,11,0.55);
+      letter-spacing: 0.04em;
+    }
+
+    /* ===========================================================
+       SKELETON (mesma silhueta v2 — vertical)
+       =========================================================== */
+    .ticket-skel {
+      width: 100%;
+      aspect-ratio: 1.9 / 1;
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, #fdfaf0 0%, #f3ecd6 100%);
+      border: 1px solid rgba(184,150,63,0.18);
+      overflow: hidden;
+      position: relative;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: 16px 22px 14px;
+      gap: 8px;
+    }
+    .ticket-skel::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: var(--skeleton-shimmer);
+      background-size: 200% 100%;
+      animation: skel-shimmer 1.4s linear infinite;
+      mix-blend-mode: overlay;
+    }
+    @keyframes skel-shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .ticket-skel-row { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+    .ticket-skel-block {
+      background: var(--skeleton-base);
+      border-radius: 6px;
+    }
+    .ticket-skel-block.is-id       { width: 60px; height: 10px; }
+    .ticket-skel-block.is-status   { width: 84px; height: 16px; border-radius: 999px; }
+    .ticket-skel-block.is-numeral  { width: 72%; height: 48px; border-radius: 8px; margin: auto; }
+    .ticket-skel-block.is-meta-1   { width: 80px; height: 11px; }
+    .ticket-skel-block.is-meta-2   { width: 100px; height: 11px; }
+
+    /* ===========================================================
+       EMPTY STATE
+       =========================================================== */
+    .empty-card {
+      position: relative;
+      background: var(--empty-bg);
+      border: 2px dashed var(--empty-border);
+      border-radius: 24px;
+      padding: 56px 32px 64px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .empty-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: var(--gold-divider);
+      opacity: 0.55;
+    }
+    .empty-card-icon {
+      width: 96px; height: 96px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 40% 35%, rgba(255,250,232,0.5) 0%, transparent 60%),
+        radial-gradient(circle at 60% 70%, rgba(184,150,63,0.20) 0%, transparent 70%),
+        rgba(184,150,63,0.10);
+      border: 1px solid rgba(184,150,63,0.35);
+      display: grid; place-items: center;
+      color: var(--fortuno-gold-intense);
+    }
+    .empty-card-icon i { width: 44px; height: 44px; }
+    .empty-card h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic; font-weight: 700;
+      font-size: clamp(22px, 2.4vw, 30px);
+      line-height: 1.15; color: var(--fortuno-black);
+      letter-spacing: -0.01em;
+      max-width: 32ch; margin: 0 auto;
+    }
+    .empty-card p {
+      margin: 12px auto 0; max-width: 44ch;
+      font-size: 14px; color: rgba(11,11,11,0.62); line-height: 1.55;
+    }
+    .empty-card .cta-primary { margin-top: 24px; }
+
+    .empty-filtered {
+      padding: 32px 20px;
+      text-align: center;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(247,243,236,0.6) 100%);
+      border: 1px dashed rgba(184,150,63,0.40);
+      border-radius: 20px;
+    }
+    .empty-filtered h4 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic; font-weight: 700;
+      font-size: 18px; color: var(--fortuno-black);
+    }
+    .empty-filtered p {
+      font-size: 13px; color: rgba(11,11,11,0.60);
+      margin-top: 6px;
+    }
+    .empty-filtered button {
+      margin-top: 14px;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.04em;
+      color: var(--fortuno-green-elegant);
+      text-decoration: underline; text-underline-offset: 4px;
+      text-decoration-color: rgba(184,150,63,0.55);
+      text-decoration-thickness: 1.5px;
+    }
+    .empty-filtered button:hover { color: var(--fortuno-gold-intense); }
+
+    /* ===========================================================
+       CTAs (REUSO global)
+       =========================================================== */
+    .cta-primary {
+      background: var(--fortuno-gold-intense);
+      color: var(--fortuno-black);
+      border-radius: 999px;
+      padding: 11px 22px;
+      font-weight: 700; font-size: 13px; letter-spacing: 0.02em;
+      box-shadow:
+        0 8px 22px -6px rgba(212,175,55,0.45),
+        0 1px 0 rgba(255,255,255,0.35) inset;
+      display: inline-flex; align-items: center; gap: 8px;
+      min-height: 44px;
+    }
+    .cta-primary:hover {
+      background: var(--fortuno-gold-soft);
+      transform: translateY(-1px);
+    }
+    .cta-primary:focus-visible { outline: none; box-shadow: var(--shadow-gold-focus); }
+    .cta-primary i { width: 15px; height: 15px; }
+
+    .cta-ghost-light {
+      background: transparent;
+      color: var(--fortuno-green-elegant);
+      border: 1px solid rgba(19,68,54,0.25);
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-weight: 600; font-size: 12px;
+      display: inline-flex; align-items: center; gap: 6px;
+      min-height: 40px;
+    }
+    .cta-ghost-light:hover {
+      background: rgba(212,175,55,0.08);
+      border-color: var(--fortuno-gold-intense);
+    }
+    .cta-ghost-light i { width: 13px; height: 13px; }
+
+    /* ===========================================================
+       PAGINATION
+       =========================================================== */
+    .pagination-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px; border-radius: 999px;
+      background: var(--pagination-bg);
+      border: 1px solid var(--pagination-border);
+      box-shadow: var(--pagination-shadow);
+      backdrop-filter: blur(6px);
+    }
+    .pagination-chip {
+      min-width: 40px; height: 40px; padding: 0 14px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 999px;
+      font-size: 14px; font-weight: 600; color: var(--fortuno-black);
+      background: var(--pagination-chip-ghost-bg);
+      border: 1px solid transparent; cursor: pointer;
+      font-variant-numeric: tabular-nums;
+    }
+    .pagination-chip:hover:not([aria-current="page"]):not(:disabled) {
+      background: var(--pagination-chip-ghost-hover);
+    }
+    .pagination-chip:focus-visible { outline: none; box-shadow: var(--shadow-gold-focus); }
+    .pagination-chip[aria-current="page"] {
+      background: var(--pagination-chip-active-bg);
+      color: var(--pagination-chip-active-fg);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.35) inset,
+        0 6px 14px -6px rgba(184,150,63,0.6);
+    }
+    .pagination-chip:disabled {
+      color: var(--pagination-chip-disabled-fg); cursor: not-allowed;
+    }
+    .pagination-chip.arrow { gap: 6px; font-weight: 500; font-size: 13px; }
+    .pagination-ellipsis {
+      min-width: 28px; text-align: center;
+      color: rgba(11,11,11,0.45); letter-spacing: 0.05em; user-select: none;
+    }
+
+    /* ===========================================================
+       MODAL — ticket detail BONUS
+       =========================================================== */
+    .modal-overlay {
+      background: var(--modal-overlay);
+      backdrop-filter: blur(6px);
+      padding: 24px;
+      border-radius: 20px;
+      display: grid; place-items: center;
+      min-height: 720px;
+    }
+    .modal-card {
+      width: 100%; max-width: 540px;
+      background: var(--modal-bg);
+      border: 1px solid var(--modal-border);
+      border-radius: 24px;
+      box-shadow: var(--modal-shadow);
+      overflow: hidden;
+      position: relative;
+      animation: modal-pop 220ms var(--easing-spring) both;
+    }
+    @keyframes modal-pop {
+      from { opacity: 0; transform: scale(0.96) translateY(8px); }
+      to   { opacity: 1; transform: scale(1)    translateY(0); }
+    }
+    .modal-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: var(--gold-divider);
+    }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 22px 12px;
+    }
+    .modal-eyebrow {
+      font-size: 10px; letter-spacing: 0.30em; text-transform: uppercase;
+      color: var(--fortuno-gold-intense); font-weight: 700;
+    }
+    .modal-close {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(11,11,11,0.06); color: rgba(11,11,11,0.65);
+      display: grid; place-items: center;
+    }
+    .modal-close:hover {
+      background: rgba(184,150,63,0.18); color: var(--fortuno-black);
+    }
+    .modal-close i { width: 17px; height: 17px; }
+    .modal-body { padding: 4px 22px 22px; }
+    .modal-divider {
+      height: 1px; margin: 18px 0;
+      background: var(--gold-divider-soft);
+    }
+    .modal-detail-list {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px 18px;
+    }
+    .modal-detail-item .detail-label {
+      font-size: 9px; letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: rgba(11,11,11,0.50); font-weight: 600;
+    }
+    .modal-detail-item .detail-value {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-size: 15px;
+      color: var(--fortuno-black);
+      margin-top: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+    .modal-actions {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      padding: 0 22px 22px;
+    }
+    .qr-block {
+      display: inline-flex; flex-direction: column; align-items: center; gap: 6px;
+      padding: 14px;
+      background: #ffffff;
+      border: 1px solid rgba(184,150,63,0.32);
+      border-radius: 14px;
+      box-shadow: 0 8px 18px -10px rgba(10,42,32,0.18);
+    }
+    .qr-grid {
+      width: 132px; height: 132px;
+      background-image:
+        linear-gradient(45deg, #0b0b0b 25%, transparent 25%),
+        linear-gradient(-45deg, #0b0b0b 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #0b0b0b 75%),
+        linear-gradient(-45deg, transparent 75%, #0b0b0b 75%);
+      background-size: 11px 11px;
+      background-position: 0 0, 0 5.5px, 5.5px -5.5px, -5.5px 0;
+      border: 4px solid #ffffff;
+      box-shadow: 0 0 0 1px rgba(11,11,11,0.10) inset;
+      border-radius: 4px;
+    }
+    .qr-caption {
+      font-size: 10px; letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: rgba(11,11,11,0.55); font-weight: 600;
+    }
+
+    /* Modal: ticket ampliado mantém a mesma tipografia fluida, só mais generoso */
+    .modal-body .ticket {
+      aspect-ratio: 1.9 / 1;
+      max-width: 100%;
+    }
+
+    /* ===========================================================
+       FOOTER BAND
+       =========================================================== */
+    .dash-footer-band {
+      background: var(--dash-footer-band-bg);
+      color: var(--fortuno-offwhite);
+      position: relative; overflow: hidden;
+    }
+    .dash-footer-band::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: var(--gold-divider); opacity: 0.55;
+    }
+    .footer-ornament {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: rgba(212,175,55,0.55);
+    }
+    .footer-ornament::before, .footer-ornament::after {
+      content: ''; width: 18px; height: 1px; background: rgba(212,175,55,0.35);
+    }
+    .footer-ornament .deco-diamond {
+      width: 6px; height: 6px; background: var(--fortuno-gold-soft);
+      transform: rotate(45deg);
+      box-shadow: 0 0 0 1px rgba(212,175,55,0.20);
+    }
+    .footer-link {
+      color: rgba(236,232,225,0.70);
+      font-size: 12px; font-weight: 500; letter-spacing: 0.02em;
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 6px; border-radius: 6px;
+    }
+    .footer-link i { width: 13px; height: 13px; }
+    .footer-link:hover { color: var(--fortuno-gold-soft); }
+
+    .trust-bar {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 16px; border-radius: 999px;
+      background: rgba(255,255,255,0.55);
+      border: 1px solid rgba(184,150,63,0.22);
+      color: rgba(11,11,11,0.65);
+      font-size: 11px; letter-spacing: 0.04em;
+    }
+    .trust-bar i { width: 13px; height: 13px; color: var(--fortuno-green-elegant); }
+
+    /* ===========================================================
+       Reduced motion
+       =========================================================== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition-duration: 1ms !important;
+      }
+      .ticket:hover { transform: none; }
+    }
+
+    /* ===========================================================
+       Responsividade extra
+       =========================================================== */
+    @media (max-width: 1023px) {
+      .header-grid { grid-template-columns: auto 1fr !important; }
+      .header-chips {
+        grid-column: 1 / -1; display: grid;
+        grid-template-columns: 1fr 1fr; gap: 10px;
+      }
+    }
+    @media (max-width: 639px) {
+      .header-chips { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr !important; }
+      .footer-ornament { display: none; }
+      .ticket-seal { width: 40px; height: 40px; }
+      .ticket-seal-inner { width: 32px; height: 32px; }
+      .ticket-seal-text { font-size: 6px; }
+      .ticket-seal-text strong { font-size: 10px; }
+    }
+    @media (max-width: 380px) {
+      .ticket { aspect-ratio: 1.7 / 1; }
+    }
+
+    .preview-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(11,11,11,0.06);
+      border: 1px dashed rgba(184,150,63,0.45);
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--fortuno-green-elegant);
+    }
+    .preview-label::before {
+      content: '◆'; color: var(--fortuno-gold-intense); font-size: 9px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =====================================================
+       0. TOPBAR GLOBAL
+       ===================================================== -->
+  <div class="site-topbar">
+    <div class="relative z-10 mx-auto max-w-7xl px-6 flex items-center justify-between gap-4"
+         style="height: 64px;">
+      <a href="/" class="site-wordmark" aria-label="Fortuno — ir para a home">
+        Fortuno<span class="dot-gold" aria-hidden="true"></span>
+      </a>
+      <nav class="hidden md:flex items-center gap-1" aria-label="Menu principal">
+        <a href="/sorteios" class="site-nav-link">Sorteios</a>
+        <a href="/meus-numeros" class="site-nav-link is-active" aria-current="page">Meus Números</a>
+        <a href="/quem-somos" class="site-nav-link">Quem Somos</a>
+        <a href="/fale-conosco" class="site-nav-link">Fale Conosco</a>
+      </nav>
+      <div class="flex items-center gap-2">
+        <button type="button"
+          class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-full
+                 border border-[color:rgba(212,175,55,0.28)] bg-[color:rgba(236,232,225,0.04)]
+                 text-fortuno-gold-soft"
+          aria-label="Abrir menu de navegação">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+        <button type="button" class="user-trigger-min" aria-label="Menu da minha conta">
+          <span class="user-avatar" aria-hidden="true">RL</span>
+          <span class="user-name">Rodrigo</span>
+          <i data-lucide="chevron-down" style="width:15px;height:15px;color:rgba(212,175,55,0.75)"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       1. HEADER ESCURO
+       ===================================================== -->
+  <header class="dash-header" aria-labelledby="page-greeting">
+    <div class="relative z-10 mx-auto max-w-7xl px-6 pt-6 pb-6 md:pt-8 md:pb-8">
+      <div class="header-grid grid lg:grid-cols-[auto_1fr_auto_auto] items-center gap-5"
+           style="grid-template-columns: auto 1fr auto auto;">
+        <div class="avatar-frame" aria-hidden="true">
+          <div class="avatar-core">RL</div>
+        </div>
+        <div class="min-w-0">
+          <span class="eyebrow on-dark gold">Painel Fortuno</span>
+          <h1 id="page-greeting"
+              class="font-display text-fortuno-offwhite leading-tight mt-0.5
+                     text-[clamp(20px,2.4vw,28px)] tracking-[-0.01em]">
+            Olá, <span class="italic text-fortuno-gold-soft">Rodrigo</span>.
+          </h1>
+        </div>
+        <div class="header-chips contents lg:contents">
+          <div class="relative header-chip" role="group" aria-label="Código de indicação">
+            <div class="chip-lead" aria-hidden="true"><i data-lucide="hash"></i></div>
+            <div class="flex flex-col min-w-0">
+              <span class="chip-label">Código de indicação</span>
+              <span class="chip-value">FORT-R0D1G0</span>
+            </div>
+            <button type="button" class="chip-copy" aria-label="Copiar código">
+              <i data-lucide="copy"></i>
+            </button>
+          </div>
+          <div class="header-chip" role="group" aria-label="Total de pontos">
+            <div class="chip-lead" aria-hidden="true"><i data-lucide="sparkles"></i></div>
+            <div class="flex flex-col min-w-0">
+              <span class="chip-label">Total de pontos</span>
+              <span class="chip-value">1.247<span class="chip-value-unit">pts</span></span>
+            </div>
+            <a href="/meus-pontos" class="chip-action" aria-label="Ver extrato de pontos">
+              Extrato <i data-lucide="arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- =====================================================
+       2. CORPO CLARO — Toolbar + Grid + Pagination
+       ===================================================== -->
+  <main class="relative z-10 mx-auto max-w-7xl px-6 py-8 md:py-10">
+
+    <!-- ===== 2.1 TOOLBAR EDITORIAL ===== -->
+    <section aria-labelledby="my-numbers-title">
+      <div class="tickets-toolbar">
+        <div class="flex items-start md:items-center justify-between gap-4 flex-col md:flex-row">
+          <div class="min-w-0">
+            <span class="eyebrow gold">Coleção pessoal</span>
+            <h2 id="my-numbers-title" class="toolbar-title mt-1">
+              Meus <span class="italic">Números</span>
+              <span class="toolbar-counter">· <strong>47</strong> bilhetes</span>
+            </h2>
+            <!-- Contexto do sorteio: aqui SIM o nome aparece (substitui o que saiu do card) -->
+            <span class="toolbar-lottery-context">
+              <i data-lucide="trophy"></i>
+              em <strong>Porsche 911 Mega Edição #012</strong>
+            </span>
+          </div>
+
+          <a href="/sorteios" class="cta-primary self-start md:self-auto">
+            <i data-lucide="ticket-plus"></i>
+            Comprar mais bilhetes
+          </a>
+        </div>
+
+        <div class="filter-pills filter-pills-scroll mt-5">
+          <label class="filter-pill is-active" for="filter-lottery">
+            <i data-lucide="trophy" class="pill-icon"></i>
+            <span class="flex flex-col leading-tight">
+              <span class="pill-label">Sorteio</span>
+              <select id="filter-lottery" class="pill-native-select" aria-label="Filtrar por sorteio">
+                <option>Porsche Mega Edição #012</option>
+                <option>Civic Type R · Garage</option>
+                <option>Diamante Fortuno 2026</option>
+                <option>Todos os sorteios</option>
+              </select>
+            </span>
+            <i data-lucide="chevron-down" class="pill-chevron"></i>
+          </label>
+
+          <div class="filter-pill is-search" role="search">
+            <i data-lucide="hash" class="pill-icon"></i>
+            <span class="flex flex-col leading-tight">
+              <span class="pill-label">Número</span>
+              <input id="filter-number" type="text" inputmode="numeric"
+                     placeholder="ex.: 042" value=""
+                     aria-label="Buscar por número do bilhete" />
+            </span>
+            <button type="button" class="pill-search-btn" aria-label="Buscar">
+              <i data-lucide="search"></i>
+            </button>
+          </div>
+
+          <label class="filter-pill" for="filter-status">
+            <i data-lucide="circle-dot" class="pill-icon"></i>
+            <span class="flex flex-col leading-tight">
+              <span class="pill-label">Status</span>
+              <select id="filter-status" class="pill-native-select" aria-label="Filtrar por status">
+                <option>Todos</option>
+                <option>Em andamento</option>
+                <option>Sorteado</option>
+                <option>Reembolso pendente</option>
+                <option>Reembolsado</option>
+              </select>
+            </span>
+            <i data-lucide="chevron-down" class="pill-chevron"></i>
+          </label>
+
+          <label class="filter-pill" for="filter-sort">
+            <i data-lucide="arrow-down-up" class="pill-icon"></i>
+            <span class="flex flex-col leading-tight">
+              <span class="pill-label">Ordenar</span>
+              <select id="filter-sort" class="pill-native-select" aria-label="Ordenação">
+                <option>Mais recentes</option>
+                <option>Mais antigos</option>
+                <option>Número crescente</option>
+              </select>
+            </span>
+            <i data-lucide="chevron-down" class="pill-chevron"></i>
+          </label>
+
+          <button type="button" class="toolbar-clear-link ml-auto" aria-label="Limpar todos os filtros">
+            <i data-lucide="eraser"></i>
+            Limpar filtros
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 2.2 TESTE — GRID 3 COLUNAS (CONFORTÁVEL) ===== -->
+    <section aria-label="Grade confortável — 3 colunas" class="mt-8">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="preview-label">Teste · densidade 1</span>
+        <h4 class="grid-density-label">
+          Grid 3 cols (confortável)
+          <span class="muted">— 1024–1279px · lg → xl</span>
+        </h4>
+      </div>
+
+      <div class="tickets-grid">
+
+        <!-- [1] Int64 curto "42" — OPEN -->
+        <article class="ticket" data-state="open" tabindex="0" style="--ticket-index: 0"
+                 aria-label="Bilhete 42, em andamento, sorteio em 12 de maio de 2026">
+          <div class="ticket-shimmer" aria-hidden="true"></div>
+          <div class="ticket-inner">
+            <span class="ticket-corner is-tl"></span><span class="ticket-corner is-tr"></span>
+            <span class="ticket-corner is-bl"></span><span class="ticket-corner is-br"></span>
+            <span class="ticket-hole is-left"></span><span class="ticket-hole is-right"></span>
+
+            <div class="ticket-head">
+              <div class="ticket-head-left">
+                <span class="ticket-eyebrow">Bilhete</span>
+                <span class="ticket-eyebrow-sep" aria-hidden="true"></span>
+                <span class="ticket-id">#FN-2842</span>
+              </div>
+              <span class="ticket-status" role="status">
+                <span class="dot" aria-hidden="true"></span>Em andamento
+              </span>
+            </div>
+
+            <div class="voucher-number-band">
+              <span class="voucher-number" data-length="short" aria-label="Número 42">42</span>
+            </div>
+
+            <div class="ticket-meta">
+              <span class="meta-item is-prize">
+                <i data-lucide="coins"></i>R$ 720.000
+              </span>
+              <span class="meta-item">
+                <i data-lucide="calendar-clock"></i>12 mai 2026
+              </span>
+            </div>
+
+            <div class="ticket-foot">
+              <span class="ticket-purchase-date">Compra · 03/04/2026</span>
+              <span class="ticket-foot-auth" aria-hidden="true">
+                <i data-lucide="shield-check"></i>Autenticado
+              </span>
+            </div>
+
+            <div class="ticket-seal" aria-hidden="true">
+              <div class="ticket-seal-inner">
+                <span class="ticket-seal-text">Auth<strong>2026</strong></span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- [2] Int64 5 dígitos "99999" — OPEN -->
+        <article class="ticket" data-state="open" tabindex="0" style="--ticket-index: 1"
+                 aria-label="Bilhete 99999, em andamento">
+          <div class="ticket-shimmer"></div>
+          <div class="ticket-inner">
+            <span class="ticket-corner is-tl"></span><span class="ticket-corner is-tr"></span>
+            <span class="ticket-corner is-bl"></span><span class="ticket-corner is-br"></span>
+            <span class="ticket-hole is-left"></span><span class="ticket-hole is-right"></span>
+            <div class="ticket-head">
+              <div class="ticket-head-left">
+                <span class="ticket-eyebrow">Bilhete</span>
+                <span class="ticket-eyebrow-sep"></span>
+                <span class="ticket-id">#FN-2843</span>
+              </div>
+              <span class="ticket-status"><span class="dot"></span>Em andamento</span>
+            </div>
+            <div class="voucher-number-band">
+              <span class="voucher-number" data-length="short">99999</span>
+            </div>
+            <div class="ticket-meta">
+              <span class="meta-item is-prize"><i data-lucide="coins"></i>R$ 720.000</span>
+              <span class="meta-item"><i data-lucide="calendar-clock"></i>12 mai 2026</span>
+            </div>
+            <div class="ticket-foot">
+              <span class="ticket-purchase-date">Compra · 03/04/2026</span>
+              <span class="ticket-foot-auth"><i data-lucide="shield-check"></i>Autenticado</span>
+            </div>
+            <div class="ticket-seal"><div class="ticket-seal-inner"><span class="ticket-seal-text">Auth<strong>2026</strong></span></div></div>
+          </div>
+        </article>
+
+        <!-- [3] Int64 10 dígitos "1234567890" — OPEN -->
+        <article class="ticket" data-state="open" tabindex="0" style="--ticket-index: 2"
+                 aria-label="Bilhete 1234567890, em andamento">
+          <div class="ticket-shimmer"></div>
+          <div class="ticket-inner">
+            <span class="ticket-corner is-tl"></span><span class="ticket-corner is-tr"></span>
+            <span class="ticket-corner is-bl"></span><span class="ticket-corner is-br"></span>
+            <span class="ticket-hole is-left"></span><span class="ticket-hole is-right"></span>
+            <div class="ticket-head">
+              <div class="ticket-head-left">
+                <span class="ticket-eyebrow">Bilhete</span>
+                <span class="ticket-eyebrow-sep"></span>
+                <span class="ticket-id">#FN-2844</span>
+              </div>
+              <span class="ticket-status"><span class="dot"></span>Em andamento</span>
+            </div>
+            <div class="voucher-number-band">
+              <span class="voucher-number" data-length="medium">1234567890</span>
+            </div>
+            <div class="ticket-meta">
+              <span class="meta-item is-prize"><i data-lucide="coins"></i>R$ 720.000</span>
+              <span class="meta-item"><i data-lucide="calendar-clock"></i>12 mai 2026</span>
+            </div>
+            <div class="ticket-foot">
+              <span class="ticket-purchase-date">Compra · 03/04/2026</span>
+              <span class="ticket-foot-auth"><i data-lucide="shield-check"></i>Autenticado</span>
+            </div>
+            <div class="ticket-seal"><div class="ticket-seal-inner"><span class="ticket-seal-text">Auth<strong>2026</strong></span></div></div>
+          </div>
+        </article>
+
+        <!-- [4] Composed3 "12-34-56" — CLOSED -->
+        <article class="ticket" data-state="closed" tabindex="0" style="--ticket-index: 3"
+                 aria-label="Bilhete 12-34-56, sorteio encerrado">
+          <div class="ticket-shimmer"></div>
+          <div class="ticket-inner">
+            <span class="ticket-corner is-tl"></span><span class="ticket-corner is-tr"></span>
+            <span class="ticket-corner is-bl"></span><span class="ticket-corner is-br"></span>
+            <span class="ticket-hole is-left"></span><span class="ticket-hole is-right"></span>
+            <div class="ticket-head">
+              <div class="ticket-head-left">
+                <span class="ticket-eyebrow">Bilhete</span>
+                <span class="ticket-eyebrow-sep"></span>
+                <span class="ticket-id">#FN-1801</span>
+              </div>
+              <span class="ticket-status"><i data-lucide="check-circle-2"></i>Sorteado</span>
+            </div>
+            <div class="voucher-number-band">
+              <span class="voucher-number" data-length="short"
+                    >12<span class="voucher-number-sep">-</span>34<span class="voucher-number-sep">-</span>56</span>
+            </div>
+            <div class="ticket-meta">
+              <span class="meta-item is-prize"><i data-lucide="coins"></i>R$ 280.000</span>
+              <span class="meta-item"><i data-lucide="calendar-check"></i>15 fev 2026</span>
+            </div>
+            <div class="ticket-foot">
+              <span class="ticket-purchase-date">Compra · 22/01/2026</span>
+              <span class="ticket-foot-auth"><i data-lucide="shield-check"></i>Autenticado</span>
+            </div>
+            <div class="ticket-seal"><div class="ticket-seal-inner"><span class="ticket-seal-text">Final<strong>2026</strong></span></div></div>
+          </div>
+        </article>
+
+        <!-- [5] Composed5 "12-34-56-78-90" — CLOSED + WINNER -->
+        <article class="ticket" data-state="closed" data-winner="true" tabindex="0" style="--ticket-index: 4"
+                 aria-label="Bilhete 12-34-56-78-90 — VENCEDOR">
+          <div class="ticket-shimmer"></div>
+          <div class="ticket-inner">
+            <span class="ticket-corner is-tl"></span><span class="ticket-corner is-tr"></span>
+            <span class="ticket-corner is-bl"></span><span class="ticket-corner is-br"></span>
+            <span class="ticket-hole is-left"></span><span class="ticket-hole is-right"></span>
+            <div class="ticket-head">
+              <div class="ticket-head-left">
+                <span class="ticket-eyebrow">Bilhete</span>
+                <span class="ticket-eyebrow-sep"></span>
+                <span class="ticket-id">#FN-1402</span>
+              </div>
+              <span class="ticket-status" aria-label="Bilhete vencedor">
+                <i data-lucide="crown"></i>Vencedor
+              </span>
+            </div>
+            <div class="voucher-number-band">
+              <span class="voucher-number" data-length="medium"
+                    >12<span class="voucher-number-sep">-</span>34<span class="voucher-number-sep">-</span>56<span class="voucher-number-sep">-</span>78<span class="voucher-number-sep">-</span>90</span>
+            </div>
+            <div class="ticket-meta">
+              <span class="meta-item is-prize"><i data-lucide="coins"></i>R$ 150.000</span>
+              <span class="meta-item"><i data-lucide="calendar-check"></i>18 dez 2025</span>
+            </div>
+            <div class="ticket-foot">
+              <span class="ticket-purchase-date">Compra · 02/11/2025</span>
+              <span class="ticket-foot-auth"><i data-lucide="shield-check"></i>Autenticado</span>
+            </div>
+            <div class="ticket-seal"><div class="ticket-seal-inner"><span class="ticket-seal-text">Champ<strong>2025</strong></span></div></div>
+          </div>
+        </article>
+
+        <!-- [6] Composed7 "12-34-56-78-90-11-22" — OPEN -->
+        <article class="ticket" data-state="open" tabindex="0" style="--ticket-index: 5"
+                 aria-label="Bilhete 12-34-56-78-90-11-22, em andamento">
+          <div class="ticket-shimmer"></div>
+          <div class="ticket-inner">
+            <span class="ticket-corner is-tl"></span><span class="ticket-corner is-tr"></span>
+            <span class="ticket-corner is-bl"></span><span class="ticket-corner is-br"></span>
+            <span class="ticket-hole is-left"></span><span class="ticket-hole is-right"></span>
+            <div class="ticket-head">
+              <div class="ticket-head-left">
+                <span class="ticket-eyebrow">Bilhete</span>
+                <span class="ticket-eyebrow-sep"></span>
+                <span class="ticket-id">#FN-2901</span>
+              </div>
+              <span class="ticket-status"><span class="dot"></span>Em andamento</span>
+            </div>
+            <div class="voucher-number-band">
+              <span class="voucher-number" data-length="xlong"
+                    >12<span class="voucher-number-sep">-</span>34<span class="voucher-number-sep">-</span>56<span class="voucher-number-sep">-</span>78<span class="voucher-number-sep">-</span>90<span class="voucher-number-sep">-</span>11<span class="voucher-number-sep">-</span>22</span>
+            </div>
+            <div class="ticket-meta">
+              <span class="meta-item is-prize"><i data-lucide="coins"></i>R$ 280.000</span>
+              <span class="meta-item"><i data-lucide="calendar-clock"></i>28 jun 2026</span>
+            </div>
+            <div class="ticket-foot">
+              <span class="ticket-purchase-date">Compra · 10/04/2026</span>
+              <span class="ticket-foot-auth"><i data-lucide="shield-check"></i>Autenticado</span>
+            </div>
+            <div class="ticket-seal"><div class="ticket-seal-inner"><span class="ticket-seal-text">Auth<strong>2026</strong></span></div></div>
+          </div>
+        </article>
+
+        <!-- [7] Composed8 "12-34-56-78-90-11-22-33" — OPEN + Pending Refund -->
+        <article class="ticket" data-state="open" tabindex="0" style="--ticket-index: 6"
+                 aria-label="Bilhete 12-34-56-78-90-11-22-33, reembolso pendente">
+          <div class="ticket-shimmer"></div>
+          <div class="ticket-inner">
+            <span class="ticket-corner is-tl"></span><span class="ticket-corner is-tr"></span>
+            <span class="ticket-corner is-bl"></span><span class="ticket-corner is-br"></span>
+            <span class="ticket-hole is-left"></span><span class="ticket-hole is-right"></span>
+            <div class="ticket-head">
+              <div class="ticket-head-left">
+                <span class="ticket-eyebrow">Bilhete</span>
+                <span class="ticket-eyebrow-sep"></span>
+                <span class="ticket-id">#FN-2710</span>
+              </div>
+              <span class="ticket-status" role="status"
+                    style="background:rgba(138,90,43,0.10);border-color:rgba(138,90,43,0.40);color:#8a5a2b;">
+                <i data-lucide="hourglass"></i>Reembolso pendente
+              </span>
+            </div>
+            <div class="voucher-number-band">
+              <span class="voucher-number" data-length="xlong"
+                    >12<span class="voucher-number-sep">-</span>34<span class="voucher-number-sep">-</span>56<span class="voucher-number-sep">-</span>78<span class="voucher-number-sep">-</span>90<span class="voucher-number-sep">-</span>11<span class="voucher-number-sep">-</span>22<span class="voucher-number-sep">-</span>33</span>
+            </div>
+            <div class="ticket-meta">
+              <span class="meta-item is-prize"><i data-lucide="coins"></i>R$ 60.000</span>
+              <span class="meta-item"><i data-lucide="calendar-clock"></i>20 mai 2026</span>
+            </div>
+            <div class="ticket-foot">
+              <span class="ticket-purchase-date">Compra · 28/03/2026</span>
+              <span class="ticket-foot-auth"><i data-lucide="shield-check"></i>Autenticado</span>
+            </div>
+            <div class="ticket-seal"><div class="ticket-seal-inner"><span class="ticket-seal-text">Auth<strong>2026</strong></span></div></div>
+          </div>
+        </article>
+
+        <!-- [8] Composed3 zero-padded "05-17-42" — REFUNDED -->
+        <article class="ticket" data-state="refunded" tabindex="0" style="--ticket-index: 7"
+                 aria-label="Bilhete 05-17-42, reembolsado">
+          <div class="ticket-shimmer"></div>
+          <div class="ticket-inner">
+            <span class="ticket-corner is-tl"></span><span class="ticket-corner is-tr"></span>
+            <span class="ticket-corner is-bl"></span><span class="ticket-corner is-br"></span>
+            <span class="ticket-hole is-left"></span><span class="ticket-hole is-right"></span>
+            <div class="ticket-head">
+              <div class="ticket-head-left">
+                <span class="ticket-eyebrow">Bilhete</span>
+                <span class="ticket-eyebrow-sep"></span>
+                <span class="ticket-id">#FN-1099</span>
+              </div>
+              <span class="ticket-status"><i data-lucide="undo-2"></i>Reembolsado</span>
+            </div>
+            <div class="voucher-number-band">
+              <span class="voucher-number" data-length="short"
+                    >05<span class="voucher-number-sep">-</span>17<span class="voucher-number-sep">-</span>42</span>
+            </div>
+            <div class="ticket-meta">
+              <span class="meta-item is-prize"><i data-lucide="coins"></i>R$ 90.000</span>
+              <span class="meta-item"><i data-lucide="calendar-x"></i>—</span>
+            </div>
+            <div class="ticket-foot">
+              <span class="ticket-purchase-date">Compra · 14/12/2025</span>
+              <span class="ticket-foot-auth"><i data-lucide="shield-check"></i>Autenticado</span>
+            </div>
+            <div class="ticket-seal"><div class="ticket-seal-inner"><span class="ticket-seal-text">Void<strong>2025</strong></span></div></div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ===== 2.3 TESTE — GRID 4 COLUNAS (APERTADO) ===== -->
+    <section aria-label="Grade apertada — 4 colunas" class="mt-12">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="preview-label">Teste · densidade 2</span>
+        <h4 class="grid-density-label">
+          Grid 4 cols (apertado)
+          <span class="muted">— ≥1280px · xl → 2xl</span>
+        </h4>
+      </div>
+
+      <div class="tickets-grid is-tight">
+
+        <!-- Repete os 8 com estados variados, forçando breakpoint apertado -->
+        <article class="ticket" data-state="open" tabindex="0" style="--ticket-index: 0">
+          <div class="ticket-shimmer"></div>
+          <div class="ticket-inner">
+            <span class="ticket-corner is-tl"></span><span class="ticket-corner is-tr"></span>
+            <span class="ticket-corner is-bl"></span><span class="ticket-corner is-br"></span>
+            <span class="ticket-hole is-left"></span><span class="ticket-hole is-right"></span>
+            <div class="ticket-head">
+              <div class="ticket-head-left">
+                <span class="ticket-eyebrow">Bilhete</span>
+                <span class="ticket-eyebrow-sep"></span>
+                <span class="ticket-id">#FN-42</span>
+              </div>
+              <span class="ticket-status"><span class="dot"></span>Em andamento</span>
+            </div>
+            <div class="voucher-number-band">
+              <span class="voucher-number" data-length="short">42</span>
+            </div>
+            <div class="ticket-meta">
+              <span class="meta-item is-prize"><i data-lucide="coins"></i>R$ 720k</span>
+              <span class="meta-item"><i data-lucide="calendar-clock"></i>12 mai</span>
+            </div>
+            <div class="ticket-foot">
+              <span class="ticket-purchase-date">03/04/2026</span>
+              <span class="ticket-foot-auth"><i data-lucide="shield-check"></i>Auth</span>
+            </div>
+            <div class="ticket-seal"><div class="ticket-seal-inner"><span class="ticket-seal-text">Auth<strong>2026</strong></span></div></div>
+          </div>
+        </article>
+
+        <article class="ticket" data-state="open" tabindex="0" style="--ticket-index: 1">
+          <div class="ticket-shimmer"></div>
+          <div class="ticket-inner">
+            <span class="ticket-corner is-tl"></span><span class="ticket-corner is-tr"></span>
+            <span class="ticket-corner is-bl"></span><span class="ticket-corner is-br"></span>
+            <span class="ticket-hole is-left"></span><span class="ticket-hole is-right"></span>
+            <div class="ticket-head">
+              <div class="ticket-head-left">
+                <span class="ticket-eyebrow">Bilhete</span>
+                <span class="ticket-eyebrow-sep"></span>
+                <span class="ticket-id">#FN-99</span>
+              </div>
+              <span class="ticket-status"><span class="dot"></span>Em andamento</span>
+            </div>
+            <div class="voucher-number-band">
+              <span class="voucher-number" data-length="short">99999</span>
+            </div>
+            <div class="ticket-meta">
+              <span class="meta-item is-prize"><i data-lucide="coins"></i>R$ 720k</span>
+              <span class="meta-item"><i data-lucide="calendar-clock"></i>12 mai</span>
+            </div>
+            <div class="ticket-foot">
+              <span class="ticket-purchase-date">03/04/2026</span>
+              <span class="ticket-foot-auth"><i data-lucide="shield-check"></i>Auth</span>
+            </div>
+            <div class="ticket-seal"><div class="ticket-seal-inner"><span class="ticket-seal-text">Auth<strong>2026</strong></span></div></div>
+          </div>
+        </article>
+
+        <article class="ticket" data-state="open" tabindex="0" style="--ticket-index: 2">
+          <div class="ticket-shimmer"></div>
+          <div class="ticket-inner">
+            <span class="ticket-corner is-tl"></span><span class="ticket-corner is-tr"></span>
+            <span class="ticket-corner is-bl"></span><span class="ticket-corner is-br"></span>
+            <span class="ticket-hole is-left"></span><span class="ticket-hole is-right"></span>
+            <div class="ticket-head">
+              <div class="ticket-head-left">
+                <span class="ticket-eyebrow">Bilhete</span>
+                <span class="ticket-eyebrow-sep"></span>
+                <span class="ticket-id">#FN-12</span>
+              </div>
+              <span class="ticket-status"><span class="dot"></span>Em andamento</span>
+            </div>
+            <div class="voucher-number-band">
+              <span class="voucher-number" data-length="medium">1234567890</span>
+            </div>
+            <div class="ticket-meta">
+              <span class="meta-item is-prize"><i data-lucide="coins"></i>R$ 720k</span>
+              <span class="meta-item"><i data-lucide="calendar-clock"></i>12 mai</span>
+            </div>
+            <div class="ticket-foot">
+              <span class="ticket-purchase-date">03/04/2026</span>
+              <span class="ticket-foot-auth"><i data-lucide="shield-check"></i>Auth</span>
+            </div>
+            <div class="ticket-seal"><div class="ticket-seal-inner"><span class="ticket-seal-text">Auth<strong>2026</strong></span></div></div>
+          </div>
+        </article>
+
+        <article class="ticket" data-state="closed" tabindex="0" style="--ticket-index: 3">
+          <div class="ticket-shimmer"></div>
+          <div class="ticket-inner">
+            <span class="ticket-corner is-tl"></span><span class="ticket-corner is-tr"></span>
+            <span class="ticket-corner is-bl"></span><span class="ticket-corner is-br"></span>
+            <span class="ticket-hole is-left"></span><span class="ticket-hole is-right"></span>
+            <div class="ticket-head">
+              <div class="ticket-head-left">
+                <span class="ticket-eyebrow">Bilhete</span>
+                <span class="ticket-eyebrow-sep"></span>
+                <span class="ticket-id">#FN-1801</span>
+              </div>
+              <span class="ticket-status"><i data-lucide="check-circle-2"></i>Sorteado</span>
+            </div>
+            <div class="voucher-number-band">
+              <span class="voucher-number" data-length="short"
+                    >12<span class="voucher-number-sep">-</span>34<span class="voucher-number-sep">-</span>56</span>
+            </div>
+            <div class="ticket-meta">
+              <span class="meta-item is-prize"><i data-lucide="coins"></i>R$ 280k</span>
+              <span class="meta-item"><i data-lucide="calendar-check"></i>15 fev</span>
+            </div>
+            <div class="ticket-foot">
+              <span class="ticket-purchase-date">22/01/2026</span>
+              <span class="ticket-foot-auth"><i data-lucide="shield-check"></i>Final</span>
+            </div>
+            <div class="ticket-seal"><div class="ticket-seal-inner"><span class="ticket-seal-text">Final<strong>2026</strong></span></div></div>
+          </div>
+        </article>
+
+        <article class="ticket" data-state="closed" data-winner="true" tabindex="0" style="--ticket-index: 4">
+          <div class="ticket-shimmer"></div>
+          <div class="ticket-inner">
+            <span class="ticket-corner is-tl"></span><span class="ticket-corner is-tr"></span>
+            <span class="ticket-corner is-bl"></span><span class="ticket-corner is-br"></span>
+            <span class="ticket-hole is-left"></span><span class="ticket-hole is-right"></span>
+            <div class="ticket-head">
+              <div class="ticket-head-left">
+                <span class="ticket-eyebrow">Bilhete</span>
+                <span class="ticket-eyebrow-sep"></span>
+                <span class="ticket-id">#FN-1402</span>
+              </div>
+              <span class="ticket-status"><i data-lucide="crown"></i>Vencedor</span>
+            </div>
+            <div class="voucher-number-band">
+              <span class="voucher-number" data-length="medium"
+                    >12<span class="voucher-number-sep">-</span>34<span class="voucher-number-sep">-</span>56<span class="voucher-number-sep">-</span>78<span class="voucher-number-sep">-</span>90</span>
+            </div>
+            <div class="ticket-meta">
+              <span class="meta-item is-prize"><i data-lucide="coins"></i>R$ 150k</span>
+              <span class="meta-item"><i data-lucide="calendar-check"></i>18 dez</span>
+            </div>
+            <div class="ticket-foot">
+              <span class="ticket-purchase-date">02/11/2025</span>
+              <span class="ticket-foot-auth"><i data-lucide="shield-check"></i>Champ</span>
+            </div>
+            <div class="ticket-seal"><div class="ticket-seal-inner"><span class="ticket-seal-text">Champ<strong>2025</strong></span></div></div>
+          </div>
+        </article>
+
+        <article class="ticket" data-state="open" tabindex="0" style="--ticket-index: 5">
+          <div class="ticket-shimmer"></div>
+          <div class="ticket-inner">
+            <span class="ticket-corner is-tl"></span><span class="ticket-corner is-tr"></span>
+            <span class="ticket-corner is-bl"></span><span class="ticket-corner is-br"></span>
+            <span class="ticket-hole is-left"></span><span class="ticket-hole is-right"></span>
+            <div class="ticket-head">
+              <div class="ticket-head-left">
+                <span class="ticket-eyebrow">Bilhete</span>
+                <span class="ticket-eyebrow-sep"></span>
+                <span class="ticket-id">#FN-2901</span>
+              </div>
+              <span class="ticket-status"><span class="dot"></span>Em andamento</span>
+            </div>
+            <div class="voucher-number-band">
+              <span class="voucher-number" data-length="xlong"
+                    >12<span class="voucher-number-sep">-</span>34<span class="voucher-number-sep">-</span>56<span class="voucher-number-sep">-</span>78<span class="voucher-number-sep">-</span>90<span class="voucher-number-sep">-</span>11<span class="voucher-number-sep">-</span>22</span>
+            </div>
+            <div class="ticket-meta">
+              <span class="meta-item is-prize"><i data-lucide="coins"></i>R$ 280k</span>
+              <span class="meta-item"><i data-lucide="calendar-clock"></i>28 jun</span>
+            </div>
+            <div class="ticket-foot">
+              <span class="ticket-purchase-date">10/04/2026</span>
+              <span class="ticket-foot-auth"><i data-lucide="shield-check"></i>Auth</span>
+            </div>
+            <div class="ticket-seal"><div class="ticket-seal-inner"><span class="ticket-seal-text">Auth<strong>2026</strong></span></div></div>
+          </div>
+        </article>
+
+        <article class="ticket" data-state="open" tabindex="0" style="--ticket-index: 6">
+          <div class="ticket-shimmer"></div>
+          <div class="ticket-inner">
+            <span class="ticket-corner is-tl"></span><span class="ticket-corner is-tr"></span>
+            <span class="ticket-corner is-bl"></span><span class="ticket-corner is-br"></span>
+            <span class="ticket-hole is-left"></span><span class="ticket-hole is-right"></span>
+            <div class="ticket-head">
+              <div class="ticket-head-left">
+                <span class="ticket-eyebrow">Bilhete</span>
+                <span class="ticket-eyebrow-sep"></span>
+                <span class="ticket-id">#FN-2710</span>
+              </div>
+              <span class="ticket-status" style="background:rgba(138,90,43,0.10);border-color:rgba(138,90,43,0.40);color:#8a5a2b;">
+                <i data-lucide="hourglass"></i>Pendente
+              </span>
+            </div>
+            <div class="voucher-number-band">
+              <span class="voucher-number" data-length="xlong"
+                    >12<span class="voucher-number-sep">-</span>34<span class="voucher-number-sep">-</span>56<span class="voucher-number-sep">-</span>78<span class="voucher-number-sep">-</span>90<span class="voucher-number-sep">-</span>11<span class="voucher-number-sep">-</span>22<span class="voucher-number-sep">-</span>33</span>
+            </div>
+            <div class="ticket-meta">
+              <span class="meta-item is-prize"><i data-lucide="coins"></i>R$ 60k</span>
+              <span class="meta-item"><i data-lucide="calendar-clock"></i>20 mai</span>
+            </div>
+            <div class="ticket-foot">
+              <span class="ticket-purchase-date">28/03/2026</span>
+              <span class="ticket-foot-auth"><i data-lucide="shield-check"></i>Auth</span>
+            </div>
+            <div class="ticket-seal"><div class="ticket-seal-inner"><span class="ticket-seal-text">Auth<strong>2026</strong></span></div></div>
+          </div>
+        </article>
+
+        <article class="ticket" data-state="refunded" tabindex="0" style="--ticket-index: 7">
+          <div class="ticket-shimmer"></div>
+          <div class="ticket-inner">
+            <span class="ticket-corner is-tl"></span><span class="ticket-corner is-tr"></span>
+            <span class="ticket-corner is-bl"></span><span class="ticket-corner is-br"></span>
+            <span class="ticket-hole is-left"></span><span class="ticket-hole is-right"></span>
+            <div class="ticket-head">
+              <div class="ticket-head-left">
+                <span class="ticket-eyebrow">Bilhete</span>
+                <span class="ticket-eyebrow-sep"></span>
+                <span class="ticket-id">#FN-1099</span>
+              </div>
+              <span class="ticket-status"><i data-lucide="undo-2"></i>Reembolsado</span>
+            </div>
+            <div class="voucher-number-band">
+              <span class="voucher-number" data-length="short"
+                    >05<span class="voucher-number-sep">-</span>17<span class="voucher-number-sep">-</span>42</span>
+            </div>
+            <div class="ticket-meta">
+              <span class="meta-item is-prize"><i data-lucide="coins"></i>R$ 90k</span>
+              <span class="meta-item"><i data-lucide="calendar-x"></i>—</span>
+            </div>
+            <div class="ticket-foot">
+              <span class="ticket-purchase-date">14/12/2025</span>
+              <span class="ticket-foot-auth"><i data-lucide="shield-check"></i>Void</span>
+            </div>
+            <div class="ticket-seal"><div class="ticket-seal-inner"><span class="ticket-seal-text">Void<strong>2025</strong></span></div></div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ===== 2.4 PAGINATION ===== -->
+    <nav aria-label="Paginação dos bilhetes" class="mt-10 flex justify-center">
+      <div class="pagination-pill" role="group" aria-label="Páginas">
+        <button type="button" class="pagination-chip arrow">
+          <i data-lucide="chevron-left" class="w-4 h-4"></i>
+          <span>Anterior</span>
+        </button>
+        <button type="button" class="pagination-chip" aria-current="page">1</button>
+        <button type="button" class="pagination-chip">2</button>
+        <button type="button" class="pagination-chip">3</button>
+        <span class="pagination-ellipsis" aria-hidden="true">…</span>
+        <button type="button" class="pagination-chip">5</button>
+        <button type="button" class="pagination-chip arrow">
+          <span>Próxima</span>
+          <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Trust bar -->
+    <div class="mt-8 flex justify-center">
+      <span class="trust-bar">
+        <i data-lucide="shield-check"></i>
+        Todos os bilhetes são auditados e imutáveis
+      </span>
+    </div>
+
+  </main>
+
+  <!-- =====================================================
+       3. STATES
+       ===================================================== -->
+  <section class="relative z-10 mx-auto max-w-7xl px-6 pb-12">
+    <div class="mt-6 mb-3"><span class="preview-label">Estado · Empty (sem bilhetes)</span></div>
+    <div class="empty-card">
+      <div class="empty-card-icon" aria-hidden="true"><i data-lucide="ticket-check"></i></div>
+      <h3>Seu primeiro bilhete <em class="italic">ainda está esperando</em>.</h3>
+      <p>Explore os sorteios em andamento e escolha sua sorte. Cada bilhete é autenticado, imutável e fica eternizado aqui no seu painel.</p>
+      <a href="/sorteios" class="cta-primary">
+        <i data-lucide="trophy"></i>
+        Ver sorteios em andamento
+      </a>
+    </div>
+
+    <div class="mt-10 mb-3"><span class="preview-label">Estado · Empty filtrado</span></div>
+    <div class="empty-filtered">
+      <h4>Nenhum bilhete corresponde aos filtros</h4>
+      <p>Tente outro número, sorteio ou status. Você pode limpar e ver todos os seus bilhetes.</p>
+      <button type="button">Limpar filtros</button>
+    </div>
+
+    <div class="mt-10 mb-3"><span class="preview-label">Estado · Loading (skeletons v2)</span></div>
+    <div class="tickets-grid">
+      <!-- 6 skeletons v2 -->
+      <div class="ticket-skel">
+        <div class="ticket-skel-row">
+          <div class="ticket-skel-block is-id"></div>
+          <div class="ticket-skel-block is-status"></div>
+        </div>
+        <div class="ticket-skel-block is-numeral"></div>
+        <div class="ticket-skel-row">
+          <div class="ticket-skel-block is-meta-1"></div>
+          <div class="ticket-skel-block is-meta-2"></div>
+        </div>
+      </div>
+      <div class="ticket-skel">
+        <div class="ticket-skel-row"><div class="ticket-skel-block is-id"></div><div class="ticket-skel-block is-status"></div></div>
+        <div class="ticket-skel-block is-numeral"></div>
+        <div class="ticket-skel-row"><div class="ticket-skel-block is-meta-1"></div><div class="ticket-skel-block is-meta-2"></div></div>
+      </div>
+      <div class="ticket-skel">
+        <div class="ticket-skel-row"><div class="ticket-skel-block is-id"></div><div class="ticket-skel-block is-status"></div></div>
+        <div class="ticket-skel-block is-numeral"></div>
+        <div class="ticket-skel-row"><div class="ticket-skel-block is-meta-1"></div><div class="ticket-skel-block is-meta-2"></div></div>
+      </div>
+      <div class="ticket-skel">
+        <div class="ticket-skel-row"><div class="ticket-skel-block is-id"></div><div class="ticket-skel-block is-status"></div></div>
+        <div class="ticket-skel-block is-numeral"></div>
+        <div class="ticket-skel-row"><div class="ticket-skel-block is-meta-1"></div><div class="ticket-skel-block is-meta-2"></div></div>
+      </div>
+      <div class="ticket-skel">
+        <div class="ticket-skel-row"><div class="ticket-skel-block is-id"></div><div class="ticket-skel-block is-status"></div></div>
+        <div class="ticket-skel-block is-numeral"></div>
+        <div class="ticket-skel-row"><div class="ticket-skel-block is-meta-1"></div><div class="ticket-skel-block is-meta-2"></div></div>
+      </div>
+      <div class="ticket-skel">
+        <div class="ticket-skel-row"><div class="ticket-skel-block is-id"></div><div class="ticket-skel-block is-status"></div></div>
+        <div class="ticket-skel-block is-numeral"></div>
+        <div class="ticket-skel-row"><div class="ticket-skel-block is-meta-1"></div><div class="ticket-skel-block is-meta-2"></div></div>
+      </div>
+    </div>
+
+    <!-- ===== 3.4 MODAL DETAIL (BONUS) ===== -->
+    <div class="mt-10 mb-3"><span class="preview-label">Bonus · TicketDetailModal (aberto)</span></div>
+    <div class="modal-overlay">
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-header">
+          <span class="modal-eyebrow">Bilhete autenticado</span>
+          <button type="button" class="modal-close" aria-label="Fechar">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Ticket grande: mesma estrutura v2 sem lotteryName -->
+          <article class="ticket" data-state="open" id="modal-title" aria-label="Bilhete 12-34-56-78-90 — visualização ampliada">
+            <div class="ticket-inner">
+              <span class="ticket-corner is-tl"></span><span class="ticket-corner is-tr"></span>
+              <span class="ticket-corner is-bl"></span><span class="ticket-corner is-br"></span>
+              <span class="ticket-hole is-left"></span><span class="ticket-hole is-right"></span>
+              <div class="ticket-head">
+                <div class="ticket-head-left">
+                  <span class="ticket-eyebrow">Bilhete</span>
+                  <span class="ticket-eyebrow-sep"></span>
+                  <span class="ticket-id">#FN-2842</span>
+                </div>
+                <span class="ticket-status"><span class="dot"></span>Em andamento</span>
+              </div>
+              <div class="voucher-number-band">
+                <span class="voucher-number" data-length="medium"
+                      >12<span class="voucher-number-sep">-</span>34<span class="voucher-number-sep">-</span>56<span class="voucher-number-sep">-</span>78<span class="voucher-number-sep">-</span>90</span>
+              </div>
+              <div class="ticket-meta">
+                <span class="meta-item is-prize"><i data-lucide="coins"></i>R$ 720.000</span>
+                <span class="meta-item"><i data-lucide="calendar-clock"></i>12 mai 2026</span>
+              </div>
+              <div class="ticket-foot">
+                <span class="ticket-purchase-date">Compra · 03/04/2026 · 14:32</span>
+                <span class="ticket-foot-auth"><i data-lucide="shield-check"></i>Autenticado</span>
+              </div>
+              <div class="ticket-seal"><div class="ticket-seal-inner"><span class="ticket-seal-text">Auth<strong>2026</strong></span></div></div>
+            </div>
+          </article>
+
+          <div class="modal-divider"></div>
+
+          <div class="grid grid-cols-[1fr_auto] gap-6 items-center">
+            <div class="modal-detail-list">
+              <div class="modal-detail-item">
+                <div class="detail-label">Sorteio</div>
+                <div class="detail-value">Porsche 911 #012</div>
+              </div>
+              <div class="modal-detail-item">
+                <div class="detail-label">Prêmio</div>
+                <div class="detail-value">R$ 720.000,00</div>
+              </div>
+              <div class="modal-detail-item">
+                <div class="detail-label">Data do sorteio</div>
+                <div class="detail-value">12 mai 2026</div>
+              </div>
+              <div class="modal-detail-item">
+                <div class="detail-label">Status</div>
+                <div class="detail-value">Em andamento</div>
+              </div>
+              <div class="modal-detail-item">
+                <div class="detail-label">ID do bilhete</div>
+                <div class="detail-value">#FN-2842</div>
+              </div>
+              <div class="modal-detail-item">
+                <div class="detail-label">Compra</div>
+                <div class="detail-value">03/04/2026 · 14:32</div>
+              </div>
+            </div>
+
+            <div class="qr-block" aria-label="QR Code do bilhete">
+              <div class="qr-grid" aria-hidden="true"></div>
+              <span class="qr-caption">Bilhete · #FN-2842</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="cta-primary">
+            <i data-lucide="download"></i>
+            Baixar como imagem
+          </button>
+          <a href="/sorteios/porsche-mega-012" class="cta-ghost-light">
+            <i data-lucide="external-link"></i>
+            Ver detalhes do sorteio
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       4. FOOTER BAND
+       ===================================================== -->
+  <footer class="dash-footer-band" aria-labelledby="footer-title">
+    <h2 id="footer-title" class="sr-only">Rodapé Fortuno</h2>
+    <div class="relative z-10 mx-auto max-w-7xl px-6 py-4 md:py-5">
+      <div class="footer-grid grid md:grid-cols-[auto_1fr_auto] items-center gap-3 md:gap-6">
+        <div class="flex items-center gap-3">
+          <span class="footer-ornament" aria-hidden="true"><span class="deco-diamond"></span></span>
+          <p class="font-display text-fortuno-offwhite text-sm md:text-base leading-tight">
+            Fortuno — <span class="italic text-fortuno-gold-soft">sua sorte é séria.</span>
+          </p>
+        </div>
+        <span aria-hidden="true" class="hidden md:block h-5 w-px bg-fortuno-offwhite/15 justify-self-center"></span>
+        <nav aria-label="Rodapé — suporte e contato" class="flex flex-wrap items-center gap-x-4 gap-y-1 md:justify-end">
+          <a href="/suporte" class="footer-link"><i data-lucide="life-buoy"></i>Suporte</a>
+          <a href="/#como" class="footer-link"><i data-lucide="info"></i>Como funciona</a>
+          <a href="mailto:contato@fortuno.com.br" class="footer-link"><i data-lucide="mail"></i>contato@fortuno.com.br</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    if (window.lucide) window.lucide.createIcons();
+  </script>
+</body>
+</html>
