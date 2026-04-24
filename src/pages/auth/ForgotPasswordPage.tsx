@@ -1,12 +1,12 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from 'nauth-react';
+import { useNAuth } from 'nauth-react';
 import { Mail, ArrowLeft, Loader2, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const ForgotPasswordPage = (): JSX.Element => {
   const navigate = useNavigate();
-  const { sendRecoveryEmail } = useAuth();
+  const { sendRecoveryEmail } = useNAuth();
 
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);

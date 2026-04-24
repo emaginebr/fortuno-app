@@ -82,16 +82,14 @@ export const CheckoutProvider = ({ children }: { children: ReactNode }): JSX.Ele
 
   const setLotteryId = useCallback((id: number): void => {
     setState((prev) => {
-      // Se a compra anterior foi finalizada, zera qualquer estado residual.
-      const prevCompleted =
-        prev.lastStatus === TicketOrderStatus.Paid || prev.currentStep === 'success';
-      if (prev.lotteryId === id && !prevCompleted) return prev;
-
+      if (prev.lotteryId === id) return prev;
       const persisted = loadPersisted(id);
+      // Descarta estado persistido de compras anteriores já finalizadas para
+      // que o fluxo recomece do zero em uma nova sessão.
       const persistedCompleted =
         persisted.lastStatus === TicketOrderStatus.Paid ||
         persisted.currentStep === 'success';
-      if (prevCompleted || persistedCompleted) {
+      if (persistedCompleted) {
         try {
           sessionStorage.removeItem(`${STORAGE_PREFIX}:${id}`);
         } catch {

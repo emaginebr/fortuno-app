@@ -3,6 +3,7 @@ import { Info, Loader2, Plus, ShieldCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useCheckout } from '@/hooks/useCheckout';
 import { useLottery } from '@/hooks/useLottery';
+import { useLotteryImage } from '@/hooks/useLotteryImage';
 import { Receipt } from '@/components/lottery/Receipt';
 import { TrustSeals } from '@/components/common/TrustSeals';
 import { CartBilletItem } from './CartBilletItem';
@@ -20,10 +21,16 @@ export const CartStep = ({ comboName, comboDiscountPercent = 0 }: CartStepProps)
   const { t } = useTranslation();
   const checkout = useCheckout();
   const { currentLottery } = useLottery();
+  const { images } = useLotteryImage();
   const [modalOpen, setModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   if (!currentLottery) return null;
+
+  // A API de /lotteries/{id} não traz imagens inline — montamos um lottery
+  // enriquecido para o CheckoutPrizeThumb renderizar a capa.
+  const lotteryWithImages =
+    images.length > 0 ? { ...currentLottery, images } : currentLottery;
 
   const quantity = checkout.quantity;
   const picked = checkout.pickedNumbers;
@@ -115,7 +122,7 @@ export const CartStep = ({ comboName, comboDiscountPercent = 0 }: CartStepProps)
 
         {/* DIREITA */}
         <aside className="lg:sticky lg:top-[88px] lg:self-start space-y-5">
-          <CheckoutPrizeThumb lottery={currentLottery} />
+          <CheckoutPrizeThumb lottery={lotteryWithImages} />
           <Receipt
             quantity={quantity}
             ticketPrice={unitPrice}

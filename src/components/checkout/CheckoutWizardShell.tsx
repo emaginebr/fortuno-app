@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCheckout } from '@/hooks/useCheckout';
 import { useLottery } from '@/hooks/useLottery';
 import { useLotteryCombo } from '@/hooks/useLotteryCombo';
+import { useLotteryImage } from '@/hooks/useLotteryImage';
 import { useCheckoutWizard } from '@/hooks/useCheckoutWizard';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { pickCombo } from '@/components/lottery/ComboSelector';
+import { TicketOrderStatus } from '@/types/enums';
 import { CheckoutStepper } from './CheckoutStepper';
 import { RegisterStep } from './RegisterStep';
 import { CartStep } from './CartStep';
@@ -27,8 +29,24 @@ export const CheckoutWizardShell = (): JSX.Element => {
   const checkout = useCheckout();
   const { currentLottery, loadById, loadBySlug } = useLottery();
   const { combos, loadByLottery: loadCombos } = useLotteryCombo();
+  const { loadByLottery: loadImages } = useLotteryImage();
   const wizard = useCheckoutWizard();
   const [resolvedId, setResolvedId] = useState<number | null>(null);
+  const didMountResetRef = useRef(false);
+
+  // Reset de segurança no primeiro mount: se o contexto ainda carrega estado de
+  // uma compra finalizada anterior, limpa para que essa visita comece do zero.
+  useEffect(() => {
+    if (didMountResetRef.current) return;
+    didMountResetRef.current = true;
+    if (
+      checkout.lastStatus === TicketOrderStatus.Paid ||
+      checkout.currentStep === 'success'
+    ) {
+      checkout.reset();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Carrega sorteio por id numérico ou slug.
   useEffect(() => {
@@ -48,8 +66,10 @@ export const CheckoutWizardShell = (): JSX.Element => {
   }, [lotteryParam, checkout, loadById, loadBySlug]);
 
   useEffect(() => {
-    if (resolvedId !== null) void loadCombos(resolvedId);
-  }, [resolvedId, loadCombos]);
+    if (resolvedId === null) return;
+    void loadCombos(resolvedId);
+    void loadImages(resolvedId);
+  }, [resolvedId, loadCombos, loadImages]);
 
   useEffect(() => {
     const qty = parsePositiveInt(searchParams.get('qty'));
