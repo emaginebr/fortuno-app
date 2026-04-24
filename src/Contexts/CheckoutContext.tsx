@@ -141,7 +141,7 @@ export const CheckoutProvider = ({ children }: { children: ReactNode }): JSX.Ele
       state.mode === TicketOrderMode.Manual &&
       state.pickedNumbers.length === state.quantity;
     // Descarta QR/status anteriores para forçar geração de um novo invoice a cada clique.
-    setState((prev) => ({ ...prev, qrCode: null, lastStatus: null, tickets: null }));
+    setState((prev) => ({ ...prev, qrCode: null, lastStatus: null, tickets: undefined }));
     const payload = {
       lotteryId: state.lotteryId,
       quantity: state.quantity,
