@@ -1,7 +1,10 @@
 import { createContext, useCallback, useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 import { ticketService } from '@/Services/ticketService';
+import { ApiError } from '@/Services/apiHelpers';
 import type {
+  NumberReservationRequest,
+  NumberReservationResult,
   TicketInfo,
   TicketOrderRequest,
   TicketQRCodeInfo,
@@ -28,6 +31,7 @@ export interface TicketContextType {
   ) => Promise<void>;
   createQrCode: (req: TicketOrderRequest) => Promise<TicketQRCodeInfo | null>;
   getStatus: (invoiceId: number) => Promise<TicketQRCodeStatusInfo | null>;
+  reserveNumber: (req: NumberReservationRequest) => Promise<NumberReservationResult | null>;
   simulatePayment: (invoiceId: number) => Promise<void>;
   clearError: () => void;
 }
@@ -46,7 +50,16 @@ export const TicketProvider = ({ children }: { children: ReactNode }): JSX.Eleme
   const [error, setError] = useState<string | null>(null);
 
   const fail = useCallback((err: unknown, msg: string) => {
-    toast.error(msg);
+    if (err instanceof ApiError) {
+      // Novos erros 400 de validação de número (§11 da migração) podem listar
+      // múltiplos detalhes em `errors[]` — exibimos cada um como toast.
+      toast.error(err.message || msg);
+      for (const detail of err.errors ?? []) {
+        if (detail && detail !== err.message) toast.error(detail);
+      }
+    } else {
+      toast.error(msg);
+    }
     setError(err instanceof Error ? err.message : msg);
   }, []);
 
@@ -100,6 +113,18 @@ export const TicketProvider = ({ children }: { children: ReactNode }): JSX.Eleme
     [fail],
   );
 
+  const reserveNumber = useCallback(
+    async (req: NumberReservationRequest): Promise<NumberReservationResult | null> => {
+      try {
+        return await ticketService.reserveNumber(req);
+      } catch (err) {
+        fail(err, 'Falha ao reservar número.');
+        return null;
+      }
+    },
+    [fail],
+  );
+
   const simulatePayment = useCallback(async (invoiceId: number): Promise<void> => {
     await ticketService.simulatePayment(invoiceId);
   }, []);
@@ -116,6 +141,7 @@ export const TicketProvider = ({ children }: { children: ReactNode }): JSX.Eleme
         loadMine,
         createQrCode,
         getStatus,
+        reserveNumber,
         simulatePayment,
         clearError,
       }}

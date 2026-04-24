@@ -5,7 +5,10 @@ import type { RaffleInfo } from './raffle';
 
 export interface LotteryInfo {
   lotteryId: number;
+  /** Interno — resolvido pelo backend a partir do usuário autenticado. NUNCA exibir/logar. */
   storeId: number;
+  /** Interno — identificador de tenant no ProxyPay. NUNCA exibir/logar. */
+  storeClientId?: string | null;
   name: string;
   slug: string;
   descriptionMd: string;
@@ -30,7 +33,6 @@ export interface LotteryInfo {
 }
 
 export interface LotteryInsertInfo {
-  storeId: number;
   name: string;
   descriptionMd: string;
   rulesMd: string;

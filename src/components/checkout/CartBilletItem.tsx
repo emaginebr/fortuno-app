@@ -8,7 +8,11 @@ export type CartBilletItemProps =
   | { kind: 'random'; count: number; unitPrice: number }
   | {
       kind: 'manual';
-      number: number;
+      /**
+       * Número em formato string canônico alinhado a `pickedNumbers` do backend
+       * ("42" para Int64, "05-11-28-39-60" para Composed).
+       */
+      number: string;
       unitPrice: number;
       numberType: NumberType;
       onRemove: () => void;
@@ -51,9 +55,13 @@ export const CartBilletItem = (props: CartBilletItemProps): JSX.Element => {
     );
   }
 
+  // `props.number` já vem em formato canônico string. Para Int64 aplicamos
+  // separador de milhar pt-BR sobre o valor; Composed passa pelo formatComposed
+  // apenas para garantir ordenação/zero-pad mesmo que a origem não tenha
+  // normalizado (ex.: leitura de sessionStorage legada).
   const formatted =
     props.numberType === NumberType.Int64
-      ? props.number.toLocaleString('pt-BR')
+      ? Number(props.number).toLocaleString('pt-BR')
       : formatComposed(props.number, props.numberType);
 
   return (

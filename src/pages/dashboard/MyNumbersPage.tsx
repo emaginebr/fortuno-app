@@ -80,13 +80,31 @@ export const MyNumbersPage = (): JSX.Element => {
     void loadOpen();
   }, [loadOpen]);
 
+  // Busca textual é debounced para reduzir chamadas consecutivas enquanto o
+  // usuário digita. Envia para o backend via `number` (string unificada que
+  // cobre Int64 "42" e Composed "05-11-28-39-60"). Backend normaliza ordem
+  // dos componentes — UI pode mandar o que o usuário digitou.
+  const [debouncedNumber, setDebouncedNumber] = useState('');
   useEffect(() => {
+    const handle = window.setTimeout(() => setDebouncedNumber(search.trim()), 300);
+    return () => window.clearTimeout(handle);
+  }, [search]);
+
+  // Reset página quando a query do servidor muda.
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedNumber]);
+
+  useEffect(() => {
+    const query: { lotteryId?: number; number?: string } = {};
+    if (lotteryFilter != null) query.lotteryId = lotteryFilter;
+    if (debouncedNumber.length > 0) query.number = debouncedNumber;
     void loadMine(
-      lotteryFilter != null ? { lotteryId: lotteryFilter } : undefined,
+      Object.keys(query).length > 0 ? query : undefined,
       page,
       PAGE_SIZE,
     );
-  }, [lotteryFilter, page, loadMine]);
+  }, [lotteryFilter, debouncedNumber, page, loadMine]);
 
   // MOCK: aguarda `panel.totalPoints` — ver MOCKS.md. Trunca totalToReceive p/ int.
   const totalPoints = Math.max(0, Math.floor(panel?.totalToReceive ?? 0));

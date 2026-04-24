@@ -10,18 +10,29 @@ import type { LotteryInfo } from '@/types/lottery';
 export interface ChooseNumberModalProps {
   open: boolean;
   onClose: () => void;
-  onConfirm: (n: number) => void;
+  /**
+   * Recebe o número em formato string canônico pronto para enviar ao backend:
+   * - Int64:    "42"
+   * - Composed: "05-11-28-39-60" (ordenado + zero-padded)
+   */
+  onConfirm: (n: string) => void;
   lottery: LotteryInfo;
-  alreadyPicked: number[];
+  /** Números já escolhidos pelo usuário, em formato canônico string. */
+  alreadyPicked: string[];
 }
 
-/** Normaliza o input do usuário em número inteiro (concatenando dezenas se composto). */
-const normalize = (raw: string, type: NumberType): number => {
+/**
+ * Normaliza o input do usuário em string canônica alinhada ao contrato do
+ * backend (ver FRONTEND_TICKET_NUMBER_FORMAT_MIGRATION.md §3).
+ *
+ * - Int64:    remove não-dígitos e retorna decimal direto ("42").
+ * - Composed: delega para `formatComposed` (ordena + zero-pad em "NN-NN-NN").
+ */
+const normalize = (raw: string, type: NumberType): string => {
   if (type === NumberType.Int64) {
-    return Number(raw.replace(/\D/g, ''));
+    return raw.replace(/\D/g, '');
   }
-  const formatted = formatComposed(raw, type);
-  return Number(formatted.replace(/-/g, ''));
+  return formatComposed(raw, type);
 };
 
 export const ChooseNumberModal = (props: ChooseNumberModalProps): JSX.Element | null => {

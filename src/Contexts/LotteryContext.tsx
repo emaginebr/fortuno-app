@@ -9,16 +9,28 @@ import type {
 } from '@/types/lottery';
 import { ApiError, UnauthenticatedError } from '@/Services/apiHelpers';
 
+/**
+ * Sinaliza, para quem chamou `create`, o tipo de erro que aconteceu —
+ * permite que a UI reaja especificamente a problemas de sessão NAuth
+ * ou perfil incompleto (novos 400 vindos da migração Store Transparente).
+ */
+export type LotteryCreateErrorKind =
+  | 'unauthenticated'
+  | 'profile-incomplete'
+  | 'generic';
+
 export interface LotteryContextType {
   openLotteries: LotteryInfo[];
   currentLottery: LotteryInfo | null;
   myLotteries: LotteryInfo[];
   loading: boolean;
   error: string | null;
+  /** Tipo do último erro de `create`, usado pela UI para decidir o próximo passo. */
+  lastCreateErrorKind: LotteryCreateErrorKind | null;
   loadOpen: () => Promise<void>;
   loadById: (lotteryId: number) => Promise<LotteryInfo | null>;
   loadBySlug: (slug: string) => Promise<LotteryInfo | null>;
-  loadByStore: (storeId: number) => Promise<void>;
+  loadMine: () => Promise<void>;
   create: (payload: LotteryInsertInfo) => Promise<LotteryInfo | null>;
   update: (payload: LotteryUpdateInfo) => Promise<LotteryInfo | null>;
   publish: (lotteryId: number) => Promise<boolean>;
@@ -37,12 +49,20 @@ export const LotteryProvider = ({ children }: { children: ReactNode }): JSX.Elem
   const [myLotteries, setMyLotteries] = useState<LotteryInfo[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lastCreateErrorKind, setLastCreateErrorKind] =
+    useState<LotteryCreateErrorKind | null>(null);
 
   const handleError = useCallback((err: unknown, fallback = 'Erro inesperado') => {
     if (err instanceof UnauthenticatedError) {
       toast.error('Sessão expirada. Faça login novamente.');
     } else if (err instanceof ApiError) {
+      // Erros 400 de validação de faixa por NumberType (§7 da migração) chegam
+      // como ApiError com mensagem principal + detalhes em `errors[]`. Exibimos
+      // cada detalhe para o admin saber exatamente qual regra quebrou.
       toast.error(err.message);
+      for (const detail of err.errors ?? []) {
+        if (detail && detail !== err.message) toast.error(detail);
+      }
     } else {
       toast.error(fallback);
     }
@@ -98,25 +118,23 @@ export const LotteryProvider = ({ children }: { children: ReactNode }): JSX.Elem
     [handleError],
   );
 
-  const loadByStore = useCallback(
-    async (storeId: number): Promise<void> => {
-      setLoading(true);
-      try {
-        const list = await lotteryService.listByStore(storeId);
-        setMyLotteries(list);
-        setError(null);
-      } catch (err) {
-        handleError(err, 'Falha ao carregar meus sorteios.');
-      } finally {
-        setLoading(false);
-      }
-    },
-    [handleError],
-  );
+  const loadMine = useCallback(async (): Promise<void> => {
+    setLoading(true);
+    try {
+      const list = await lotteryService.listMine();
+      setMyLotteries(list);
+      setError(null);
+    } catch (err) {
+      handleError(err, 'Falha ao carregar meus sorteios.');
+    } finally {
+      setLoading(false);
+    }
+  }, [handleError]);
 
   const create = useCallback(
     async (payload: LotteryInsertInfo): Promise<LotteryInfo | null> => {
       setLoading(true);
+      setLastCreateErrorKind(null);
       try {
         const lottery = await lotteryService.create(payload);
         setCurrentLottery(lottery);
@@ -124,7 +142,37 @@ export const LotteryProvider = ({ children }: { children: ReactNode }): JSX.Elem
         toast.success('Sorteio criado em rascunho.');
         return lottery;
       } catch (err) {
-        handleError(err, 'Falha ao criar sorteio.');
+        // Novos erros 400 após a migração Store Transparente — ver
+        // docs/FRONTEND_STORE_TRANSPARENT_MIGRATION.md §3.1.
+        const allMessages =
+          err instanceof ApiError
+            ? [err.message, ...(err.errors ?? [])].join(' ').toLowerCase()
+            : '';
+
+        const isNauthSessionProblem =
+          err instanceof UnauthenticatedError ||
+          allMessages.includes('usuário autenticado não encontrado no nauth');
+
+        const isProfileIncomplete = allMessages.includes(
+          'usuário sem nome ou e-mail cadastrado',
+        );
+
+        if (isNauthSessionProblem) {
+          setLastCreateErrorKind('unauthenticated');
+          toast.error(
+            'Sua sessão expirou ou está inválida. Faça login novamente para continuar.',
+          );
+          setError('unauthenticated');
+        } else if (isProfileIncomplete) {
+          setLastCreateErrorKind('profile-incomplete');
+          toast.error(
+            'Complete seu cadastro (nome e e-mail) antes de criar seu primeiro sorteio.',
+          );
+          setError('profile-incomplete');
+        } else {
+          setLastCreateErrorKind('generic');
+          handleError(err, 'Falha ao criar sorteio.');
+        }
         return null;
       } finally {
         setLoading(false);
@@ -238,10 +286,11 @@ export const LotteryProvider = ({ children }: { children: ReactNode }): JSX.Elem
         myLotteries,
         loading,
         error,
+        lastCreateErrorKind,
         loadOpen,
         loadById,
         loadBySlug,
-        loadByStore,
+        loadMine,
         create,
         update,
         publish,

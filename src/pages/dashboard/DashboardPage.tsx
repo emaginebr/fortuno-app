@@ -14,10 +14,8 @@ export const DashboardPage = (): JSX.Element => {
   const { t } = useTranslation();
   const { user } = useUser();
   const { referralCode, panel, loadPanel } = useReferral();
-  const { tickets, loadMine } = useTicket();
-  const { myLotteries, loadByStore } = useLottery();
-
-  const storeId = Number(import.meta.env.VITE_FORTUNO_STORE_ID || 1);
+  const { tickets, loadMine: loadMyTickets } = useTicket();
+  const { myLotteries, loadMine: loadMyLotteries } = useLottery();
 
   const {
     busy,
@@ -34,13 +32,13 @@ export const DashboardPage = (): JSX.Element => {
     openDelete,
     closeDelete,
     confirmDelete,
-  } = useMyLotteriesActions(storeId);
+  } = useMyLotteriesActions();
 
   useEffect(() => {
     void loadPanel();
-    void loadMine();
-    void loadByStore(storeId);
-  }, [loadPanel, loadMine, loadByStore, storeId]);
+    void loadMyTickets();
+    void loadMyLotteries();
+  }, [loadPanel, loadMyTickets, loadMyLotteries]);
 
   const lotteryCount = useMemo(
     () => new Set(tickets.map((ticket) => ticket.lotteryId)).size,

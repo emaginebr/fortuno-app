@@ -22,6 +22,15 @@ interface LotteryLike {
   numberValueMax: number;
 }
 
+/**
+ * Valida a entrada de número do usuário **antes** de enviar ao backend.
+ * Faz checagens equivalentes às do `NumberCompositionService` do backend
+ * (range, quantidade de componentes, duplicatas) — o backend continua sendo
+ * a fonte de verdade e rejeita qualquer payload inválido via 400.
+ *
+ * Aceita `string | number` por compatibilidade com callers antigos, mas
+ * o fluxo novo deve passar sempre string no formato canônico.
+ */
 export const validatePickedNumber = (
   raw: string | number,
   lottery: LotteryLike,

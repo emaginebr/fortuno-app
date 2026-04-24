@@ -3,7 +3,6 @@
 interface ImportMetaEnv {
   readonly VITE_API_URL: string;
   readonly VITE_FORTUNO_TENANT_ID: string;
-  readonly VITE_FORTUNO_STORE_ID: string;
   readonly VITE_NAUTH_API_URL: string;
   readonly VITE_NAUTH_TENANT: string;
   readonly VITE_SITE_BASENAME: string;

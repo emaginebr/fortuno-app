@@ -3,7 +3,12 @@ import { NumberType } from '@/types/enums';
 import { formatComposed, formatInt64 } from '@/utils/numberFormat';
 
 export interface TicketMiniCardProps {
-  number: number;
+  /**
+   * Número em formato canônico string (alinhado a `pickedNumbers` do backend).
+   * - Int64:    "42"
+   * - Composed: "05-11-28-39-60"
+   */
+  number: string;
   lotteryName: string;
   /** Label textual da próxima data de sorteio — pode ser "Em breve". */
   nextRaffleLabel: string;
@@ -16,7 +21,9 @@ export const TicketMiniCard = (props: TicketMiniCardProps): JSX.Element => {
   const { number, lotteryName, nextRaffleLabel, kind, numberType } = props;
 
   const formatted =
-    numberType === NumberType.Int64 ? formatInt64(number) : formatComposed(number, numberType);
+    numberType === NumberType.Int64
+      ? formatInt64(Number(number))
+      : formatComposed(number, numberType);
 
   const chipClass =
     kind === 'random'

@@ -35,13 +35,14 @@ export interface UseMyLotteriesActionsResult {
  * Hook utilitário compartilhado entre DashboardPage (preview) e MyLotteriesPage.
  * Encapsula:
  *  - chamadas `publish` / `close` / `cancel` via `useLottery`;
- *  - recarga de `loadByStore` após qualquer mutação bem-sucedida;
+ *  - recarga de `loadMine` após qualquer mutação bem-sucedida;
  *  - estado do `ConfirmModal` de cancelamento (id + motivo).
  *
- * @param storeId Identificador da loja a ser recarregada após mutações.
+ * Não precisa mais de `storeId` — o backend resolve a store do usuário
+ * autenticado automaticamente (docs/FRONTEND_STORE_TRANSPARENT_MIGRATION.md).
  */
-export const useMyLotteriesActions = (storeId: number): UseMyLotteriesActionsResult => {
-  const { publish, revertToDraft, close, cancel, remove, loadByStore } = useLottery();
+export const useMyLotteriesActions = (): UseMyLotteriesActionsResult => {
+  const { publish, revertToDraft, close, cancel, remove, loadMine } = useLottery();
   const [busy, setBusy] = useState(false);
   const [cancelId, setCancelId] = useState<number | null>(null);
   const [cancelReason, setCancelReason] = useState('');
@@ -51,30 +52,30 @@ export const useMyLotteriesActions = (storeId: number): UseMyLotteriesActionsRes
     async (lotteryId: number): Promise<void> => {
       setBusy(true);
       const ok = await publish(lotteryId);
-      if (ok) await loadByStore(storeId);
+      if (ok) await loadMine();
       setBusy(false);
     },
-    [publish, loadByStore, storeId],
+    [publish, loadMine],
   );
 
   const handleRevertToDraft = useCallback(
     async (lotteryId: number): Promise<void> => {
       setBusy(true);
       const ok = await revertToDraft(lotteryId);
-      if (ok) await loadByStore(storeId);
+      if (ok) await loadMine();
       setBusy(false);
     },
-    [revertToDraft, loadByStore, storeId],
+    [revertToDraft, loadMine],
   );
 
   const handleClose = useCallback(
     async (lotteryId: number): Promise<void> => {
       setBusy(true);
       const ok = await close(lotteryId);
-      if (ok) await loadByStore(storeId);
+      if (ok) await loadMine();
       setBusy(false);
     },
-    [close, loadByStore, storeId],
+    [close, loadMine],
   );
 
   const openCancel = useCallback((lotteryId: number): void => {
@@ -95,10 +96,10 @@ export const useMyLotteriesActions = (storeId: number): UseMyLotteriesActionsRes
     if (ok) {
       setCancelId(null);
       setCancelReason('');
-      await loadByStore(storeId);
+      await loadMine();
     }
     return ok;
-  }, [cancel, cancelId, cancelReason, loadByStore, storeId]);
+  }, [cancel, cancelId, cancelReason, loadMine]);
 
   const openDelete = useCallback((lotteryId: number): void => {
     setDeleteId(lotteryId);
@@ -115,10 +116,10 @@ export const useMyLotteriesActions = (storeId: number): UseMyLotteriesActionsRes
     setBusy(false);
     if (ok) {
       setDeleteId(null);
-      await loadByStore(storeId);
+      await loadMine();
     }
     return ok;
-  }, [remove, deleteId, loadByStore, storeId]);
+  }, [remove, deleteId, loadMine]);
 
   return {
     busy,

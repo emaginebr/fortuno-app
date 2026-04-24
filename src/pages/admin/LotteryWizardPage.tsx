@@ -12,6 +12,8 @@ import {
   Zap,
 } from 'lucide-react';
 import { useLottery } from '@/hooks/useLottery';
+import type { LotteryInsertInfo } from '@/types/lottery';
+import { NumberType } from '@/types/enums';
 import {
   VerticalWizardShell,
   type WizardStepMeta,
@@ -36,7 +38,7 @@ const STEPS: WizardStepMeta[] = [
     key: 'basic',
     title: 'Dados básicos',
     icon: Info,
-    subtitle: 'Nome, loja e período do sorteio. É por aqui que tudo começa.',
+    subtitle: 'Nome, prêmio e período do sorteio. É por aqui que tudo começa.',
     estimatedMinutes: 2,
   },
   {
@@ -147,15 +149,32 @@ export const LotteryWizardPage = (): JSX.Element => {
     // Ao sair do Step 1, persistir a lottery (create/update) para ter lotteryId
     if (currentIndex === 0) {
       setBusy(true);
-      const storeId = Number(import.meta.env.VITE_FORTUNO_STORE_ID || 1);
       // API exige descriptionMd/rulesMd/privacyPolicyMd não-vazios; etapa 3 substitui placeholders.
-      const payload = {
-        ...draft,
+      // `storeId` NÃO vai mais no payload — o backend resolve a store do usuário
+      // autenticado via NAuth (docs/FRONTEND_STORE_TRANSPARENT_MIGRATION.md).
+      //
+      // Regras de faixa por NumberType (FRONTEND_TICKET_NUMBER_FORMAT_MIGRATION.md §7):
+      // - Int64     → usa ticketNumIni/End; numberValueMin/Max são ignorados (envia 0).
+      // - Composed* → usa numberValueMin/Max ∈ [0..99]; ticketNumIni/End são ignorados (envia 0).
+      // O backend aceita os campos ignorados, mas preenchemos com 0 para deixar o
+      // payload auto-documentado e evitar poluir o banco com lixo do draft.
+      const isInt64 = draft.numberType === NumberType.Int64;
+      const payload: LotteryInsertInfo = {
+        name: draft.name,
         descriptionMd: draft.descriptionMd || 'Descrição será definida na etapa 3.',
         rulesMd: draft.rulesMd || 'Regras serão definidas na etapa 3.',
         privacyPolicyMd:
           draft.privacyPolicyMd || 'Política de privacidade será definida na etapa 3.',
-        storeId,
+        ticketPrice: draft.ticketPrice,
+        totalPrizeValue: draft.totalPrizeValue,
+        ticketMin: draft.ticketMin,
+        ticketMax: draft.ticketMax,
+        ticketNumIni: isInt64 ? draft.ticketNumIni : 0,
+        ticketNumEnd: isInt64 ? draft.ticketNumEnd : 0,
+        numberType: draft.numberType as NumberType,
+        numberValueMin: isInt64 ? 0 : draft.numberValueMin,
+        numberValueMax: isInt64 ? 0 : draft.numberValueMax,
+        referralPercent: draft.referralPercent,
       };
       let result = currentLottery;
       if (!draft.lotteryId) {
@@ -164,7 +183,12 @@ export const LotteryWizardPage = (): JSX.Element => {
         result = await update({ ...payload, lotteryId: draft.lotteryId });
       }
       setBusy(false);
-      if (!result) return;
+      if (!result) {
+        // `create` já popula `lastCreateErrorKind` no contexto e dispara toast
+        // específico para sessão NAuth expirada ou perfil incompleto
+        // (ver LotteryContext.create). Aqui só abortamos a navegação.
+        return;
+      }
       setDraft((prev) => ({ ...prev, lotteryId: result!.lotteryId }));
     }
 

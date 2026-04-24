@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { NumberType } from '@/types/enums';
 import {
+  componentCountFromNumberType,
   computePossibilities,
   formatComposed,
   formatInt64,
+  normalizeTicketNumber,
 } from '../numberFormat';
 
 describe('formatInt64', () => {
@@ -40,5 +42,44 @@ describe('computePossibilities', () => {
 
   it('retorna 0 quando pool < size', () => {
     expect(computePossibilities(NumberType.Composed6, 1, 3)).toBe(0);
+  });
+});
+
+describe('componentCountFromNumberType', () => {
+  it('retorna 1 para Int64', () => {
+    expect(componentCountFromNumberType(NumberType.Int64)).toBe(1);
+  });
+
+  it('retorna a quantidade de componentes esperada para Composed', () => {
+    expect(componentCountFromNumberType(NumberType.Composed3)).toBe(3);
+    expect(componentCountFromNumberType(NumberType.Composed6)).toBe(6);
+    expect(componentCountFromNumberType(NumberType.Composed8)).toBe(8);
+  });
+});
+
+describe('normalizeTicketNumber', () => {
+  it('Int64 aceita decimal puro e retorna como-é', () => {
+    expect(normalizeTicketNumber('42', 1)).toBe('42');
+    expect(normalizeTicketNumber('  1000  ', 1)).toBe('1000');
+  });
+
+  it('Int64 rejeita input não-numérico', () => {
+    expect(normalizeTicketNumber('abc', 1)).toBeNull();
+    expect(normalizeTicketNumber('1-2', 1)).toBeNull();
+  });
+
+  it('Composed ordena componentes e aplica zero-pad', () => {
+    expect(normalizeTicketNumber('60-39-05-28-11', 5)).toBe('05-11-28-39-60');
+    expect(normalizeTicketNumber('5-11-28-39-60', 5)).toBe('05-11-28-39-60');
+  });
+
+  it('Composed rejeita quando algum componente está fora de [0..99]', () => {
+    expect(normalizeTicketNumber('05-100-28', 3)).toBeNull();
+    expect(normalizeTicketNumber('05-11-abc', 3)).toBeNull();
+  });
+
+  it('Composed rejeita quantidade de componentes incorreta', () => {
+    expect(normalizeTicketNumber('05-11', 3)).toBeNull();
+    expect(normalizeTicketNumber('05-11-28-39', 3)).toBeNull();
   });
 });

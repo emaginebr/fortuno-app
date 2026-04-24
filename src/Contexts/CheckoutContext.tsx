@@ -8,6 +8,7 @@ import {
 import { TicketOrderMode, TicketOrderStatus } from '@/types/enums';
 import type { TicketInfo, TicketQRCodeInfo } from '@/types/ticket';
 import { ticketService } from '@/Services/ticketService';
+import { ApiError } from '@/Services/apiHelpers';
 import { toast } from 'sonner';
 
 export type CheckoutStep = 'quantity' | 'auth' | 'numbers' | 'payment' | 'success';
@@ -16,7 +17,14 @@ export interface CheckoutState {
   lotteryId: number | null;
   quantity: number;
   mode: TicketOrderMode;
-  pickedNumbers: number[];
+  /**
+   * Números escolhidos pelo usuário, em formato string canônico:
+   * - Int64:    "42"
+   * - Composed: "05-11-28-39-60"
+   * Alinhado com `TicketOrderRequest.pickedNumbers` do backend
+   * (ver FRONTEND_TICKET_NUMBER_FORMAT_MIGRATION.md §4).
+   */
+  pickedNumbers: string[];
   referralCode?: string;
   currentStep: CheckoutStep;
   qrCode?: TicketQRCodeInfo | null;
@@ -29,8 +37,8 @@ export interface CheckoutContextType extends CheckoutState {
   setQuantity: (q: number) => void;
   setMode: (m: TicketOrderMode) => void;
   setReferralCode: (code: string | undefined) => void;
-  addPickedNumber: (n: number) => void;
-  removePickedNumber: (n: number) => void;
+  addPickedNumber: (n: string) => void;
+  removePickedNumber: (n: string) => void;
   clearPickedNumbers: () => void;
   fillRandomRest: () => void;
   goToStep: (step: CheckoutStep) => void;
@@ -56,7 +64,18 @@ const loadPersisted = (lotteryId: number | null): Partial<CheckoutState> => {
   if (lotteryId === null) return {};
   try {
     const raw = sessionStorage.getItem(`${STORAGE_PREFIX}:${lotteryId}`);
-    return raw ? (JSON.parse(raw) as Partial<CheckoutState>) : {};
+    if (!raw) return {};
+    const parsed = JSON.parse(raw) as Partial<CheckoutState> & {
+      pickedNumbers?: unknown;
+    };
+    // Migração: estado persistido no formato antigo usava number[]. Convertemos
+    // em string[] ao carregar; Composed será revalidado/re-escolhido pelo user.
+    if (Array.isArray(parsed.pickedNumbers)) {
+      parsed.pickedNumbers = (parsed.pickedNumbers as unknown[])
+        .map((n) => (typeof n === 'string' ? n : typeof n === 'number' ? String(n) : null))
+        .filter((v): v is string => typeof v === 'string' && v.length > 0);
+    }
+    return parsed as Partial<CheckoutState>;
   } catch {
     return {};
   }
@@ -113,7 +132,7 @@ export const CheckoutProvider = ({ children }: { children: ReactNode }): JSX.Ele
     setState((prev) => ({ ...prev, referralCode: code }));
   }, []);
 
-  const addPickedNumber = useCallback((n: number): void => {
+  const addPickedNumber = useCallback((n: string): void => {
     setState((prev) => {
       if (prev.pickedNumbers.includes(n)) return prev;
       if (prev.pickedNumbers.length >= prev.quantity) return prev;
@@ -125,7 +144,7 @@ export const CheckoutProvider = ({ children }: { children: ReactNode }): JSX.Ele
     });
   }, []);
 
-  const removePickedNumber = useCallback((n: number): void => {
+  const removePickedNumber = useCallback((n: string): void => {
     setState((prev) => ({
       ...prev,
       pickedNumbers: prev.pickedNumbers.filter((x) => x !== n),
@@ -169,7 +188,18 @@ export const CheckoutProvider = ({ children }: { children: ReactNode }): JSX.Ele
       setState((prev) => ({ ...prev, qrCode: qr, currentStep: 'payment' }));
       return qr;
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Falha ao gerar QR Code.');
+      // Novos erros 400 de validação de número (§11 da migração) chegam como
+      // ApiError com `message` sumarizado e `errors[]` detalhado por número.
+      // Mostramos a mensagem principal no topo + cada detalhe como toast
+      // adicional para o usuário saber qual número precisa corrigir.
+      if (err instanceof ApiError) {
+        toast.error(err.message);
+        for (const detail of err.errors ?? []) {
+          if (detail && detail !== err.message) toast.error(detail);
+        }
+      } else {
+        toast.error(err instanceof Error ? err.message : 'Falha ao gerar QR Code.');
+      }
       return null;
     }
   }, [state.lotteryId, state.quantity, state.mode, state.pickedNumbers, state.referralCode]);

@@ -1,5 +1,7 @@
 import { apiUrl, ApiError, getHeaders, handleResponse, safeFetch } from './apiHelpers';
 import type {
+  NumberReservationRequest,
+  NumberReservationResult,
   TicketInfo,
   TicketOrderRequest,
   TicketQRCodeInfo,
@@ -78,12 +80,32 @@ export class TicketService {
   }
 
   public async createQrCode(req: TicketOrderRequest): Promise<TicketQRCodeInfo> {
+    // `pickedNumbers` trafega como string[] — Int64 ("42") ou Composed ("05-11-28-39-60").
+    // Backend normaliza ordem dos componentes em Composed e valida contra o
+    // NumberType da lottery (ver FRONTEND_TICKET_NUMBER_FORMAT_MIGRATION.md §4).
     const res = await safeFetch(apiUrl('/tickets/qrcode'), {
       method: 'POST',
       headers: getHeaders(true),
       body: JSON.stringify(req),
     });
     return handleResponse<TicketQRCodeInfo>(res);
+  }
+
+  /**
+   * Reserva temporária de um número específico (POST /tickets/reserve-number).
+   * `ticketNumber` vai/volta como string no formato canônico; para Composed o
+   * frontend pode enviar desordenado e o backend normaliza. A resposta traz
+   * sempre o valor canônico pronto para exibição.
+   */
+  public async reserveNumber(
+    req: NumberReservationRequest,
+  ): Promise<NumberReservationResult> {
+    const res = await safeFetch(apiUrl('/tickets/reserve-number'), {
+      method: 'POST',
+      headers: getHeaders(true),
+      body: JSON.stringify(req),
+    });
+    return handleResponse<NumberReservationResult>(res);
   }
 
   public async getQrCodeStatus(invoiceId: number): Promise<TicketQRCodeStatusInfo> {

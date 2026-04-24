@@ -52,7 +52,7 @@ export const CartStep = ({ comboName, comboDiscountPercent = 0 }: CartStepProps)
     }
   };
 
-  const handleAdd = (n: number): void => {
+  const handleAdd = (n: string): void => {
     checkout.addPickedNumber(n);
   };
 

@@ -24,13 +24,6 @@ Registro vivo dos endpoints que o frontend consome em modo MOCK até que o backe
 - **Descrição**: botão π na tela de pagamento deve disparar um simulador de pagamento PIX. Endpoint exato ainda não confirmado na Bruno collection — o service chama a rota acima e, em caso de 404, apenas emite toast info.
 - **Item de acompanhamento**: pendente de abertura.
 
-### Dashboard — "Loterias que administro"
-
-- **Arquivo**: `src/pages/dashboard/DashboardPage.tsx`
-- **Rota esperada**: `GET /lotteries/my-owned` (lista de loterias do usuário logado como dono)
-- **Descrição**: não há endpoint explícito para filtrar loterias por `createdByUserId` na Bruno collection. Enquanto não houver, o bloco "Loterias que administro" é oculto (condição baseada em lista vazia). Na v2 do dashboard, a seção é totalmente condicional: quando `myLotteries.length === 0`, NÃO renderiza nada (sem empty state).
-- **Item de acompanhamento**: pendente de abertura.
-
 ### Dashboard — `panel.totalPoints` (chip de pontos no header)
 
 - **Arquivo**: `src/pages/dashboard/DashboardPage.tsx` (cálculo do `totalPoints` passado ao `HeaderChip variant="points"` em `src/components/dashboard/HeaderChip.tsx`) — referência em `design/dashboard/spec.md §4.3` e `§8.2`.

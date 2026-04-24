@@ -194,6 +194,8 @@
     "cancelLotteryMessage": "Informe um motivo para o cancelamento. Essa ação não pode ser desfeita.",
     "cancelLotteryConfirm": "Cancelar sorteio",
     "cancelLotteryReasonPlaceholder": "Descreva o motivo (mínimo 10 caracteres)",
+    "createLotteryErrorSessionExpired": "Sua sessão expirou ou está inválida. Faça login novamente para continuar.",
+    "createLotteryErrorProfileIncomplete": "Complete seu cadastro (nome e e-mail) antes de criar seu primeiro sorteio.",
     "footerTitle": "Rodapé Fortuno",
     "footerTaglinePrefix": "Fortuno —",
     "footerTaglineItalic": "sua sorte é séria.",

@@ -36,9 +36,8 @@ export const MyLotteriesPage = (): JSX.Element => {
   const { t } = useTranslation();
   const { user } = useUser();
   const { referralCode, panel, loadPanel } = useReferral();
-  const { myLotteries, loading, loadByStore } = useLottery();
+  const { myLotteries, loading, loadMine } = useLottery();
 
-  const storeId = Number(import.meta.env.VITE_FORTUNO_STORE_ID || 1);
   const [filter, setFilter] = useState<StatusFilter>(LotteryStatus.Open);
 
   const {
@@ -56,12 +55,12 @@ export const MyLotteriesPage = (): JSX.Element => {
     openDelete,
     closeDelete,
     confirmDelete,
-  } = useMyLotteriesActions(storeId);
+  } = useMyLotteriesActions();
 
   useEffect(() => {
     void loadPanel();
-    void loadByStore(storeId);
-  }, [loadPanel, loadByStore, storeId]);
+    void loadMine();
+  }, [loadPanel, loadMine]);
 
   const ordered = useMemo(() => {
     const sorted = [...myLotteries].sort((a, b) => {

@@ -4,6 +4,44 @@ import { NumberType, composedSize } from '@/types/enums';
 export const formatInt64 = (n: number): string => n.toLocaleString('pt-BR');
 
 /**
+ * Quantidade de componentes esperados no formato canônico de cada NumberType.
+ * Alinhado com `composedSize` mas contabiliza Int64 como 1 componente.
+ *
+ * Ver FRONTEND_TICKET_NUMBER_FORMAT_MIGRATION.md §10.
+ */
+export const componentCountFromNumberType = (type: NumberType): number => {
+  if (type === NumberType.Int64) return 1;
+  return composedSize(type);
+};
+
+/**
+ * Normaliza o input do usuário no mesmo algoritmo do backend
+ * (ver `Fortuno.Domain/Services/NumberCompositionService.cs`).
+ *
+ * - Int64     (componentCount=1): trim + valida dígitos; retorna decimal puro.
+ * - Composed*: divide por `-`, valida cada componente em [0..99], ordena
+ *   ascendente, re-emite com zero-pad de 2 dígitos ("05-11-28-39-60").
+ *
+ * Retorna `null` quando o input é inválido — útil para preview/UX antes de
+ * enviar ao servidor. O backend continua sendo a fonte de verdade.
+ */
+export const normalizeTicketNumber = (
+  input: string,
+  componentCount: number,
+): string | null => {
+  const text = input.trim();
+  if (componentCount === 1) {
+    return /^\d+$/.test(text) ? text : null;
+  }
+  const parts = text.split('-');
+  if (parts.length !== componentCount) return null;
+  const nums = parts.map((p) => Number(p));
+  if (nums.some((n) => !Number.isInteger(n) || n < 0 || n > 99)) return null;
+  nums.sort((a, b) => a - b);
+  return nums.map((n) => String(n).padStart(2, '0')).join('-');
+};
+
+/**
  * Formata um número composto (ex.: Composed6) em string canônica
  * com pares de 2 dígitos ordenados ascendentemente, separados por `-`.
  *

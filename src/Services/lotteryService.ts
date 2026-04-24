@@ -26,8 +26,15 @@ export class LotteryService {
     return handleResponse<LotteryInfo>(res);
   }
 
-  public async listByStore(storeId: number): Promise<LotteryInfo[]> {
-    const res = await safeFetch(apiUrl(`/lotteries/store/${storeId}`), {
+  /**
+   * Lista as lotteries do usuário autenticado.
+   * O backend resolve a store automaticamente a partir do token NAuth
+   * (Store Transparente — docs/FRONTEND_STORE_TRANSPARENT_MIGRATION.md).
+   *
+   * Retorna [] quando o usuário ainda não criou nenhuma lottery.
+   */
+  public async listMine(): Promise<LotteryInfo[]> {
+    const res = await safeFetch(apiUrl('/lotteries/mine'), {
       method: 'GET',
       headers: getHeaders(true),
     });
