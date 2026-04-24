@@ -735,6 +735,99 @@
     0 1px 0 rgba(255, 255, 255, 0.85) inset,
     0 12px 24px -16px rgba(10, 42, 32, 0.18),
     0 4px 10px -4px rgba(184, 150, 63, 0.18);
+
+  /* ===========================================================
+     MY POINTS — Editorial Casino Noir · Extrato Premium
+     Anexar APÓS os blocos anteriores.
+     =========================================================== */
+
+  /* --- Balance Hero · frame metálico + papel + watermark --- */
+  --balance-hero-frame: linear-gradient(
+    135deg,
+    #d4af37 0%,
+    #b8963f 25%,
+    #f5dc8b 50%,
+    #b8963f 75%,
+    #8a6f2b 100%
+  );
+  --balance-hero-paper:
+    radial-gradient(110% 80% at 0% 0%, rgba(255, 250, 232, 0.85) 0%, transparent 55%),
+    radial-gradient(120% 100% at 100% 100%, rgba(247, 243, 236, 0.85) 0%, transparent 60%),
+    linear-gradient(180deg, #fdfaf0 0%, #f3ecd6 100%);
+  --balance-hero-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.85) inset,
+    0 24px 48px -22px rgba(10, 42, 32, 0.32),
+    0 8px 18px -8px rgba(184, 150, 63, 0.22);
+  --balance-hero-watermark: rgba(184, 150, 63, 0.06);
+  --balance-hero-numeral-grad: linear-gradient(
+    180deg,
+    #f5dc8b 0%,
+    #d4af37 30%,
+    #b8963f 60%,
+    #134436 130%
+  );
+  --balance-hero-divider: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(184, 150, 63, 0.45) 50%,
+    transparent 100%
+  );
+
+  /* --- Hero stats (zona central) --- */
+  --hero-stat-bg: rgba(255, 255, 255, 0.55);
+  --hero-stat-border: rgba(184, 150, 63, 0.18);
+  --hero-stat-numeral-grad: linear-gradient(
+    180deg,
+    var(--fortuno-gold-soft) 0%,
+    var(--fortuno-gold-intense) 60%,
+    var(--fortuno-green-elegant) 130%
+  );
+
+  /* --- Hero "Como funcionam" (zona direita) --- */
+  --hero-howto-bg: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(247, 243, 236, 0.78) 100%
+  );
+  --hero-howto-border: rgba(19, 68, 54, 0.18);
+
+  /* --- Breakdown table --- */
+  --breakdown-card-bg: #ffffff;
+  --breakdown-card-border: rgba(184, 150, 63, 0.3);
+  --breakdown-card-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.85) inset,
+    0 14px 30px -22px rgba(10, 42, 32, 0.22),
+    0 4px 10px -4px rgba(184, 150, 63, 0.1);
+  --breakdown-thead-bg: linear-gradient(
+    180deg,
+    rgba(247, 243, 236, 0.85) 0%,
+    rgba(255, 255, 255, 0.92) 100%
+  );
+  --breakdown-row-zebra: rgba(212, 175, 55, 0.03);
+  --breakdown-row-hover: rgba(212, 175, 55, 0.08);
+  --breakdown-row-divider: rgba(11, 11, 11, 0.06);
+  --breakdown-points-grad: linear-gradient(
+    180deg,
+    var(--fortuno-gold-soft),
+    var(--fortuno-gold-intense)
+  );
+
+  /* --- Disclaimer ornament --- */
+  --disclaimer-bg: linear-gradient(
+    180deg,
+    rgba(255, 250, 232, 0.55) 0%,
+    rgba(247, 243, 236, 0.45) 100%
+  );
+  --disclaimer-border: rgba(184, 150, 63, 0.42);
+  --disclaimer-icon-bg: rgba(184, 150, 63, 0.1);
+  --disclaimer-icon-border: rgba(184, 150, 63, 0.4);
+
+  /* --- Share modal channels --- */
+  --share-channel-bg: rgba(255, 255, 255, 0.78);
+  --share-channel-border: rgba(184, 150, 63, 0.3);
+  --share-channel-bg-hover: rgba(212, 175, 55, 0.1);
+  --share-whatsapp-bg: linear-gradient(180deg, #25d366 0%, #128c7e 100%);
+  --share-whatsapp-fg: #ffffff;
 }
 
 .dark {

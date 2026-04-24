@@ -128,6 +128,41 @@ Registro vivo dos endpoints que o frontend consome em modo MOCK até que o backe
 - **Bruno collection**: pendente — adicionar entry em `c:/repos/Fortuno/Fortuno/bruno` quando o endpoint for definido.
 - **Item de acompanhamento**: pendente de abertura.
 
+### Meus Pontos — Equivalência em BRL no hero
+
+- **Arquivo**: `src/components/points/PointsBalanceHero.tsx`
+- **Rota esperada**: `GET /referral/points/conversion-rate` (taxa atual de conversão pts → BRL)
+- **Descrição**: o chip "≈ R$ X em valor estimado" do hero é renderizado a partir de `panel.totalToReceive` (semântica do v1, BRL bruto). Quando a fórmula real existir, derivar de `totalPoints * rate`.
+- **Item de acompanhamento**: pendente de abertura.
+
+### Meus Pontos — Maior indicação única (mini-stat)
+
+- **Arquivo**: `src/components/points/PointsBalanceHero.tsx`
+- **Rota esperada**: derivado client-side de `panel.byLottery` (max por `purchases`). Sem endpoint dedicado.
+- **Descrição**: o tile "Maior indicação única" mostra o `purchases` máximo entre as linhas e o nome do sorteio. Marcado como `mock` no UI até o backend explicitar a métrica como campo dedicado, evitando ambiguidade ("compras de um amigo? indicações em um sorteio?").
+- **Item de acompanhamento**: pendente de abertura.
+
+### Meus Pontos — Ranking estimado (mini-stat)
+
+- **Arquivo**: `src/components/points/PointsBalanceHero.tsx`
+- **Rota esperada**: `GET /referral/ranking/me` (`{ percentile: number }`)
+- **Descrição**: tile "Ranking estimado" exibe "Top 10%" como placeholder estático; deve consumir o percentile real quando o backend expor. Marcado como `mock` no UI.
+- **Item de acompanhamento**: pendente de abertura.
+
+### Meus Pontos — Detalhes por indicação (modal)
+
+- **Arquivo**: `src/components/points/PointsBreakdownDetailModal.tsx`
+- **Rota esperada**: `GET /referral/breakdown/{lotteryId}/details` (`Array<{ purchaserAlias, paidValue, points, paidAt }>`)
+- **Descrição**: o modal "Detalhes" por sorteio renderiza dados fake (3-5 linhas placeholder) até o endpoint existir. A estrutura visual está pronta. Cada item leva a classe `is-mock` até dado real chegar. Documentado no componente via `// MOCK: aguarda endpoint GET /referral/breakdown/{lotteryId}/details`.
+- **Item de acompanhamento**: pendente de abertura.
+
+### Meus Pontos — Filtro de período
+
+- **Arquivo**: `src/components/points/MyPointsToolbar.tsx`
+- **Rota esperada**: `GET /referral/panel?since=ISO&until=ISO` ou data por compra em `byLottery[]`
+- **Descrição**: a pílula "Período" está visível e exibe um pill "Mock" próximo ao label até o backend suportar filtro temporal. Por enquanto não filtra nada (o `useMemo` em `MyPointsPage` ignora `periodFilter`).
+- **Item de acompanhamento**: pendente de abertura.
+
 ### Home — Imagem de fallback do hero
 
 - **Arquivo**: `public/images/hero-fallback.jpg` (asset estático pendente)

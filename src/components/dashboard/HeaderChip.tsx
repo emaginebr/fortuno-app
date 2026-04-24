@@ -13,6 +13,11 @@ interface PointsVariantProps {
   variant: 'points';
   /** Inteiro de pontos acumulados. Fallback 0 enquanto o backend não expõe. */
   points: number;
+  /**
+   * Quando true, renderiza um span "Aqui" com aria-current="page" no lugar do
+   * link "Extrato". Usado em /meus-pontos para evitar auto-loop de navegação.
+   */
+  currentPage?: boolean;
 }
 
 export type HeaderChipProps = ReferralVariantProps | PointsVariantProps;
@@ -106,7 +111,7 @@ export const HeaderChip = (props: HeaderChipProps): JSX.Element => {
   }
 
   // variant === 'points'
-  const { points } = props;
+  const { points, currentPage = false } = props;
   const labelId = 'header-chip-points-label';
   const formatted = points.toLocaleString('pt-BR');
 
@@ -136,21 +141,36 @@ export const HeaderChip = (props: HeaderChipProps): JSX.Element => {
         </span>
       </div>
 
-      <Link
-        to="/meus-pontos"
-        className={[
-          'inline-flex items-center gap-1 px-2.5 h-8 min-w-[44px] rounded-full shrink-0',
-          'bg-[color:var(--chip-action-bg)] border border-[color:var(--chip-action-border)]',
-          'text-fortuno-gold-soft text-[11px] font-semibold tracking-wide',
-          'transition-all duration-noir-fast',
-          'hover:bg-fortuno-gold-soft hover:text-fortuno-black hover:-translate-y-px',
-          'focus-visible:outline-none focus-visible:shadow-gold-focus',
-        ].join(' ')}
-        aria-label={t('dashboard.pointsExtractAria')}
-      >
-        {t('dashboard.pointsExtract')}
-        <ArrowRight className="w-3 h-3" />
-      </Link>
+      {currentPage ? (
+        <span
+          className={[
+            'chip-action is-current',
+            'inline-flex items-center gap-1 px-2.5 h-8 min-w-[44px] rounded-full shrink-0',
+            'text-[11px] font-semibold tracking-wide',
+          ].join(' ')}
+          aria-current="page"
+          aria-label={t('myPoints.chipCurrent')}
+        >
+          <Check className="w-3 h-3" />
+          {t('myPoints.chipCurrentLabel')}
+        </span>
+      ) : (
+        <Link
+          to="/meus-pontos"
+          className={[
+            'inline-flex items-center gap-1 px-2.5 h-8 min-w-[44px] rounded-full shrink-0',
+            'bg-[color:var(--chip-action-bg)] border border-[color:var(--chip-action-border)]',
+            'text-fortuno-gold-soft text-[11px] font-semibold tracking-wide',
+            'transition-all duration-noir-fast',
+            'hover:bg-fortuno-gold-soft hover:text-fortuno-black hover:-translate-y-px',
+            'focus-visible:outline-none focus-visible:shadow-gold-focus',
+          ].join(' ')}
+          aria-label={t('dashboard.pointsExtractAria')}
+        >
+          {t('dashboard.pointsExtract')}
+          <ArrowRight className="w-3 h-3" />
+        </Link>
+      )}
     </div>
   );
 };

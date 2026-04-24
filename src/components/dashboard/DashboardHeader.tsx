@@ -9,6 +9,11 @@ export interface DashboardHeaderProps {
   referralCode?: string | null;
   /** Inteiro de pontos acumulados. Fallback 0. */
   totalPoints: number;
+  /**
+   * Quando true, o chip "pontos" renderiza-se como "Aqui" (aria-current="page")
+   * em vez do CTA "Extrato". Usado em /meus-pontos.
+   */
+  pointsChipCurrentPage?: boolean;
 }
 
 /**
@@ -19,6 +24,7 @@ export const DashboardHeader = ({
   user,
   referralCode,
   totalPoints,
+  pointsChipCurrentPage = false,
 }: DashboardHeaderProps): JSX.Element => {
   const { t } = useTranslation();
   const initials = getInitials(user?.name);
@@ -70,7 +76,11 @@ export const DashboardHeader = ({
             {referralCode ? (
               <HeaderChip variant="referral" code={referralCode} />
             ) : null}
-            <HeaderChip variant="points" points={totalPoints} />
+            <HeaderChip
+              variant="points"
+              points={totalPoints}
+              currentPage={pointsChipCurrentPage}
+            />
           </div>
         </div>
       </div>

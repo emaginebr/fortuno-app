@@ -110,6 +110,16 @@ export default {
         'about-vault-paper': 'var(--about-vault-paper)',
         'contact-hero-halo': 'var(--contact-hero-halo)',
         'inst-halo': 'var(--inst-halo)',
+        'balance-hero-frame': 'var(--balance-hero-frame)',
+        'balance-hero-paper': 'var(--balance-hero-paper)',
+        'balance-hero-numeral': 'var(--balance-hero-numeral-grad)',
+        'balance-hero-divider': 'var(--balance-hero-divider)',
+        'hero-howto': 'var(--hero-howto-bg)',
+        'hero-stat-numeral': 'var(--hero-stat-numeral-grad)',
+        'breakdown-thead': 'var(--breakdown-thead-bg)',
+        'breakdown-points': 'var(--breakdown-points-grad)',
+        'disclaimer': 'var(--disclaimer-bg)',
+        'share-whatsapp': 'var(--share-whatsapp-bg)',
       },
       transitionTimingFunction: {
         'noir-out': 'cubic-bezier(0.22, 1, 0.36, 1)',
@@ -246,6 +256,22 @@ export default {
           '0%': { left: '-100%' },
           '100%': { left: '200%' },
         },
+        'points-count-in': {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(6px)',
+            letterSpacing: '-0.06em',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0)',
+            letterSpacing: '-0.035em',
+          },
+        },
+        'hero-rise': {
+          '0%': { opacity: '0', transform: 'translateY(10px) scale(0.992)' },
+          '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+        },
       },
       animation: {
         'marker-breath': 'marker-breath 2.6s ease-in-out infinite',
@@ -278,6 +304,9 @@ export default {
           'ticket-stagger-in 460ms cubic-bezier(0.22, 1, 0.36, 1) both',
         'voucher-shimmer':
           'voucher-shimmer 1.6s cubic-bezier(0.22, 1, 0.36, 1) infinite',
+        'points-count-in':
+          'points-count-in 720ms cubic-bezier(0.22, 1, 0.36, 1) both',
+        'hero-rise': 'hero-rise 520ms cubic-bezier(0.22, 1, 0.36, 1) both',
       },
     },
   },
