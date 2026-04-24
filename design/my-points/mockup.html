@@ -1,0 +1,2119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fortuno — Meus Pontos (Editorial Casino Noir · Extrato Premium)</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700;1,800;1,900&display=swap"
+    rel="stylesheet"
+  />
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            fortuno: {
+              green: { deep: '#0a2a20', elegant: '#134436' },
+              gold:  { intense: '#b8963f', soft: '#d4af37' },
+              black: '#0b0b0b',
+              offwhite: '#ece8e1',
+              paper: '#f7f3ec',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['"Playfair Display"', 'Georgia', 'serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* ===========================================================
+       MEUS PONTOS — Editorial Casino Noir · "Extrato Premium"
+       Continuação direta de dashboard/, my-numbers/, lottery-detail/.
+       Reuso máximo de tokens; novos tokens isolados em §"NEW".
+       =========================================================== */
+    :root {
+      /* ===== Marca ===== */
+      --fortuno-green-deep:    #0a2a20;
+      --fortuno-green-elegant: #134436;
+      --fortuno-gold-intense:  #b8963f;
+      --fortuno-gold-soft:     #d4af37;
+      --fortuno-black:         #0b0b0b;
+      --fortuno-offwhite:      #ece8e1;
+      --fortuno-paper:         #f7f3ec;
+
+      /* ===== REUSO dashboard/my-numbers ===== */
+      --page-bg:
+        radial-gradient(1000px 500px at 80% -10%, rgba(184,150,63,0.06), transparent 65%),
+        radial-gradient(800px 500px at -10% 110%, rgba(19,68,54,0.04), transparent 55%),
+        linear-gradient(180deg, #f7f3ec 0%, #f1ece3 60%, #ece8e1 100%);
+      --dash-header-bg:
+        radial-gradient(900px 300px at 85% 0%, rgba(212,175,55,0.14), transparent 60%),
+        radial-gradient(700px 400px at 15% 110%, rgba(184,150,63,0.10), transparent 65%),
+        linear-gradient(180deg, #061d17 0%, #0a2a20 55%, #07201a 100%);
+      --topbar-bg: linear-gradient(180deg, #061d17 0%, #0a2a20 100%);
+      --topbar-border-bottom: linear-gradient(90deg,
+        transparent 0%, rgba(212,175,55,0.55) 20%, rgba(212,175,55,0.75) 50%,
+        rgba(212,175,55,0.55) 80%, transparent 100%);
+      --dash-footer-band-bg: linear-gradient(180deg, #0a2a20 0%, #0f3a2d 100%);
+      --gold-divider:      linear-gradient(90deg, transparent, rgba(212,175,55,0.55), transparent);
+      --gold-divider-soft: linear-gradient(90deg, transparent, rgba(184,150,63,0.28), transparent);
+      --chip-glass-bg:     linear-gradient(180deg, rgba(236,232,225,0.10), rgba(236,232,225,0.04));
+      --chip-glass-border:       rgba(212,175,55,0.32);
+      --chip-glass-border-hover: rgba(212,175,55,0.55);
+      --avatar-ring: conic-gradient(from 220deg,
+        rgba(212,175,55,0) 0deg, rgba(212,175,55,0.75) 120deg,
+        rgba(184,150,63,0.6) 220deg, rgba(212,175,55,0) 360deg);
+      --shadow-gold-focus: 0 0 0 3px rgba(212,175,55,0.55);
+
+      /* Toolbar editorial — REUSO my-numbers */
+      --toolbar-card-bg:
+        linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(247,243,236,0.82) 100%);
+      --toolbar-card-border: rgba(184,150,63,0.32);
+      --toolbar-card-shadow:
+        0 1px 0 rgba(255,255,255,0.85) inset,
+        0 12px 28px -18px rgba(10,42,32,0.18),
+        0 4px 10px -4px rgba(184,150,63,0.10);
+      --filter-pill-bg: rgba(255,255,255,0.65);
+      --filter-pill-border: rgba(184,150,63,0.30);
+      --filter-pill-bg-hover: rgba(212,175,55,0.10);
+      --filter-pill-border-hover: rgba(184,150,63,0.55);
+      --filter-pill-bg-active:
+        linear-gradient(180deg, rgba(212,175,55,0.18), rgba(184,150,63,0.12));
+      --filter-pill-border-active: rgba(212,175,55,0.65);
+
+      /* Cards papel — REUSO dashboard */
+      --card-paper-bg:           #ffffff;
+      --card-paper-border:       rgba(11,11,11,0.08);
+      --card-paper-border-hover: rgba(184,150,63,0.45);
+      --shadow-paper:
+        0 1px 0 rgba(255,255,255,0.8) inset,
+        0 10px 20px -16px rgba(10,42,32,0.18),
+        0 3px 6px -3px rgba(184,150,63,0.08);
+      --shadow-paper-hover:
+        0 1px 0 rgba(255,255,255,0.9) inset,
+        0 18px 34px -20px rgba(10,42,32,0.26),
+        0 6px 12px -4px rgba(184,150,63,0.28);
+      --card-gold-bar: linear-gradient(90deg,
+        rgba(212,175,55,0) 0%, rgba(212,175,55,0.85) 30%,
+        rgba(19,68,54,0.85) 70%, rgba(212,175,55,0) 100%);
+      --stat-numeral-gradient:
+        linear-gradient(180deg,
+          var(--fortuno-gold-soft) 0%,
+          var(--fortuno-gold-intense) 55%,
+          var(--fortuno-green-elegant) 130%);
+
+      /* Modal — REUSO lottery-detail */
+      --modal-overlay: rgba(6,29,23,0.72);
+      --modal-bg: linear-gradient(180deg, #fdfaf0 0%, #f3ecd6 100%);
+      --modal-border: rgba(184,150,63,0.45);
+      --modal-shadow:
+        0 2px 0 rgba(255,255,255,0.55) inset,
+        0 40px 80px -20px rgba(10,42,32,0.55),
+        0 16px 30px -10px rgba(184,150,63,0.30),
+        0 0 0 1px rgba(184,150,63,0.10);
+
+      /* Empty state — REUSO my-numbers */
+      --empty-bg:
+        radial-gradient(600px 320px at 50% -10%, rgba(212,175,55,0.10), transparent 65%),
+        linear-gradient(180deg, #fbf7ee 0%, #f3ecd6 100%);
+      --empty-border: rgba(184,150,63,0.55);
+
+      /* Skeleton — REUSO global */
+      --skeleton-base: rgba(184,150,63,0.10);
+      --skeleton-shimmer:
+        linear-gradient(90deg, transparent 0%,
+          rgba(212,175,55,0.18) 40%,
+          rgba(212,175,55,0.32) 50%,
+          rgba(212,175,55,0.18) 60%,
+          transparent 100%);
+
+      /* Easing */
+      --duration-fast: 160ms;
+      --duration-base: 240ms;
+      --duration-slow: 420ms;
+      --easing-out:    cubic-bezier(0.22, 1, 0.36, 1);
+      --easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+      /* ============================================================
+         === NEW · BALANCE HERO (extrato premium, borda dupla ouro) ===
+         ============================================================ */
+      /* Frame externo "metálico" do hero — gradient dourado em borda */
+      --balance-hero-frame:
+        linear-gradient(135deg,
+          #d4af37 0%, #b8963f 25%, #f5dc8b 50%, #b8963f 75%, #8a6f2b 100%);
+      /* Papel interno (off-white quente) */
+      --balance-hero-paper:
+        radial-gradient(110% 80% at 0% 0%, rgba(255,250,232,0.85) 0%, transparent 55%),
+        radial-gradient(120% 100% at 100% 100%, rgba(247,243,236,0.85) 0%, transparent 60%),
+        linear-gradient(180deg, #fdfaf0 0%, #f3ecd6 100%);
+      --balance-hero-shadow:
+        0 1px 0 rgba(255,255,255,0.85) inset,
+        0 24px 48px -22px rgba(10,42,32,0.32),
+        0 8px 18px -8px rgba(184,150,63,0.22);
+      /* Watermark FORTUNO · EXTRATO */
+      --balance-hero-watermark: rgba(184,150,63,0.06);
+      /* Numeral GIGANTE de pontos — gradient ouro→verde */
+      --balance-hero-numeral-grad:
+        linear-gradient(180deg,
+          #f5dc8b 0%, #d4af37 30%, #b8963f 60%, #134436 130%);
+      /* Filete vertical entre zonas (apenas desktop) */
+      --balance-hero-divider:
+        linear-gradient(180deg, transparent 0%, rgba(184,150,63,0.45) 50%, transparent 100%);
+
+      /* Mini-stats grid (dentro do hero, zona central) */
+      --hero-stat-bg:        rgba(255,255,255,0.55);
+      --hero-stat-border:    rgba(184,150,63,0.18);
+      --hero-stat-numeral-grad:
+        linear-gradient(180deg, var(--fortuno-gold-soft) 0%, var(--fortuno-gold-intense) 60%, var(--fortuno-green-elegant) 130%);
+
+      /* Card "Como funcionam" (zona direita do hero) */
+      --hero-howto-bg:
+        linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(247,243,236,0.78) 100%);
+      --hero-howto-border: rgba(19,68,54,0.18);
+
+      /* ============================================================
+         === NEW · BREAKDOWN TABLE (extrato editorial premium) ===
+         ============================================================ */
+      --breakdown-card-bg: #ffffff;
+      --breakdown-card-border: rgba(184,150,63,0.30);
+      --breakdown-card-shadow:
+        0 1px 0 rgba(255,255,255,0.85) inset,
+        0 14px 30px -22px rgba(10,42,32,0.22),
+        0 4px 10px -4px rgba(184,150,63,0.10);
+      --breakdown-thead-bg:
+        linear-gradient(180deg, rgba(247,243,236,0.85) 0%, rgba(255,255,255,0.92) 100%);
+      --breakdown-row-zebra: rgba(212,175,55,0.03);
+      --breakdown-row-hover: rgba(212,175,55,0.08);
+      --breakdown-row-divider: rgba(11,11,11,0.06);
+      --breakdown-points-grad:
+        linear-gradient(180deg, var(--fortuno-gold-soft), var(--fortuno-gold-intense));
+
+      /* ============================================================
+         === NEW · DISCLAIMER ORNAMENT (institucional) ===
+         ============================================================ */
+      --disclaimer-bg:
+        linear-gradient(180deg, rgba(255,250,232,0.55) 0%, rgba(247,243,236,0.45) 100%);
+      --disclaimer-border: rgba(184,150,63,0.42);
+      --disclaimer-icon-bg: rgba(184,150,63,0.10);
+      --disclaimer-icon-border: rgba(184,150,63,0.40);
+
+      /* ============================================================
+         === NEW · SHARE MODAL (botões de canal) ===
+         ============================================================ */
+      --share-channel-bg: rgba(255,255,255,0.78);
+      --share-channel-border: rgba(184,150,63,0.30);
+      --share-channel-bg-hover: rgba(212,175,55,0.10);
+      --share-whatsapp-bg: linear-gradient(180deg, #25d366 0%, #128c7e 100%);
+      --share-whatsapp-fg: #ffffff;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--page-bg);
+      color: var(--fortuno-black);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      pointer-events: none;
+      opacity: 0.04;
+      mix-blend-mode: multiply;
+      background-image: radial-gradient(rgba(10,42,32,0.5) 1px, transparent 1px);
+      background-size: 3px 3px;
+      z-index: 0;
+    }
+    .font-display { font-family: 'Playfair Display', Georgia, serif; letter-spacing: -0.01em; }
+
+    /* ===========================================================
+       TOPBAR + HEADER ESCURO (REUSO compacto do dashboard/my-numbers)
+       =========================================================== */
+    .site-topbar {
+      background: var(--topbar-bg);
+      color: var(--fortuno-offwhite);
+      position: sticky; top: 0; z-index: 40;
+      isolation: isolate;
+    }
+    .site-topbar::after {
+      content: '';
+      position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+      background: var(--topbar-border-bottom);
+      opacity: 0.85;
+    }
+    .site-wordmark {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-size: 22px; letter-spacing: 0.01em;
+      color: var(--fortuno-offwhite);
+      display: inline-flex; align-items: center; line-height: 1; user-select: none;
+    }
+    .site-wordmark .dot-gold {
+      display: inline-block; width: 6px; height: 6px;
+      background: var(--fortuno-gold-soft); border-radius: 50%;
+      margin-left: 1px; transform: translateY(-11px);
+      box-shadow: 0 0 8px rgba(212,175,55,0.45);
+    }
+    .site-nav-link {
+      position: relative; display: inline-flex; align-items: center;
+      padding: 8px 14px; font-size: 13px; font-weight: 500; letter-spacing: 0.01em;
+      color: rgba(236,232,225,0.78); border-radius: 10px;
+      transition: color var(--duration-fast) var(--easing-out),
+                  background var(--duration-fast) var(--easing-out);
+    }
+    .site-nav-link:hover { color: var(--fortuno-gold-soft); }
+    .site-nav-link.is-active {
+      color: var(--fortuno-gold-soft);
+      background: rgba(212,175,55,0.10);
+      border: 1px solid rgba(212,175,55,0.35);
+      padding: 7px 13px;
+    }
+    .user-trigger-min {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 5px 12px 5px 5px;
+      background: rgba(236,232,225,0.04);
+      border: 1px solid rgba(212,175,55,0.28);
+      border-radius: 999px; color: var(--fortuno-offwhite);
+      min-height: 44px;
+    }
+    .user-trigger-min .user-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(145deg, #1c5b48, #0a2a20);
+      border: 1.5px solid rgba(212,175,55,0.45);
+      display: grid; place-items: center;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-style: italic;
+      color: var(--fortuno-gold-soft); font-size: 14px;
+    }
+    .user-trigger-min .user-name {
+      font-size: 13px; font-weight: 600; color: var(--fortuno-offwhite);
+      max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+
+    .dash-header {
+      background: var(--dash-header-bg);
+      color: var(--fortuno-offwhite);
+      position: relative; overflow: hidden; isolation: isolate;
+    }
+    .dash-header::after {
+      content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+      background: var(--gold-divider); opacity: 0.65;
+    }
+    .avatar-frame {
+      position: relative; width: 52px; height: 52px;
+      border-radius: 50%; isolation: isolate; flex-shrink: 0;
+    }
+    .avatar-frame::before {
+      content: ''; position: absolute; inset: -2px; border-radius: 50%;
+      background: var(--avatar-ring);
+      animation: avatar-breath 6s ease-in-out infinite; z-index: -1;
+    }
+    .avatar-frame .avatar-core {
+      width: 100%; height: 100%; border-radius: 50%;
+      background: linear-gradient(145deg, #1c5b48, #0a2a20);
+      border: 2px solid rgba(212,175,55,0.32);
+      display: grid; place-items: center;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-style: italic;
+      color: var(--fortuno-gold-soft); font-size: 20px;
+    }
+    @keyframes avatar-breath {
+      0%, 100% { transform: rotate(0deg) scale(1); opacity: 0.75; }
+      50%      { transform: rotate(180deg) scale(1.03); opacity: 0.95; }
+    }
+    .header-chip {
+      position: relative; display: inline-flex; align-items: center;
+      gap: 10px; padding: 8px 10px 8px 14px; border-radius: 14px;
+      background: var(--chip-glass-bg);
+      border: 1px solid var(--chip-glass-border);
+      backdrop-filter: blur(10px) saturate(140%);
+      min-height: 56px;
+    }
+    .header-chip:hover { border-color: var(--chip-glass-border-hover); }
+    .header-chip .chip-lead {
+      width: 32px; height: 32px; border-radius: 10px;
+      background: rgba(212,175,55,0.12);
+      border: 1px solid rgba(212,175,55,0.32);
+      color: var(--fortuno-gold-soft);
+      display: grid; place-items: center; flex-shrink: 0;
+    }
+    .header-chip .chip-lead i { width: 16px; height: 16px; }
+    .header-chip .chip-label {
+      display: block; font-size: 9px; letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: rgba(236,232,225,0.65); line-height: 1;
+    }
+    .header-chip .chip-value {
+      display: block; font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-size: 22px; line-height: 1.05;
+      color: var(--fortuno-gold-soft);
+      font-variant-numeric: tabular-nums; margin-top: 3px;
+    }
+    .header-chip .chip-value .chip-value-unit {
+      font-size: 11px; font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 600; font-style: normal; letter-spacing: 0.12em;
+      text-transform: uppercase; color: rgba(212,175,55,0.75); margin-left: 4px;
+    }
+    .header-chip .chip-action,
+    .header-chip .chip-copy {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 4px; padding: 0 10px; height: 32px; min-width: 44px;
+      border-radius: 999px;
+      background: rgba(212,175,55,0.12);
+      border: 1px solid rgba(212,175,55,0.40);
+      color: var(--fortuno-gold-soft);
+      font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+    }
+    .header-chip .chip-copy { width: 32px; padding: 0; border-radius: 50%; min-width: 32px; }
+    .header-chip .chip-action:hover,
+    .header-chip .chip-copy:hover {
+      background: var(--fortuno-gold-soft); color: var(--fortuno-black);
+    }
+    .header-chip .chip-action i { width: 13px; height: 13px; }
+    .header-chip .chip-copy i { width: 14px; height: 14px; }
+
+    /* === NOVO: chip de pontos com CTA "página atual" (atenuado) ===
+       Como /meus-pontos é a própria tela do extrato, o link "Extrato"
+       fica desabilitado visualmente — confirmação de "você está aqui". */
+    .header-chip .chip-action.is-current {
+      background: rgba(236,232,225,0.06);
+      border-color: rgba(212,175,55,0.20);
+      color: rgba(212,175,55,0.55);
+      cursor: default;
+      gap: 5px;
+    }
+    .header-chip .chip-action.is-current:hover {
+      background: rgba(236,232,225,0.06);
+      color: rgba(212,175,55,0.55);
+    }
+    .header-chip .chip-action.is-current i {
+      color: rgba(212,175,55,0.55);
+    }
+
+    .eyebrow {
+      font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase;
+      color: rgba(11,11,11,0.55); font-weight: 600;
+    }
+    .eyebrow.on-dark { color: rgba(236,232,225,0.60); }
+    .eyebrow.gold { color: var(--fortuno-gold-intense); }
+
+    /* ===========================================================
+       TOOLBAR EDITORIAL (REUSO my-numbers)
+       =========================================================== */
+    .points-toolbar {
+      position: relative;
+      background: var(--toolbar-card-bg);
+      border: 1px solid var(--toolbar-card-border);
+      border-radius: 20px;
+      padding: 18px 20px 16px;
+      box-shadow: var(--toolbar-card-shadow);
+      backdrop-filter: blur(8px);
+    }
+    .points-toolbar::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: var(--gold-divider); opacity: 0.7;
+      border-radius: 20px 20px 0 0;
+    }
+    .toolbar-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: clamp(24px, 2.6vw, 32px);
+      line-height: 1.05;
+      letter-spacing: -0.015em;
+      color: var(--fortuno-black);
+    }
+    .toolbar-title .italic { font-style: italic; color: var(--fortuno-gold-intense); }
+    .toolbar-counter {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 13px; font-weight: 500;
+      color: rgba(11,11,11,0.55);
+      letter-spacing: 0.02em;
+      margin-left: 8px;
+    }
+    .toolbar-counter strong {
+      color: var(--fortuno-green-elegant); font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .toolbar-subhead {
+      margin-top: 6px;
+      font-size: 13px;
+      color: rgba(11,11,11,0.62);
+      max-width: 60ch;
+      line-height: 1.5;
+    }
+    .toolbar-subhead em {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic; font-weight: 600;
+      color: var(--fortuno-green-elegant);
+    }
+
+    .filter-pills {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 10px;
+    }
+    .filter-pill {
+      position: relative;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 14px 8px 12px;
+      min-height: 40px;
+      border-radius: 999px;
+      background: var(--filter-pill-bg);
+      border: 1px solid var(--filter-pill-border);
+      color: var(--fortuno-black);
+      font-size: 13px; font-weight: 500; letter-spacing: 0.01em;
+      transition: background var(--duration-fast) var(--easing-out),
+                  border-color var(--duration-fast) var(--easing-out);
+      cursor: pointer;
+    }
+    .filter-pill:hover {
+      background: var(--filter-pill-bg-hover);
+      border-color: var(--filter-pill-border-hover);
+    }
+    .filter-pill:focus-visible,
+    .filter-pill:focus-within {
+      outline: none;
+      box-shadow: var(--shadow-gold-focus);
+      border-color: var(--filter-pill-border-active);
+    }
+    .filter-pill.is-active {
+      background: var(--filter-pill-bg-active);
+      border-color: var(--filter-pill-border-active);
+    }
+    .filter-pill .pill-icon {
+      width: 16px; height: 16px;
+      color: var(--fortuno-gold-intense);
+      flex-shrink: 0;
+    }
+    .filter-pill .pill-label {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(11,11,11,0.55);
+    }
+    .filter-pill .pill-chevron {
+      width: 14px; height: 14px;
+      color: rgba(11,11,11,0.45);
+    }
+    .filter-pill .pill-native-select {
+      appearance: none; -webkit-appearance: none;
+      background: transparent; border: none; outline: none;
+      color: var(--fortuno-black);
+      font-size: 13px; font-weight: 600;
+      padding: 0; margin: 0; cursor: pointer;
+      max-width: 200px;
+    }
+    .toolbar-mock-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 1px 6px; border-radius: 4px;
+      background: rgba(184,150,63,0.16);
+      border: 1px dashed rgba(184,150,63,0.45);
+      color: var(--fortuno-gold-intense);
+      font-size: 8px; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      margin-left: 6px;
+    }
+    @media (max-width: 639px) {
+      .filter-pills-scroll {
+        overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none;
+        flex-wrap: nowrap; padding-bottom: 4px;
+      }
+      .filter-pills-scroll::-webkit-scrollbar { display: none; }
+      .filter-pill { flex-shrink: 0; }
+    }
+
+    /* ===========================================================
+       CTAs (REUSO global)
+       =========================================================== */
+    .cta-primary {
+      background: var(--fortuno-gold-intense);
+      color: var(--fortuno-black);
+      border-radius: 999px;
+      padding: 11px 22px;
+      font-weight: 700; font-size: 13px; letter-spacing: 0.02em;
+      box-shadow:
+        0 8px 22px -6px rgba(212,175,55,0.45),
+        0 1px 0 rgba(255,255,255,0.35) inset;
+      display: inline-flex; align-items: center; gap: 8px;
+      min-height: 44px;
+    }
+    .cta-primary:hover {
+      background: var(--fortuno-gold-soft);
+      transform: translateY(-1px);
+    }
+    .cta-primary:focus-visible { outline: none; box-shadow: var(--shadow-gold-focus); }
+    .cta-primary i { width: 15px; height: 15px; }
+
+    .cta-ghost-light {
+      background: transparent;
+      color: var(--fortuno-green-elegant);
+      border: 1px solid rgba(19,68,54,0.25);
+      border-radius: 999px;
+      padding: 9px 16px;
+      font-weight: 600; font-size: 12px;
+      display: inline-flex; align-items: center; gap: 6px;
+      min-height: 38px;
+    }
+    .cta-ghost-light:hover {
+      background: rgba(212,175,55,0.08);
+      border-color: var(--fortuno-gold-intense);
+    }
+    .cta-ghost-light i { width: 13px; height: 13px; }
+
+    /* ===========================================================
+       NEW · BALANCE HERO — extrato premium (3 zonas)
+       =========================================================== */
+    .balance-hero {
+      position: relative;
+      padding: 1.5px;
+      border-radius: 22px;
+      background: var(--balance-hero-frame);
+      box-shadow: var(--balance-hero-shadow);
+      animation: hero-rise 520ms var(--easing-out) both;
+    }
+    @keyframes hero-rise {
+      from { opacity: 0; transform: translateY(10px) scale(0.992); }
+      to   { opacity: 1; transform: translateY(0)    scale(1); }
+    }
+    .balance-hero-inner {
+      position: relative;
+      border-radius: 20px;
+      background: var(--balance-hero-paper);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 0.9fr);
+      gap: 0;
+    }
+    /* Watermark FORTUNO · EXTRATO */
+    .balance-hero-inner::before {
+      content: 'FORTUNO · EXTRATO';
+      position: absolute;
+      bottom: -12px; right: 16px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 900; font-style: italic;
+      font-size: clamp(48px, 8vw, 96px);
+      letter-spacing: -0.03em;
+      color: var(--balance-hero-watermark);
+      pointer-events: none;
+      line-height: 0.85;
+      user-select: none;
+      transform: rotate(-3deg);
+      z-index: 0;
+      white-space: nowrap;
+    }
+    /* Cantos art-déco (4) */
+    .hero-corner {
+      position: absolute;
+      width: 22px; height: 22px;
+      border-color: rgba(184,150,63,0.55);
+      pointer-events: none;
+      z-index: 2;
+    }
+    .hero-corner.is-tl { top: 9px; left: 9px;
+      border-top: 1.5px solid; border-left: 1.5px solid;
+      border-top-left-radius: 8px; }
+    .hero-corner.is-tr { top: 9px; right: 9px;
+      border-top: 1.5px solid; border-right: 1.5px solid;
+      border-top-right-radius: 8px; }
+    .hero-corner.is-bl { bottom: 9px; left: 9px;
+      border-bottom: 1.5px solid; border-left: 1.5px solid;
+      border-bottom-left-radius: 8px; }
+    .hero-corner.is-br { bottom: 9px; right: 9px;
+      border-bottom: 1.5px solid; border-right: 1.5px solid;
+      border-bottom-right-radius: 8px; }
+    .hero-corner::after {
+      content: ''; position: absolute;
+      width: 5px; height: 5px;
+      background: var(--fortuno-gold-soft);
+      transform: rotate(45deg);
+      box-shadow: 0 0 0 1px rgba(184,150,63,0.45);
+    }
+    .hero-corner.is-tl::after { top: -2.5px; left: -2.5px; }
+    .hero-corner.is-tr::after { top: -2.5px; right: -2.5px; }
+    .hero-corner.is-bl::after { bottom: -2.5px; left: -2.5px; }
+    .hero-corner.is-br::after { bottom: -2.5px; right: -2.5px; }
+
+    /* ZONA ESQUERDA — saldo gigante */
+    .hero-zone-balance {
+      position: relative; z-index: 1;
+      padding: 28px 30px 28px 32px;
+      display: flex; flex-direction: column; justify-content: center;
+      gap: 4px;
+      min-width: 0;
+    }
+    .hero-zone-balance .balance-eyebrow {
+      font-size: 10px; letter-spacing: 0.30em;
+      text-transform: uppercase;
+      color: var(--fortuno-gold-intense); font-weight: 700;
+    }
+    .hero-points-numeral {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 800; font-style: italic;
+      font-size: clamp(64px, 9vw, 120px);
+      line-height: 0.92;
+      letter-spacing: -0.035em;
+      background: var(--balance-hero-numeral-grad);
+      -webkit-background-clip: text; background-clip: text;
+      color: transparent;
+      font-variant-numeric: tabular-nums;
+      margin-top: 6px;
+      text-shadow: 0 1px 0 rgba(255,250,232,0.28);
+      animation: points-count-in 720ms var(--easing-out) both;
+    }
+    @keyframes points-count-in {
+      from { opacity: 0; transform: translateY(6px); letter-spacing: -0.06em; }
+      to   { opacity: 1; transform: translateY(0);   letter-spacing: -0.035em; }
+    }
+    .hero-points-sublabel {
+      font-size: 13px;
+      color: rgba(11,11,11,0.65);
+      letter-spacing: 0.04em;
+      margin-top: 2px;
+    }
+    .hero-points-sublabel strong {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic; font-weight: 700;
+      color: var(--fortuno-green-elegant);
+    }
+    /* Mini chip de equivalência em BRL */
+    .hero-equivalent-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.55);
+      border: 1px dashed rgba(184,150,63,0.45);
+      font-size: 12px;
+      color: rgba(11,11,11,0.70);
+      letter-spacing: 0.02em;
+      margin-top: 12px;
+      align-self: flex-start;
+    }
+    .hero-equivalent-chip i {
+      width: 13px; height: 13px;
+      color: var(--fortuno-gold-intense);
+    }
+    .hero-equivalent-chip strong {
+      color: var(--fortuno-green-elegant);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .hero-equivalent-chip sup {
+      color: var(--fortuno-gold-intense);
+      font-size: 9px;
+      font-weight: 700;
+      margin-left: 1px;
+    }
+
+    /* ZONA CENTRAL — mini-stats 2×2 */
+    .hero-zone-stats {
+      position: relative; z-index: 1;
+      padding: 28px 26px 28px 26px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      align-content: center;
+      border-left: 1px solid transparent;
+      border-right: 1px solid transparent;
+      background:
+        linear-gradient(var(--balance-hero-paper), var(--balance-hero-paper)) padding-box,
+        var(--balance-hero-divider) border-box;
+    }
+    .hero-stat {
+      position: relative;
+      background: var(--hero-stat-bg);
+      border: 1px solid var(--hero-stat-border);
+      border-radius: 14px;
+      padding: 14px 14px 12px;
+      display: flex; flex-direction: column; gap: 2px;
+      min-width: 0;
+    }
+    .hero-stat::before {
+      content: ''; position: absolute;
+      top: 0; left: 12px; right: 12px; height: 1px;
+      background: var(--card-gold-bar);
+      opacity: 0.8;
+    }
+    .hero-stat .stat-label {
+      font-size: 9px; letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: rgba(11,11,11,0.55); font-weight: 600;
+      line-height: 1.1;
+    }
+    .hero-stat .stat-numeral {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 800; font-style: italic;
+      font-size: 36px;
+      line-height: 0.95;
+      letter-spacing: -0.025em;
+      background: var(--hero-stat-numeral-grad);
+      -webkit-background-clip: text; background-clip: text;
+      color: transparent;
+      font-variant-numeric: tabular-nums;
+      margin-top: 4px;
+    }
+    .hero-stat .stat-foot {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 10px;
+      color: rgba(11,11,11,0.50);
+      margin-top: 4px;
+      letter-spacing: 0.02em;
+    }
+    .hero-stat .stat-foot i {
+      width: 11px; height: 11px;
+      color: var(--fortuno-gold-intense);
+    }
+    .hero-stat .stat-mock {
+      position: absolute;
+      top: 6px; right: 8px;
+      padding: 1px 5px; border-radius: 4px;
+      background: rgba(184,150,63,0.14);
+      border: 1px dashed rgba(184,150,63,0.40);
+      color: var(--fortuno-gold-intense);
+      font-size: 7px; font-weight: 700;
+      letter-spacing: 0.16em; text-transform: uppercase;
+    }
+
+    /* ZONA DIREITA — Como funcionam os pontos */
+    .hero-zone-howto {
+      position: relative; z-index: 1;
+      padding: 24px 28px 24px 22px;
+      display: flex; flex-direction: column;
+      gap: 10px;
+      background:
+        linear-gradient(var(--hero-howto-bg), var(--hero-howto-bg)) padding-box;
+      border-left: 1px solid transparent;
+      background:
+        linear-gradient(var(--hero-howto-bg), var(--hero-howto-bg)) padding-box,
+        var(--balance-hero-divider) border-box;
+    }
+    .hero-howto-title {
+      display: flex; align-items: baseline; gap: 8px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-style: italic;
+      font-size: 15px;
+      color: var(--fortuno-green-elegant);
+      letter-spacing: -0.005em;
+    }
+    .hero-howto-title .eyebrow-mini {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-style: normal; font-weight: 700;
+      font-size: 9px; letter-spacing: 0.30em;
+      text-transform: uppercase;
+      color: var(--fortuno-gold-intense);
+    }
+    .hero-howto-list {
+      list-style: none; padding: 0; margin: 4px 0 0;
+      display: flex; flex-direction: column;
+      gap: 9px;
+    }
+    .hero-howto-item {
+      display: grid;
+      grid-template-columns: 26px 1fr;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: 12px;
+      color: rgba(11,11,11,0.72);
+      line-height: 1.4;
+    }
+    .hero-howto-item .howto-icon {
+      width: 26px; height: 26px;
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(255,250,232,0.7), rgba(247,243,236,0.55));
+      border: 1px solid rgba(184,150,63,0.32);
+      color: var(--fortuno-gold-intense);
+      display: grid; place-items: center;
+      flex-shrink: 0;
+    }
+    .hero-howto-item .howto-icon i { width: 13px; height: 13px; }
+    .hero-howto-item strong {
+      color: var(--fortuno-black);
+      font-weight: 600;
+    }
+    .hero-howto-cta {
+      margin-top: 8px;
+      align-self: flex-start;
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--fortuno-gold-intense);
+      padding: 4px 10px; border-radius: 999px;
+      transition: color var(--duration-fast) var(--easing-out),
+                  background var(--duration-fast) var(--easing-out);
+    }
+    .hero-howto-cta:hover {
+      color: var(--fortuno-green-elegant);
+      background: rgba(184,150,63,0.10);
+    }
+    .hero-howto-cta i { width: 11px; height: 11px; }
+
+    /* Responsivo do hero — 3 zonas viram coluna em < 1024px */
+    @media (max-width: 1023px) {
+      .balance-hero-inner {
+        grid-template-columns: 1fr;
+      }
+      .hero-zone-stats,
+      .hero-zone-howto {
+        background: linear-gradient(var(--balance-hero-paper), var(--balance-hero-paper));
+        border-top: 1px solid;
+        border-image: var(--balance-hero-divider) 1;
+        border-image-slice: 1;
+      }
+      .hero-zone-howto { background: var(--hero-howto-bg); }
+      .hero-zone-stats { padding-top: 22px; padding-bottom: 22px; }
+    }
+    @media (max-width: 559px) {
+      .hero-zone-balance { padding: 24px 22px 22px; }
+      .hero-zone-stats   { padding: 22px; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .hero-zone-howto   { padding: 22px; }
+      .hero-stat .stat-numeral { font-size: 30px; }
+    }
+
+    /* ===========================================================
+       NEW · BREAKDOWN TABLE — extrato editorial premium (DESKTOP)
+       =========================================================== */
+    .breakdown-card {
+      background: var(--breakdown-card-bg);
+      border: 1px solid var(--breakdown-card-border);
+      border-radius: 18px;
+      box-shadow: var(--breakdown-card-shadow);
+      overflow: hidden;
+      position: relative;
+    }
+    .breakdown-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: var(--card-gold-bar);
+      opacity: 0.85;
+    }
+    .breakdown-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .breakdown-table thead th {
+      background: var(--breakdown-thead-bg);
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic; font-weight: 700;
+      font-size: 13px;
+      color: var(--fortuno-green-elegant);
+      letter-spacing: 0.01em;
+      padding: 14px 18px;
+      text-align: left;
+      border-bottom: 1px solid rgba(184,150,63,0.22);
+    }
+    .breakdown-table thead th.is-num { text-align: right; }
+    .breakdown-table thead th.is-action { text-align: right; width: 120px; }
+    .breakdown-table tbody tr {
+      transition: background var(--duration-fast) var(--easing-out);
+    }
+    .breakdown-table tbody tr:nth-child(even) { background: var(--breakdown-row-zebra); }
+    .breakdown-table tbody tr:hover { background: var(--breakdown-row-hover); }
+    .breakdown-table tbody tr + tr td { border-top: 1px solid var(--breakdown-row-divider); }
+    .breakdown-table tbody td {
+      padding: 14px 18px;
+      vertical-align: middle;
+      color: var(--fortuno-black);
+    }
+    .breakdown-row-name {
+      display: flex; align-items: center; gap: 12px;
+      min-width: 0;
+    }
+    .breakdown-row-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background:
+        linear-gradient(180deg, rgba(255,250,232,0.7), rgba(247,243,236,0.65));
+      border: 1px solid rgba(184,150,63,0.30);
+      color: var(--fortuno-gold-intense);
+      display: grid; place-items: center;
+      flex-shrink: 0;
+    }
+    .breakdown-row-icon i { width: 17px; height: 17px; }
+    .breakdown-row-name .name-text {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--fortuno-black);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      min-width: 0;
+    }
+    .breakdown-row-name .name-sub {
+      display: block;
+      font-size: 11px;
+      color: rgba(11,11,11,0.55);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      margin-top: 2px;
+    }
+    .breakdown-num {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-style: italic;
+      font-size: 18px;
+      color: var(--fortuno-green-elegant);
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+    .breakdown-points {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 800; font-style: italic;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+      background: var(--breakdown-points-grad);
+      -webkit-background-clip: text; background-clip: text;
+      color: transparent;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+      display: inline-block;
+    }
+    .breakdown-points-unit {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 10px; font-style: normal; font-weight: 600;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--fortuno-gold-intense);
+      margin-left: 4px;
+      vertical-align: middle;
+      -webkit-text-fill-color: var(--fortuno-gold-intense);
+    }
+    .breakdown-action {
+      text-align: right;
+    }
+    .breakdown-detail-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: transparent;
+      border: 1px solid rgba(184,150,63,0.40);
+      color: var(--fortuno-gold-intense);
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      transition: all var(--duration-fast) var(--easing-out);
+      min-height: 32px;
+    }
+    .breakdown-detail-btn:hover {
+      background: rgba(212,175,55,0.12);
+      border-color: var(--fortuno-gold-soft);
+      color: var(--fortuno-green-elegant);
+    }
+    .breakdown-detail-btn:focus-visible {
+      outline: none; box-shadow: var(--shadow-gold-focus);
+    }
+    .breakdown-detail-btn i { width: 12px; height: 12px; }
+
+    /* Linha "TOTAL" no rodapé da tabela */
+    .breakdown-table tfoot td {
+      padding: 16px 18px;
+      background:
+        linear-gradient(180deg, rgba(247,243,236,0.55), rgba(255,250,232,0.55));
+      border-top: 1px dashed rgba(184,150,63,0.45);
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic; font-weight: 700;
+    }
+    .breakdown-table tfoot td.label {
+      font-size: 13px;
+      color: var(--fortuno-green-elegant);
+      letter-spacing: 0.02em;
+    }
+    .breakdown-table tfoot td.value {
+      font-size: 22px;
+      text-align: right;
+      background: var(--breakdown-points-grad);
+      -webkit-background-clip: text; background-clip: text;
+      color: transparent;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+
+    /* Responsivo: tabela some, cards aparecem (mobile) */
+    @media (max-width: 767px) {
+      .breakdown-card.is-table { display: none; }
+    }
+    .breakdown-cards { display: none; }
+    @media (max-width: 767px) {
+      .breakdown-cards {
+        display: grid;
+        gap: 12px;
+      }
+    }
+    .breakdown-mobile-card {
+      background: var(--breakdown-card-bg);
+      border: 1px solid var(--breakdown-card-border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      box-shadow: var(--breakdown-card-shadow);
+      display: grid;
+      grid-template-columns: 36px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      position: relative;
+    }
+    .breakdown-mobile-card::before {
+      content: ''; position: absolute; top: 0; left: 12px; right: 12px; height: 1px;
+      background: var(--card-gold-bar); opacity: 0.7;
+    }
+    .breakdown-mobile-card .row-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background:
+        linear-gradient(180deg, rgba(255,250,232,0.7), rgba(247,243,236,0.65));
+      border: 1px solid rgba(184,150,63,0.30);
+      color: var(--fortuno-gold-intense);
+      display: grid; place-items: center;
+    }
+    .breakdown-mobile-card .row-icon i { width: 17px; height: 17px; }
+    .breakdown-mobile-card .row-info { min-width: 0; }
+    .breakdown-mobile-card .row-name {
+      font-weight: 600; font-size: 14px;
+      color: var(--fortuno-black);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .breakdown-mobile-card .row-purchases {
+      font-size: 11px; color: rgba(11,11,11,0.55);
+      font-variant-numeric: tabular-nums;
+      margin-top: 2px;
+    }
+    .breakdown-mobile-card .row-points {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 800; font-style: italic;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+      background: var(--breakdown-points-grad);
+      -webkit-background-clip: text; background-clip: text;
+      color: transparent;
+      font-variant-numeric: tabular-nums;
+    }
+    .breakdown-mobile-card .row-points-unit {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 9px; font-weight: 600;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--fortuno-gold-intense);
+      -webkit-text-fill-color: var(--fortuno-gold-intense);
+      margin-left: 3px; display: inline-block;
+    }
+    .breakdown-mobile-card .row-detail-btn {
+      grid-column: 1 / -1;
+      margin-top: 8px;
+      width: 100%;
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 6px;
+      padding: 8px;
+      border-radius: 10px;
+      background: transparent;
+      border: 1px dashed rgba(184,150,63,0.45);
+      color: var(--fortuno-gold-intense);
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .breakdown-mobile-card .row-detail-btn i { width: 12px; height: 12px; }
+
+    /* Section heading editorial (acima da tabela e da equivalência) */
+    .section-heading {
+      display: flex; align-items: baseline; gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .section-heading .section-eyebrow {
+      font-size: 10px; letter-spacing: 0.30em;
+      text-transform: uppercase;
+      color: var(--fortuno-gold-intense); font-weight: 700;
+    }
+    .section-heading h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: clamp(20px, 2.2vw, 26px);
+      line-height: 1.1;
+      color: var(--fortuno-black);
+      letter-spacing: -0.01em;
+    }
+    .section-heading h2 .italic {
+      font-style: italic; color: var(--fortuno-gold-intense);
+    }
+    .section-heading p {
+      flex-basis: 100%;
+      font-size: 13px;
+      color: rgba(11,11,11,0.62);
+      max-width: 60ch;
+      margin-top: 2px;
+    }
+
+    /* ===========================================================
+       NEW · DISCLAIMER ORNAMENTAL
+       =========================================================== */
+    .disclaimer-ornament {
+      position: relative;
+      background: var(--disclaimer-bg);
+      border: 1px dashed var(--disclaimer-border);
+      border-radius: 18px;
+      padding: 18px 22px 18px 64px;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .disclaimer-ornament::before {
+      content: ''; position: absolute;
+      top: 50%; transform: translateY(-50%);
+      left: -8px; width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--page-bg);
+      border: 1px dashed var(--disclaimer-border);
+    }
+    .disclaimer-ornament::after {
+      content: ''; position: absolute;
+      top: 50%; transform: translateY(-50%);
+      right: -8px; width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--page-bg);
+      border: 1px dashed var(--disclaimer-border);
+    }
+    .disclaimer-icon {
+      position: absolute;
+      left: 18px; top: 18px;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--disclaimer-icon-bg);
+      border: 1px solid var(--disclaimer-icon-border);
+      color: var(--fortuno-gold-intense);
+      display: grid; place-items: center;
+    }
+    .disclaimer-icon i { width: 15px; height: 15px; }
+    .disclaimer-eyebrow {
+      font-size: 9px; letter-spacing: 0.30em;
+      text-transform: uppercase;
+      color: var(--fortuno-gold-intense); font-weight: 700;
+    }
+    .disclaimer-text {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic; font-weight: 500;
+      font-size: 14px;
+      color: rgba(11,11,11,0.72);
+      line-height: 1.55;
+      letter-spacing: -0.005em;
+    }
+
+    /* ===========================================================
+       NEW · EMPTY STATE (sem indicações)
+       =========================================================== */
+    .empty-card {
+      position: relative;
+      background: var(--empty-bg);
+      border: 2px dashed var(--empty-border);
+      border-radius: 24px;
+      padding: 56px 32px 64px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .empty-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: var(--gold-divider);
+      opacity: 0.55;
+    }
+    .empty-card-icon {
+      width: 96px; height: 96px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 40% 35%, rgba(255,250,232,0.5) 0%, transparent 60%),
+        radial-gradient(circle at 60% 70%, rgba(184,150,63,0.20) 0%, transparent 70%),
+        rgba(184,150,63,0.10);
+      border: 1px solid rgba(184,150,63,0.35);
+      display: grid; place-items: center;
+      color: var(--fortuno-gold-intense);
+    }
+    .empty-card-icon i { width: 44px; height: 44px; }
+    .empty-card h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic; font-weight: 700;
+      font-size: clamp(22px, 2.4vw, 30px);
+      line-height: 1.15; color: var(--fortuno-black);
+      letter-spacing: -0.01em;
+      max-width: 32ch; margin: 0 auto;
+    }
+    .empty-card p {
+      margin: 12px auto 0; max-width: 44ch;
+      font-size: 14px; color: rgba(11,11,11,0.62); line-height: 1.55;
+    }
+    .empty-card .cta-primary { margin-top: 24px; }
+
+    /* ===========================================================
+       NEW · SKELETONS (loading)
+       =========================================================== */
+    .skel-block {
+      background: var(--skeleton-base);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .skel-block::before {
+      content: ''; position: absolute; inset: 0;
+      background: var(--skeleton-shimmer);
+      background-size: 200% 100%;
+      animation: skel-shimmer 1.4s linear infinite;
+      mix-blend-mode: overlay;
+    }
+    @keyframes skel-shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .skel-hero {
+      width: 100%;
+      border-radius: 22px;
+      background:
+        linear-gradient(180deg, #fdfaf0 0%, #f3ecd6 100%);
+      border: 1px solid rgba(184,150,63,0.18);
+      padding: 28px 30px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 0.9fr);
+      gap: 22px;
+      min-height: 220px;
+    }
+    @media (max-width: 1023px) {
+      .skel-hero { grid-template-columns: 1fr; }
+    }
+
+    /* ===========================================================
+       NEW · SHARE MODAL (Indicar amigos)
+       =========================================================== */
+    .modal-overlay {
+      background: var(--modal-overlay);
+      backdrop-filter: blur(6px);
+      padding: 24px;
+      border-radius: 20px;
+      display: grid; place-items: center;
+      min-height: 600px;
+    }
+    .modal-card {
+      width: 100%; max-width: 520px;
+      background: var(--modal-bg);
+      border: 1px solid var(--modal-border);
+      border-radius: 22px;
+      box-shadow: var(--modal-shadow);
+      overflow: hidden;
+      position: relative;
+      animation: modal-pop 220ms var(--easing-spring) both;
+    }
+    @keyframes modal-pop {
+      from { opacity: 0; transform: scale(0.96) translateY(8px); }
+      to   { opacity: 1; transform: scale(1)    translateY(0); }
+    }
+    .modal-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: var(--gold-divider);
+    }
+    .modal-header {
+      display: flex; align-items: center; gap: 14px;
+      padding: 20px 22px 12px;
+    }
+    .modal-icon-frame {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background:
+        linear-gradient(180deg, rgba(255,250,232,0.85), rgba(247,243,236,0.75));
+      border: 1px solid rgba(184,150,63,0.45);
+      color: var(--fortuno-gold-intense);
+      display: grid; place-items: center;
+      flex-shrink: 0;
+    }
+    .modal-icon-frame i { width: 20px; height: 20px; }
+    .modal-titleblock { flex: 1; min-width: 0; }
+    .modal-eyebrow {
+      font-size: 10px; letter-spacing: 0.30em; text-transform: uppercase;
+      color: var(--fortuno-gold-intense); font-weight: 700;
+    }
+    .modal-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-style: italic;
+      font-size: 22px;
+      color: var(--fortuno-black);
+      letter-spacing: -0.01em;
+      margin-top: 2px;
+    }
+    .modal-close {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(11,11,11,0.06); color: rgba(11,11,11,0.65);
+      display: grid; place-items: center;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+    .modal-close:hover {
+      background: rgba(184,150,63,0.18); color: var(--fortuno-black);
+    }
+    .modal-close i { width: 17px; height: 17px; }
+    .modal-body { padding: 4px 22px 22px; }
+    .modal-divider {
+      height: 1px; margin: 16px 0;
+      background: var(--gold-divider-soft);
+    }
+
+    .share-message-block {
+      position: relative;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.82), rgba(247,243,236,0.62));
+      border: 1px solid rgba(184,150,63,0.30);
+      border-radius: 14px;
+      padding: 14px 16px 14px 16px;
+    }
+    .share-message-block .msg-eyebrow {
+      font-size: 9px; letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: rgba(11,11,11,0.55); font-weight: 700;
+    }
+    .share-message-block textarea {
+      width: 100%;
+      background: transparent; border: none; outline: none;
+      resize: vertical;
+      min-height: 76px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 13px;
+      color: rgba(11,11,11,0.85);
+      line-height: 1.5;
+      margin-top: 6px;
+      padding: 0;
+    }
+    .share-message-block .msg-code {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700; font-style: italic;
+      color: var(--fortuno-gold-intense);
+    }
+
+    .share-channels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .share-channel {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 8px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 0.02em;
+      min-height: 48px;
+      background: var(--share-channel-bg);
+      border: 1px solid var(--share-channel-border);
+      color: var(--fortuno-black);
+      transition: all var(--duration-fast) var(--easing-out);
+    }
+    .share-channel:hover {
+      background: var(--share-channel-bg-hover);
+      border-color: var(--fortuno-gold-soft);
+      transform: translateY(-1px);
+    }
+    .share-channel i { width: 15px; height: 15px; color: var(--fortuno-gold-intense); }
+    .share-channel.is-whatsapp {
+      background: var(--share-whatsapp-bg);
+      border-color: rgba(37,211,102,0.45);
+      color: var(--share-whatsapp-fg);
+      grid-column: 1 / -1;
+    }
+    .share-channel.is-whatsapp i { color: #fff; }
+    .share-channel.is-whatsapp:hover {
+      filter: brightness(1.06);
+      transform: translateY(-1px);
+    }
+    .share-channel:focus-visible {
+      outline: none; box-shadow: var(--shadow-gold-focus);
+    }
+
+    /* ===========================================================
+       FOOTER BAND (REUSO dashboard)
+       =========================================================== */
+    .dash-footer-band {
+      background: var(--dash-footer-band-bg);
+      color: var(--fortuno-offwhite);
+      position: relative; overflow: hidden;
+    }
+    .dash-footer-band::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: var(--gold-divider); opacity: 0.55;
+    }
+    .footer-ornament {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: rgba(212,175,55,0.55);
+    }
+    .footer-ornament::before, .footer-ornament::after {
+      content: ''; width: 18px; height: 1px; background: rgba(212,175,55,0.35);
+    }
+    .footer-ornament .deco-diamond {
+      width: 6px; height: 6px; background: var(--fortuno-gold-soft);
+      transform: rotate(45deg);
+      box-shadow: 0 0 0 1px rgba(212,175,55,0.20);
+    }
+    .footer-link {
+      color: rgba(236,232,225,0.70);
+      font-size: 12px; font-weight: 500; letter-spacing: 0.02em;
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 6px; border-radius: 6px;
+    }
+    .footer-link i { width: 13px; height: 13px; }
+    .footer-link:hover { color: var(--fortuno-gold-soft); }
+
+    /* ===========================================================
+       Reduced motion
+       =========================================================== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition-duration: 1ms !important;
+      }
+      .breakdown-table tbody tr:hover { background: transparent; }
+      .balance-hero { transform: none !important; }
+    }
+
+    /* ===========================================================
+       Mockup-only — preview labels
+       =========================================================== */
+    .preview-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(11,11,11,0.06);
+      border: 1px dashed rgba(184,150,63,0.45);
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--fortuno-green-elegant);
+    }
+    .preview-label::before {
+      content: '◆'; color: var(--fortuno-gold-intense); font-size: 9px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =====================================================
+       0. TOPBAR GLOBAL (REUSO dashboard)
+       ===================================================== -->
+  <div class="site-topbar">
+    <div class="relative z-10 mx-auto max-w-7xl px-6 flex items-center justify-between gap-4"
+         style="height: 64px;">
+      <a href="/" class="site-wordmark" aria-label="Fortuno — ir para a home">
+        Fortuno<span class="dot-gold" aria-hidden="true"></span>
+      </a>
+      <nav class="hidden md:flex items-center gap-1" aria-label="Menu principal">
+        <a href="/sorteios" class="site-nav-link">Sorteios</a>
+        <a href="/meus-numeros" class="site-nav-link">Meus Números</a>
+        <a href="/quem-somos" class="site-nav-link">Quem Somos</a>
+        <a href="/fale-conosco" class="site-nav-link">Fale Conosco</a>
+      </nav>
+      <div class="flex items-center gap-2">
+        <button type="button"
+          class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-full
+                 border border-[color:rgba(212,175,55,0.28)] bg-[color:rgba(236,232,225,0.04)]
+                 text-fortuno-gold-soft"
+          aria-label="Abrir menu de navegação">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+        <button type="button" class="user-trigger-min" aria-label="Menu da minha conta">
+          <span class="user-avatar" aria-hidden="true">RL</span>
+          <span class="user-name">Rodrigo</span>
+          <i data-lucide="chevron-down" style="width:15px;height:15px;color:rgba(212,175,55,0.75)"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       1. HEADER ESCURO (REUSO DashboardHeader)
+       Chip de pontos: "Extrato" em estado is-current (página atual).
+       ===================================================== -->
+  <header class="dash-header" aria-labelledby="page-greeting">
+    <div class="relative z-10 mx-auto max-w-7xl px-6 pt-6 pb-6 md:pt-8 md:pb-8">
+      <div class="grid items-center gap-5"
+           style="grid-template-columns: auto 1fr auto auto;">
+        <div class="avatar-frame" aria-hidden="true">
+          <div class="avatar-core">RL</div>
+        </div>
+        <div class="min-w-0">
+          <span class="eyebrow on-dark gold">Painel Fortuno</span>
+          <h1 id="page-greeting"
+              class="font-display text-fortuno-offwhite leading-tight mt-0.5
+                     text-[clamp(20px,2.4vw,28px)] tracking-[-0.01em]">
+            Olá, <span class="italic text-fortuno-gold-soft">Rodrigo</span>.
+          </h1>
+        </div>
+        <div class="contents">
+          <div class="relative header-chip" role="group" aria-label="Código de indicação">
+            <div class="chip-lead" aria-hidden="true"><i data-lucide="hash"></i></div>
+            <div class="flex flex-col min-w-0">
+              <span class="chip-label">Código de indicação</span>
+              <span class="chip-value">FORT-R0D1G0</span>
+            </div>
+            <button type="button" class="chip-copy" aria-label="Copiar código">
+              <i data-lucide="copy"></i>
+            </button>
+          </div>
+          <div class="header-chip" role="group" aria-label="Total de pontos">
+            <div class="chip-lead" aria-hidden="true"><i data-lucide="sparkles"></i></div>
+            <div class="flex flex-col min-w-0">
+              <span class="chip-label">Total de pontos</span>
+              <span class="chip-value">1.247<span class="chip-value-unit">pts</span></span>
+            </div>
+            <span class="chip-action is-current"
+                  aria-current="page"
+                  aria-label="Você está no extrato de pontos">
+              <i data-lucide="check"></i>
+              Aqui
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- =====================================================
+       2. CORPO CLARO — Toolbar + Hero + Breakdown + Disclaimer
+       ===================================================== -->
+  <main class="relative z-10 mx-auto max-w-7xl px-6 py-8 md:py-10 flex flex-col gap-8 md:gap-10">
+
+    <!-- ===== 2.1 TOOLBAR EDITORIAL ===== -->
+    <section aria-labelledby="my-points-title">
+      <div class="points-toolbar">
+        <div class="flex items-start lg:items-center justify-between gap-4 flex-col lg:flex-row">
+          <div class="min-w-0">
+            <span class="eyebrow gold">Extrato</span>
+            <h2 id="my-points-title" class="toolbar-title mt-1">
+              Meus <span class="italic">Pontos</span>
+              <span class="toolbar-counter">· <strong>17</strong> indicações · <strong>1.247</strong> pts</span>
+            </h2>
+            <p class="toolbar-subhead">
+              Acompanhe suas indicações e o saldo acumulado por sorteio. Cada compra confirmada
+              <em>vira pontos</em> que se acumulam sem expirar.
+            </p>
+          </div>
+          <button type="button"
+                  class="cta-primary self-start lg:self-auto"
+                  aria-label="Abrir modal de indicação"
+                  onclick="document.getElementById('shareModal').scrollIntoView({behavior:'smooth'})">
+            <i data-lucide="share-2"></i>
+            Indicar amigos
+          </button>
+        </div>
+
+        <div class="filter-pills filter-pills-scroll mt-5">
+          <label class="filter-pill is-active" for="filter-lottery">
+            <i data-lucide="trophy" class="pill-icon"></i>
+            <span class="flex flex-col leading-tight">
+              <span class="pill-label">Sorteio</span>
+              <select id="filter-lottery" class="pill-native-select" aria-label="Filtrar por sorteio">
+                <option>Todos os sorteios</option>
+                <option>Porsche 911 Mega Edição #012</option>
+                <option>Civic Type R · Garage</option>
+                <option>Diamante Fortuno 2026</option>
+                <option>Apartamento Vista Mar</option>
+              </select>
+            </span>
+            <i data-lucide="chevron-down" class="pill-chevron"></i>
+          </label>
+
+          <label class="filter-pill" for="filter-period">
+            <i data-lucide="calendar-range" class="pill-icon"></i>
+            <span class="flex flex-col leading-tight">
+              <span class="pill-label">
+                Período
+                <span class="toolbar-mock-tag" title="Endpoint pendente">Mock</span>
+              </span>
+              <select id="filter-period" class="pill-native-select" aria-label="Filtrar por período">
+                <option>Todo o histórico</option>
+                <option>Últimos 30 dias</option>
+                <option>Últimos 90 dias</option>
+                <option>Este ano</option>
+              </select>
+            </span>
+            <i data-lucide="chevron-down" class="pill-chevron"></i>
+          </label>
+
+          <label class="filter-pill" for="filter-sort">
+            <i data-lucide="arrow-down-up" class="pill-icon"></i>
+            <span class="flex flex-col leading-tight">
+              <span class="pill-label">Ordenar</span>
+              <select id="filter-sort" class="pill-native-select" aria-label="Ordenação">
+                <option>Mais pontos</option>
+                <option>Mais indicações</option>
+                <option>Mais recente</option>
+              </select>
+            </span>
+            <i data-lucide="chevron-down" class="pill-chevron"></i>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 2.2 HERO DE SALDO DE PONTOS — wow moment ===== -->
+    <section aria-labelledby="balance-hero-title">
+      <h2 id="balance-hero-title" class="sr-only">Saldo atual de pontos</h2>
+      <div class="balance-hero">
+        <div class="balance-hero-inner">
+          <span class="hero-corner is-tl" aria-hidden="true"></span>
+          <span class="hero-corner is-tr" aria-hidden="true"></span>
+          <span class="hero-corner is-bl" aria-hidden="true"></span>
+          <span class="hero-corner is-br" aria-hidden="true"></span>
+
+          <!-- ZONA ESQUERDA — saldo gigante -->
+          <div class="hero-zone-balance">
+            <span class="balance-eyebrow">Saldo atual</span>
+            <div class="hero-points-numeral"
+                 aria-label="1.247 pontos acumulados">
+              1.247
+            </div>
+            <span class="hero-points-sublabel">
+              <strong>pontos</strong> acumulados
+            </span>
+
+            <span class="hero-equivalent-chip">
+              <i data-lucide="coins"></i>
+              ≈ <strong>R$&nbsp;124,70</strong> em valor estimado<sup>*</sup>
+            </span>
+          </div>
+
+          <!-- ZONA CENTRAL — mini-stats 2×2 -->
+          <div class="hero-zone-stats" role="group" aria-label="Resumo das indicações">
+            <div class="hero-stat">
+              <span class="stat-label">Total de indicações</span>
+              <span class="stat-numeral">17</span>
+              <span class="stat-foot">
+                <i data-lucide="users"></i>
+                amigos compraram
+              </span>
+            </div>
+            <div class="hero-stat">
+              <span class="stat-label">Sorteios alcançados</span>
+              <span class="stat-numeral">5</span>
+              <span class="stat-foot">
+                <i data-lucide="trophy"></i>
+                com indicações ativas
+              </span>
+            </div>
+            <div class="hero-stat">
+              <span class="stat-mock">Mock</span>
+              <span class="stat-label">Maior indicação única</span>
+              <span class="stat-numeral">7</span>
+              <span class="stat-foot">
+                <i data-lucide="trending-up"></i>
+                em Porsche #012
+              </span>
+            </div>
+            <div class="hero-stat">
+              <span class="stat-mock">Mock</span>
+              <span class="stat-label">Ranking estimado</span>
+              <span class="stat-numeral" style="font-size: 28px;">Top&nbsp;10%</span>
+              <span class="stat-foot">
+                <i data-lucide="award"></i>
+                entre indicantes
+              </span>
+            </div>
+          </div>
+
+          <!-- ZONA DIREITA — Como funcionam os pontos -->
+          <div class="hero-zone-howto">
+            <div class="hero-howto-title">
+              <span class="eyebrow-mini">Como funcionam</span>
+            </div>
+            <div class="hero-howto-title" style="font-size: 17px;">
+              os <span style="color: var(--fortuno-gold-intense);">pontos</span>
+            </div>
+            <ul class="hero-howto-list">
+              <li class="hero-howto-item">
+                <span class="howto-icon"><i data-lucide="users"></i></span>
+                <span>Cada indicação que <strong>efetua compra</strong> gera pontos automaticamente.</span>
+              </li>
+              <li class="hero-howto-item">
+                <span class="howto-icon"><i data-lucide="gift"></i></span>
+                <span>Pontos podem virar <strong>prêmios e descontos</strong> em sorteios futuros.</span>
+              </li>
+              <li class="hero-howto-item">
+                <span class="howto-icon"><i data-lucide="sparkles"></i></span>
+                <span>Saldo <strong>acumula sem expirar</strong> e cresce a cada novo sorteio.</span>
+              </li>
+            </ul>
+            <a href="#disclaimer" class="hero-howto-cta">
+              Saiba mais
+              <i data-lucide="arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 2.3 DETALHAMENTO POR SORTEIO ===== -->
+    <section aria-labelledby="breakdown-title">
+      <div class="section-heading">
+        <span class="section-eyebrow">Detalhamento</span>
+        <h2 id="breakdown-title">
+          Pontos por <span class="italic">sorteio</span>
+        </h2>
+        <p>
+          Veja onde suas indicações geraram resultado. Clique em qualquer linha para ver
+          as compras que somaram pontos.
+        </p>
+      </div>
+
+      <!-- DESKTOP — tabela editorial premium -->
+      <div class="breakdown-card is-table" role="region" aria-label="Tabela de pontos por sorteio">
+        <table class="breakdown-table">
+          <thead>
+            <tr>
+              <th scope="col">Sorteio</th>
+              <th scope="col" class="is-num">Indicações</th>
+              <th scope="col" class="is-num">Pontos</th>
+              <th scope="col" class="is-action"><span class="sr-only">Ações</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr aria-label="Porsche 911 Mega Edição número 012, 7 indicações, 520 pontos">
+              <td>
+                <div class="breakdown-row-name">
+                  <span class="breakdown-row-icon"><i data-lucide="car"></i></span>
+                  <span>
+                    <span class="name-text">Porsche 911 Mega Edição #012</span>
+                    <span class="name-sub">Sorteio em 12/05/2026</span>
+                  </span>
+                </div>
+              </td>
+              <td class="breakdown-num">7</td>
+              <td>
+                <span class="breakdown-points">520<span class="breakdown-points-unit">pts</span></span>
+              </td>
+              <td class="breakdown-action">
+                <button type="button" class="breakdown-detail-btn"
+                        aria-label="Ver detalhes das indicações em Porsche 911 Mega Edição">
+                  Detalhes
+                  <i data-lucide="arrow-up-right"></i>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="breakdown-row-name">
+                  <span class="breakdown-row-icon"><i data-lucide="car"></i></span>
+                  <span>
+                    <span class="name-text">Civic Type R · Garage</span>
+                    <span class="name-sub">Sorteio em 28/05/2026</span>
+                  </span>
+                </div>
+              </td>
+              <td class="breakdown-num">4</td>
+              <td>
+                <span class="breakdown-points">320<span class="breakdown-points-unit">pts</span></span>
+              </td>
+              <td class="breakdown-action">
+                <button type="button" class="breakdown-detail-btn"
+                        aria-label="Ver detalhes das indicações em Civic Type R">
+                  Detalhes
+                  <i data-lucide="arrow-up-right"></i>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="breakdown-row-name">
+                  <span class="breakdown-row-icon"><i data-lucide="gem"></i></span>
+                  <span>
+                    <span class="name-text">Diamante Fortuno 2026</span>
+                    <span class="name-sub">Sorteio em 14/06/2026</span>
+                  </span>
+                </div>
+              </td>
+              <td class="breakdown-num">3</td>
+              <td>
+                <span class="breakdown-points">240<span class="breakdown-points-unit">pts</span></span>
+              </td>
+              <td class="breakdown-action">
+                <button type="button" class="breakdown-detail-btn"
+                        aria-label="Ver detalhes das indicações em Diamante Fortuno 2026">
+                  Detalhes
+                  <i data-lucide="arrow-up-right"></i>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="breakdown-row-name">
+                  <span class="breakdown-row-icon"><i data-lucide="building-2"></i></span>
+                  <span>
+                    <span class="name-text">Apartamento Vista Mar — Florianópolis</span>
+                    <span class="name-sub">Sorteio em 30/06/2026</span>
+                  </span>
+                </div>
+              </td>
+              <td class="breakdown-num">2</td>
+              <td>
+                <span class="breakdown-points">120<span class="breakdown-points-unit">pts</span></span>
+              </td>
+              <td class="breakdown-action">
+                <button type="button" class="breakdown-detail-btn"
+                        aria-label="Ver detalhes das indicações em Apartamento Vista Mar">
+                  Detalhes
+                  <i data-lucide="arrow-up-right"></i>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="breakdown-row-name">
+                  <span class="breakdown-row-icon"><i data-lucide="watch"></i></span>
+                  <span>
+                    <span class="name-text">Rolex Daytona · Edição Aniversário</span>
+                    <span class="name-sub">Sorteio em 12/07/2026</span>
+                  </span>
+                </div>
+              </td>
+              <td class="breakdown-num">1</td>
+              <td>
+                <span class="breakdown-points">47<span class="breakdown-points-unit">pts</span></span>
+              </td>
+              <td class="breakdown-action">
+                <button type="button" class="breakdown-detail-btn"
+                        aria-label="Ver detalhes das indicações em Rolex Daytona">
+                  Detalhes
+                  <i data-lucide="arrow-up-right"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td class="label" colspan="2">Total acumulado</td>
+              <td class="value" colspan="2">1.247<span class="breakdown-points-unit"
+                style="-webkit-text-fill-color: var(--fortuno-gold-intense); font-style: normal;"> pts</span></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- MOBILE — cards verticais -->
+      <div class="breakdown-cards">
+        <article class="breakdown-mobile-card"
+                 aria-label="Porsche 911 Mega Edição número 012, 7 indicações, 520 pontos">
+          <div class="row-icon"><i data-lucide="car"></i></div>
+          <div class="row-info">
+            <div class="row-name">Porsche 911 Mega Edição #012</div>
+            <div class="row-purchases">7 indicações · 12/05/2026</div>
+          </div>
+          <div class="row-points">520<span class="row-points-unit">pts</span></div>
+          <button type="button" class="row-detail-btn">
+            Ver detalhes
+            <i data-lucide="arrow-up-right"></i>
+          </button>
+        </article>
+        <article class="breakdown-mobile-card">
+          <div class="row-icon"><i data-lucide="car"></i></div>
+          <div class="row-info">
+            <div class="row-name">Civic Type R · Garage</div>
+            <div class="row-purchases">4 indicações · 28/05/2026</div>
+          </div>
+          <div class="row-points">320<span class="row-points-unit">pts</span></div>
+          <button type="button" class="row-detail-btn">
+            Ver detalhes
+            <i data-lucide="arrow-up-right"></i>
+          </button>
+        </article>
+        <article class="breakdown-mobile-card">
+          <div class="row-icon"><i data-lucide="gem"></i></div>
+          <div class="row-info">
+            <div class="row-name">Diamante Fortuno 2026</div>
+            <div class="row-purchases">3 indicações · 14/06/2026</div>
+          </div>
+          <div class="row-points">240<span class="row-points-unit">pts</span></div>
+          <button type="button" class="row-detail-btn">
+            Ver detalhes
+            <i data-lucide="arrow-up-right"></i>
+          </button>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===== 2.4 DISCLAIMER INSTITUCIONAL ===== -->
+    <section id="disclaimer" aria-labelledby="disclaimer-title">
+      <h2 id="disclaimer-title" class="sr-only">Disclaimer institucional</h2>
+      <div class="disclaimer-ornament">
+        <span class="disclaimer-icon" aria-hidden="true">
+          <i data-lucide="info"></i>
+        </span>
+        <span class="disclaimer-eyebrow">Importante saber</span>
+        <p class="disclaimer-text">
+          Os pontos apresentados refletem o saldo acumulado a partir de indicações cuja compra foi
+          confirmada e auditada pela Fortuno. O valor estimado em reais é apenas referencial e pode
+          variar conforme a campanha vigente. Saldos não expiram; a conversão em prêmios obedece
+          ao regulamento publicado em cada sorteio.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== 2.5 SHARE MODAL — still preview ===== -->
+    <section aria-labelledby="share-modal-preview-title">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="preview-label">Modal · Indicar amigos</span>
+        <span class="text-xs text-fortuno-black/55 italic">
+          Renderizado aberto para preview do design.
+        </span>
+      </div>
+      <div class="modal-overlay">
+        <div class="modal-card" role="dialog" aria-modal="true"
+             aria-labelledby="share-modal-title" id="shareModal">
+          <header class="modal-header">
+            <span class="modal-icon-frame" aria-hidden="true">
+              <i data-lucide="share-2"></i>
+            </span>
+            <div class="modal-titleblock">
+              <span class="modal-eyebrow">Programa de indicação</span>
+              <h3 id="share-modal-title" class="modal-title">
+                Indique e acumule pontos
+              </h3>
+            </div>
+            <button type="button" class="modal-close" aria-label="Fechar">
+              <i data-lucide="x"></i>
+            </button>
+          </header>
+
+          <div class="modal-body">
+            <p class="text-[13px] text-fortuno-black/65 leading-[1.55]">
+              Compartilhe seu código com amigos. A cada compra confirmada, você ganha
+              pontos automaticamente.
+            </p>
+
+            <div class="share-message-block mt-4">
+              <span class="msg-eyebrow">Mensagem (editável)</span>
+              <textarea aria-label="Mensagem de convite editável">Olá! Estou participando do Fortuno e te convido a entrar também. Use meu código FORT-R0D1G0 ou acesse: https://fortuno.com.br/?ref=FORT-R0D1G0</textarea>
+            </div>
+
+            <div class="share-channels">
+              <a href="https://wa.me/?text=Ol%C3%A1!%20Estou%20participando%20do%20Fortuno..."
+                 class="share-channel is-whatsapp"
+                 aria-label="Compartilhar via WhatsApp">
+                <i data-lucide="message-circle"></i>
+                Compartilhar no WhatsApp
+              </a>
+              <button type="button" class="share-channel" aria-label="Copiar link de indicação">
+                <i data-lucide="link"></i>
+                Copiar link
+              </button>
+              <button type="button" class="share-channel" aria-label="Copiar código de indicação">
+                <i data-lucide="copy"></i>
+                Copiar código
+              </button>
+            </div>
+
+            <div class="modal-divider"></div>
+
+            <p class="text-[11px] text-fortuno-black/55 leading-[1.5] flex items-start gap-2">
+              <i data-lucide="shield-check" style="width:13px;height:13px;color:var(--fortuno-gold-intense);margin-top:1px;flex-shrink:0"></i>
+              Seu código é único e rastreado por compra. Pontos são creditados após
+              confirmação de pagamento.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 2.6 EMPTY STATE — preview ===== -->
+    <section aria-labelledby="empty-preview-title">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="preview-label">Empty state · Sem indicações</span>
+      </div>
+      <div class="empty-card">
+        <div class="empty-card-icon" aria-hidden="true">
+          <i data-lucide="users"></i>
+        </div>
+        <h3>Comece a indicar e veja seus pontos crescerem</h3>
+        <p>
+          Compartilhe seu código de indicação com amigos. A cada compra confirmada, você acumula
+          pontos automaticamente — sem expiração, sem complicação.
+        </p>
+        <button type="button" class="cta-primary" aria-label="Compartilhar código">
+          <i data-lucide="share-2"></i>
+          Compartilhar código
+        </button>
+      </div>
+    </section>
+
+    <!-- ===== 2.7 LOADING — skeleton preview ===== -->
+    <section aria-labelledby="skel-preview-title">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="preview-label">Loading · Skeleton</span>
+      </div>
+      <div class="skel-hero" aria-busy="true" aria-label="Carregando saldo de pontos">
+        <div class="flex flex-col gap-3">
+          <div class="skel-block" style="width:80px;height:10px"></div>
+          <div class="skel-block" style="width:240px;height:80px;border-radius:14px"></div>
+          <div class="skel-block" style="width:160px;height:12px"></div>
+          <div class="skel-block" style="width:200px;height:24px;border-radius:999px;margin-top:6px"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="skel-block" style="height:74px;border-radius:14px"></div>
+          <div class="skel-block" style="height:74px;border-radius:14px"></div>
+          <div class="skel-block" style="height:74px;border-radius:14px"></div>
+          <div class="skel-block" style="height:74px;border-radius:14px"></div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <div class="skel-block" style="width:60%;height:14px"></div>
+          <div class="skel-block" style="height:36px"></div>
+          <div class="skel-block" style="height:36px"></div>
+          <div class="skel-block" style="height:36px"></div>
+        </div>
+      </div>
+      <div class="breakdown-card is-table mt-4" aria-busy="true">
+        <table class="breakdown-table">
+          <thead>
+            <tr>
+              <th>Sorteio</th>
+              <th class="is-num">Indicações</th>
+              <th class="is-num">Pontos</th>
+              <th class="is-action"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="4"><div class="skel-block" style="height:36px"></div></td></tr>
+            <tr><td colspan="4"><div class="skel-block" style="height:36px"></div></td></tr>
+            <tr><td colspan="4"><div class="skel-block" style="height:36px"></div></td></tr>
+            <tr><td colspan="4"><div class="skel-block" style="height:36px"></div></td></tr>
+            <tr><td colspan="4"><div class="skel-block" style="height:36px"></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =====================================================
+       3. FOOTER BAND (REUSO dashboard)
+       ===================================================== -->
+  <footer class="dash-footer-band" aria-labelledby="footer-title">
+    <h2 id="footer-title" class="sr-only">Rodapé Fortuno</h2>
+    <div class="relative z-10 mx-auto max-w-7xl px-6 py-4 md:py-5">
+      <div class="grid md:grid-cols-[auto_1fr_auto] items-center gap-3 md:gap-6">
+        <div class="flex items-center gap-3">
+          <span class="footer-ornament" aria-hidden="true">
+            <span class="deco-diamond"></span>
+          </span>
+          <p class="font-display text-fortuno-offwhite text-sm md:text-base leading-tight">
+            Fortuno — <span class="italic text-fortuno-gold-soft">sua sorte é séria.</span>
+          </p>
+        </div>
+        <span aria-hidden="true" class="hidden md:block h-5 w-px bg-fortuno-offwhite/15 justify-self-center"></span>
+        <nav aria-label="Rodapé — suporte e contato"
+             class="flex flex-wrap items-center gap-x-4 gap-y-1 md:justify-end">
+          <a href="/suporte" class="footer-link">
+            <i data-lucide="life-buoy"></i>
+            Suporte
+          </a>
+          <a href="/#como" class="footer-link">
+            <i data-lucide="info"></i>
+            Como funciona
+          </a>
+          <a href="mailto:contato@fortuno.com.br" class="footer-link">
+            <i data-lucide="mail"></i>
+            contato@fortuno.com.br
+          </a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    if (window.lucide) window.lucide.createIcons();
+  </script>
+</body>
+</html>
