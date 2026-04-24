@@ -43,6 +43,7 @@ export class LotteryService {
   }
 
   public async create(payload: LotteryInsertInfo): Promise<LotteryInfo> {
+    console.log('[api] POST /lotteries payload', payload);
     const res = await safeFetch(apiUrl('/lotteries'), {
       method: 'POST',
       headers: getHeaders(true),
