@@ -141,7 +141,8 @@ export const LotteryDetailPage = (): JSX.Element => {
   const startCheckout = (): void => {
     checkout.setLotteryId(currentLottery.lotteryId);
     checkout.setQuantity(selectedQuantity);
-    navigate(`/checkout/${currentLottery.lotteryId}`);
+    const slugOrId = currentLottery.slug ?? currentLottery.lotteryId;
+    navigate(`/checkout/${slugOrId}?qty=${selectedQuantity}`);
   };
 
   const openRaffle = (raffleId: number): void =>

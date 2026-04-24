@@ -26,9 +26,9 @@ export enum TicketOrderMode {
 }
 
 export enum TicketRefundState {
-  None = 0,
-  Pending = 1,
-  Refunded = 2,
+  None = 1,
+  Pending = 2,
+  Refunded = 3,
 }
 
 export enum TicketOrderStatus {

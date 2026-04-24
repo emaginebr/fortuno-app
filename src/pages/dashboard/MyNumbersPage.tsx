@@ -62,7 +62,7 @@ export const MyNumbersPage = (): JSX.Element => {
   const { t } = useTranslation();
   const { user } = useUser();
   const { referralCode, panel, loadPanel } = useReferral();
-  const { tickets, loading, loadMine } = useTicket();
+  const { tickets, pagination, loading, loadMine } = useTicket();
   const { openLotteries, loadOpen } = useLottery();
 
   const [lotteryFilter, setLotteryFilter] = useState<number | null>(null);
@@ -81,8 +81,12 @@ export const MyNumbersPage = (): JSX.Element => {
   }, [loadOpen]);
 
   useEffect(() => {
-    void loadMine(lotteryFilter != null ? { lotteryId: lotteryFilter } : undefined);
-  }, [lotteryFilter, loadMine]);
+    void loadMine(
+      lotteryFilter != null ? { lotteryId: lotteryFilter } : undefined,
+      page,
+      PAGE_SIZE,
+    );
+  }, [lotteryFilter, page, loadMine]);
 
   // MOCK: aguarda `panel.totalPoints` — ver MOCKS.md. Trunca totalToReceive p/ int.
   const totalPoints = Math.max(0, Math.floor(panel?.totalToReceive ?? 0));
@@ -127,16 +131,16 @@ export const MyNumbersPage = (): JSX.Element => {
     return sorted;
   }, [tickets, search, statusFilter, sort, lotteryById]);
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const paginated = useMemo(
-    () => filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
-    [filtered, page],
-  );
+  // Paginação é feita pela API — filtros/buscas/ordenação client-side operam
+  // apenas sobre a página atual. Quando o usuário filtra por loteria, a API
+  // recebe `lotteryId` e recalcula o total (totalPages reflete o filtro).
+  const totalPages = Math.max(1, pagination.totalPages);
+  const paginated = filtered;
 
-  // Reset pagina ao mudar filtros
+  // Reset página ao trocar filtro server-side (lotteryId).
   useEffect(() => {
     setPage(1);
-  }, [search, lotteryFilter, statusFilter, sort]);
+  }, [lotteryFilter]);
 
   const handlePageChange = (next: number): void => {
     setPage(next);
@@ -187,7 +191,7 @@ export const MyNumbersPage = (): JSX.Element => {
 
       <main className="relative z-10 mx-auto max-w-7xl w-full px-6 py-8 md:py-10 flex-1">
         <TicketsToolbar
-          totalCount={filtered.length}
+          totalCount={pagination.totalCount}
           openLotteries={openLotteries}
           lotteryFilter={lotteryFilter}
           search={search}

@@ -9,11 +9,23 @@ import type {
   TicketSearchQuery,
 } from '@/types/ticket';
 
+export interface TicketPagination {
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
+}
+
 export interface TicketContextType {
   tickets: TicketInfo[];
+  pagination: TicketPagination;
   loading: boolean;
   error: string | null;
-  loadMine: (query?: TicketSearchQuery) => Promise<void>;
+  loadMine: (
+    query?: TicketSearchQuery,
+    page?: number,
+    pageSize?: number,
+  ) => Promise<void>;
   createQrCode: (req: TicketOrderRequest) => Promise<TicketQRCodeInfo | null>;
   getStatus: (invoiceId: number) => Promise<TicketQRCodeStatusInfo | null>;
   simulatePayment: (invoiceId: number) => Promise<void>;
@@ -24,6 +36,12 @@ const TicketContext = createContext<TicketContextType | undefined>(undefined);
 
 export const TicketProvider = ({ children }: { children: ReactNode }): JSX.Element => {
   const [tickets, setTickets] = useState<TicketInfo[]>([]);
+  const [pagination, setPagination] = useState<TicketPagination>({
+    page: 1,
+    pageSize: 20,
+    totalCount: 0,
+    totalPages: 1,
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,10 +51,21 @@ export const TicketProvider = ({ children }: { children: ReactNode }): JSX.Eleme
   }, []);
 
   const loadMine = useCallback(
-    async (query: TicketSearchQuery = {}): Promise<void> => {
+    async (
+      query: TicketSearchQuery = {},
+      page = 1,
+      pageSize = 20,
+    ): Promise<void> => {
       setLoading(true);
       try {
-        setTickets(await ticketService.listMine(query));
+        const res = await ticketService.listMine(query, page, pageSize);
+        setTickets(res.items);
+        setPagination({
+          page: res.page,
+          pageSize: res.pageSize,
+          totalCount: res.totalCount,
+          totalPages: res.totalPages,
+        });
         setError(null);
       } catch (err) {
         fail(err, 'Falha ao carregar seus bilhetes.');
@@ -81,6 +110,7 @@ export const TicketProvider = ({ children }: { children: ReactNode }): JSX.Eleme
     <TicketContext.Provider
       value={{
         tickets,
+        pagination,
         loading,
         error,
         loadMine,

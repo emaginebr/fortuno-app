@@ -82,8 +82,23 @@ export const CheckoutProvider = ({ children }: { children: ReactNode }): JSX.Ele
 
   const setLotteryId = useCallback((id: number): void => {
     setState((prev) => {
-      if (prev.lotteryId === id) return prev;
+      // Se a compra anterior foi finalizada, zera qualquer estado residual.
+      const prevCompleted =
+        prev.lastStatus === TicketOrderStatus.Paid || prev.currentStep === 'success';
+      if (prev.lotteryId === id && !prevCompleted) return prev;
+
       const persisted = loadPersisted(id);
+      const persistedCompleted =
+        persisted.lastStatus === TicketOrderStatus.Paid ||
+        persisted.currentStep === 'success';
+      if (prevCompleted || persistedCompleted) {
+        try {
+          sessionStorage.removeItem(`${STORAGE_PREFIX}:${id}`);
+        } catch {
+          // ignore
+        }
+        return { ...initialState, lotteryId: id };
+      }
       return { ...initialState, ...persisted, lotteryId: id };
     });
   }, []);
@@ -163,12 +178,19 @@ export const CheckoutProvider = ({ children }: { children: ReactNode }): JSX.Ele
 
   const setPaymentResult = useCallback(
     (status: TicketOrderStatus, tickets?: TicketInfo[]): void => {
-      setState((prev) => ({
-        ...prev,
-        lastStatus: status,
-        tickets: tickets ?? prev.tickets,
-        currentStep: status === TicketOrderStatus.Paid ? 'success' : prev.currentStep,
-      }));
+      setState((prev) => {
+        const paid = status === TicketOrderStatus.Paid;
+        return {
+          ...prev,
+          lastStatus: status,
+          tickets: tickets ?? prev.tickets,
+          currentStep: paid ? 'success' : prev.currentStep,
+          // Ao confirmar pagamento, limpa bilhetes escolhidos e reinicia o modo
+          // para que uma próxima compra comece com carrinho zerado.
+          pickedNumbers: paid ? [] : prev.pickedNumbers,
+          mode: paid ? TicketOrderMode.Random : prev.mode,
+        };
+      });
     },
     [],
   );

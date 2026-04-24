@@ -24,19 +24,57 @@ export class TicketService {
     return handleResponse<TicketInfo>(res);
   }
 
-  public async listMine(query: TicketSearchQuery = {}): Promise<TicketInfo[]> {
+  public async listMine(
+    query: TicketSearchQuery = {},
+    page = 1,
+    pageSize = 20,
+  ): Promise<{
+    items: TicketInfo[];
+    page: number;
+    pageSize: number;
+    totalCount: number;
+    totalPages: number;
+  }> {
     const qs = buildQuery({
       lotteryId: query.lotteryId,
       number: query.number,
       fromDate: query.fromDate,
       toDate: query.toDate,
+      page,
+      pageSize,
     });
     const res = await safeFetch(apiUrl(`/tickets/mine${qs}`), {
       method: 'GET',
       headers: getHeaders(true),
     });
-    const data = await handleResponse<TicketInfo[] | { items: TicketInfo[] }>(res);
-    return Array.isArray(data) ? data : (data.items ?? []);
+    const data = await handleResponse<
+      | TicketInfo[]
+      | {
+          items: TicketInfo[];
+          page?: number;
+          pageSize?: number;
+          totalCount?: number;
+          totalPages?: number;
+        }
+    >(res);
+    if (Array.isArray(data)) {
+      return {
+        items: data,
+        page: 1,
+        pageSize: data.length,
+        totalCount: data.length,
+        totalPages: 1,
+      };
+    }
+    return {
+      items: data.items ?? [],
+      page: data.page ?? page,
+      pageSize: data.pageSize ?? pageSize,
+      totalCount: data.totalCount ?? data.items?.length ?? 0,
+      totalPages:
+        data.totalPages ??
+        Math.max(1, Math.ceil((data.totalCount ?? data.items?.length ?? 0) / pageSize)),
+    };
   }
 
   public async createQrCode(req: TicketOrderRequest): Promise<TicketQRCodeInfo> {

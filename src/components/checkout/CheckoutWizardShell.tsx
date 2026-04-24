@@ -1,10 +1,12 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCheckout } from '@/hooks/useCheckout';
 import { useLottery } from '@/hooks/useLottery';
+import { useLotteryCombo } from '@/hooks/useLotteryCombo';
 import { useCheckoutWizard } from '@/hooks/useCheckoutWizard';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
+import { pickCombo } from '@/components/lottery/ComboSelector';
 import { CheckoutStepper } from './CheckoutStepper';
 import { RegisterStep } from './RegisterStep';
 import { CartStep } from './CartStep';
@@ -20,40 +22,52 @@ const parsePositiveInt = (raw: string | null): number | null => {
 
 export const CheckoutWizardShell = (): JSX.Element => {
   const { t } = useTranslation();
-  const { lotteryId } = useParams();
+  const { lotteryId: lotteryParam } = useParams();
   const [searchParams] = useSearchParams();
   const checkout = useCheckout();
-  const { currentLottery, loadById } = useLottery();
+  const { currentLottery, loadById, loadBySlug } = useLottery();
+  const { combos, loadByLottery: loadCombos } = useLotteryCombo();
   const wizard = useCheckoutWizard();
+  const [resolvedId, setResolvedId] = useState<number | null>(null);
 
-  // Carrega sorteio + inicializa quantity/combo/referral a partir da URL.
+  // Carrega sorteio por id numérico ou slug.
   useEffect(() => {
-    const id = Number(lotteryId);
-    if (Number.isNaN(id)) return;
-    checkout.setLotteryId(id);
-    void loadById(id);
-  }, [lotteryId, checkout, loadById]);
+    if (!lotteryParam) return;
+    const asNumber = Number(lotteryParam);
+    if (Number.isInteger(asNumber) && asNumber > 0 && /^\d+$/.test(lotteryParam)) {
+      checkout.setLotteryId(asNumber);
+      setResolvedId(asNumber);
+      void loadById(asNumber);
+      return;
+    }
+    void loadBySlug(lotteryParam).then((l) => {
+      if (!l) return;
+      checkout.setLotteryId(l.lotteryId);
+      setResolvedId(l.lotteryId);
+    });
+  }, [lotteryParam, checkout, loadById, loadBySlug]);
+
+  useEffect(() => {
+    if (resolvedId !== null) void loadCombos(resolvedId);
+  }, [resolvedId, loadCombos]);
 
   useEffect(() => {
     const qty = parsePositiveInt(searchParams.get('qty'));
     if (qty !== null) checkout.setQuantity(qty);
     const referral = searchParams.get('referral');
     if (referral) checkout.setReferralCode(referral);
-    // Não setamos combo no contexto (não existe setCombo); o param é lido
-    // pelo próprio shell e repassado aos steps.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
-  const comboSlug = searchParams.get('combo') ?? undefined;
-
-  // Combo discount lookup (client-side) a partir de `currentLottery.combos`.
-  const combo = currentLottery?.combos?.find(
-    (c) => `${c.lotteryComboId}` === comboSlug || c.name.toLowerCase() === comboSlug?.toLowerCase(),
-  );
+  // Segurança: o combo é recalculado aqui a partir da quantidade atual e dos
+  // combos reais do sorteio (retornados pela API). Nunca confiamos na URL.
+  const lotteryCombos =
+    combos.length > 0 ? combos : (currentLottery?.combos ?? []);
+  const combo = pickCombo(checkout.quantity, lotteryCombos);
   const comboDiscountPercent = combo?.discountValue ?? 0;
   const comboName = combo?.name;
 
-  if (!currentLottery || currentLottery.lotteryId !== Number(lotteryId)) {
+  if (!currentLottery || resolvedId === null || currentLottery.lotteryId !== resolvedId) {
     return <LoadingSpinner label={t('checkout.preparing')} />;
   }
 

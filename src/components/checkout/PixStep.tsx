@@ -81,7 +81,9 @@ export const PixStep = ({ comboDiscountPercent = 0 }: PixStepProps): JSX.Element
   const quantity = checkout.quantity;
   const unitPrice = currentLottery?.ticketPrice ?? 0;
   const subtotal = unitPrice * quantity;
-  const total = subtotal * (1 - comboDiscountPercent);
+  const discountRate =
+    comboDiscountPercent > 1 ? comboDiscountPercent / 100 : comboDiscountPercent;
+  const total = subtotal * (1 - discountRate);
 
   return (
     <section aria-labelledby="pix-step-title" className="max-w-5xl mx-auto">

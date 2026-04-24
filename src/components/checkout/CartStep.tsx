@@ -30,7 +30,10 @@ export const CartStep = ({ comboName, comboDiscountPercent = 0 }: CartStepProps)
   const random = Math.max(0, quantity - picked.length);
   const unitPrice = currentLottery.ticketPrice;
   const subtotal = unitPrice * quantity;
-  const discount = Math.max(0, subtotal * comboDiscountPercent);
+  // comboDiscountPercent chega como inteiro (ex.: 20 = 20%); normalizamos aqui.
+  const discountRate =
+    comboDiscountPercent > 1 ? comboDiscountPercent / 100 : comboDiscountPercent;
+  const discount = Math.max(0, subtotal * discountRate);
   const total = Math.max(0, subtotal - discount);
 
   const handleConfirm = async (): Promise<void> => {

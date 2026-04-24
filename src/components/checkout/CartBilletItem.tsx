@@ -15,7 +15,7 @@ export type CartBilletItemProps =
     };
 
 const baseClass =
-  'grid grid-cols-[auto_1fr_auto_auto] gap-3.5 items-center p-3.5 px-[18px] border rounded-[14px] transition-all duration-noir-base ease-noir-spring animate-billet-slide-in';
+  'grid gap-3.5 items-center p-3.5 px-[18px] border rounded-[14px] transition-all duration-noir-base ease-noir-spring animate-billet-slide-in';
 
 export const CartBilletItem = (props: CartBilletItemProps): JSX.Element => {
   const { t } = useTranslation();
@@ -25,7 +25,7 @@ export const CartBilletItem = (props: CartBilletItemProps): JSX.Element => {
     return (
       <div
         role="listitem"
-        className={`${baseClass} bg-billet-row-random border-[color:var(--billet-row-border)]`}
+        className={`${baseClass} grid-cols-[auto_1fr_auto_auto] bg-billet-row-random border-[color:var(--billet-row-border)]`}
       >
         <span className="w-11 h-11 rounded-xl grid place-items-center border border-fortuno-gold-intense/45 bg-billet-icon-random text-fortuno-gold-intense">
           <Dices className="w-5 h-5" aria-hidden="true" />
@@ -59,7 +59,7 @@ export const CartBilletItem = (props: CartBilletItemProps): JSX.Element => {
   return (
     <div
       role="listitem"
-      className={`${baseClass} bg-[color:var(--billet-row-bg)] border-[color:var(--billet-row-border)] border-l-[3px] border-l-fortuno-gold-intense`}
+      className={`${baseClass} grid-cols-[auto_1fr_auto_auto_auto_auto] bg-[color:var(--billet-row-bg)] border-[color:var(--billet-row-border)] border-l-[3px] border-l-fortuno-gold-intense`}
     >
       <span className="w-11 h-11 rounded-xl grid place-items-center border border-fortuno-gold-intense/45 bg-billet-icon-manual text-fortuno-black">
         <Hash className="w-5 h-5" aria-hidden="true" />
@@ -74,6 +74,15 @@ export const CartBilletItem = (props: CartBilletItemProps): JSX.Element => {
       </div>
       <span className="font-display italic font-extrabold text-[20px] text-transparent bg-clip-text bg-ticket-numeral tabular-nums pl-2">
         {formatted}
+      </span>
+      <span
+        className="text-[11px] font-semibold uppercase tracking-[0.1em] text-fortuno-black/55 tabular-nums"
+        aria-hidden="true"
+      >
+        1 × {formatBRL(props.unitPrice)}
+      </span>
+      <span className="text-sm font-bold text-fortuno-black tabular-nums pl-2">
+        {formatBRL(props.unitPrice)}
       </span>
       <button
         type="button"
