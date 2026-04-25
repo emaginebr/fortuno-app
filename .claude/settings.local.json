@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "mcp__Claude_Preview__preview_start",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Read(//c/repos/Fortuno/Fortuno/bruno/Tickets/**)",
+      "Read(//c/repos/Fortuno/Fortuno/bruno/Tickets//**)"
     ]
   }
 }

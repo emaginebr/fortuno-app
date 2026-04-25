@@ -146,8 +146,10 @@ export const LotteryWizardPage = (): JSX.Element => {
   }, [currentIndex, draft, storageId]);
 
   const goNext = async (): Promise<void> => {
-    // Ao sair do Step 1, persistir a lottery (create/update) para ter lotteryId
-    if (currentIndex === 0) {
+    // Steps 0 (Básico), 1 (Numeração) e 2 (Descrições) alteram o draft da
+    // lottery — persistimos antes de avançar (create no Step 0, update nos
+    // seguintes) para que Numeração/Descrições também sejam gravados.
+    if (currentIndex <= 2) {
       setBusy(true);
       // API exige descriptionMd/rulesMd/privacyPolicyMd não-vazios; etapa 3 substitui placeholders.
       // `storeId` NÃO vai mais no payload — o backend resolve a store do usuário

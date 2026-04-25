@@ -1,10 +1,12 @@
 import { useMemo, useState, type ChangeEvent, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { X } from 'lucide-react';
+import { Loader2, X } from 'lucide-react';
+import { toast } from 'sonner';
 import { Modal } from '@/components/common/Modal';
 import { NumberType, composedSize } from '@/types/enums';
 import { formatComposed } from '@/utils/numberFormat';
 import { validatePickedNumber } from '@/utils/validators';
+import { ticketService } from '@/Services/ticketService';
 import type { LotteryInfo } from '@/types/lottery';
 
 export interface ChooseNumberModalProps {
@@ -42,6 +44,7 @@ export const ChooseNumberModal = (props: ChooseNumberModalProps): JSX.Element | 
   const [feedback, setFeedback] = useState<{ kind: 'error' | 'success'; msg: string } | null>(
     null,
   );
+  const [reserving, setReserving] = useState(false);
 
   const isComposed = lottery.numberType !== NumberType.Int64;
   const size = composedSize(lottery.numberType);
@@ -81,9 +84,9 @@ export const ChooseNumberModal = (props: ChooseNumberModalProps): JSX.Element | 
     if (feedback) setFeedback(null);
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || reserving) return;
 
     const check = validatePickedNumber(input, lottery);
     if (!check.valid) {
@@ -91,23 +94,45 @@ export const ChooseNumberModal = (props: ChooseNumberModalProps): JSX.Element | 
       return;
     }
 
-    const normalized = normalize(input, lottery.numberType);
-    if (alreadyPicked.includes(normalized)) {
+    const ticketNumber = normalize(input, lottery.numberType);
+
+    if (alreadyPicked.includes(ticketNumber)) {
       setFeedback({ kind: 'error', msg: t('checkout.modal.errorAlreadyPicked') });
       return;
     }
 
-    // MOCK: aguarda endpoint GET /lotteries/{id}/numbers/{n}/available para validar
-    // se o número já foi comprado por outro usuário. Por enquanto apenas segue.
-    onConfirm(normalized);
-    setInput('');
-    setFeedback(null);
-    onClose();
+    setReserving(true);
+    try {
+      const res = await ticketService.reserveNumber({
+        lotteryId: lottery.lotteryId,
+        ticketNumber,
+      });
+      if (!res.success) {
+        setFeedback({ kind: 'error', msg: res.message });
+        toast.error(res.message);
+        return;
+      }
+      const finalNumber = res.ticketNumber || ticketNumber;
+      toast.success(
+        res.message || `Número ${finalNumber} reservado para você.`,
+      );
+      onConfirm(finalNumber);
+      setInput('');
+      setFeedback(null);
+      onClose();
+    } catch (err) {
+      const msg =
+        err instanceof Error ? err.message : t('checkout.modal.errorInvalid');
+      setFeedback({ kind: 'error', msg });
+      toast.error(msg);
+    } finally {
+      setReserving(false);
+    }
   };
 
   return (
     <Modal onClose={onClose} ariaLabelledBy="choose-number-title">
-      <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-5">
+      <form onSubmit={(e) => void handleSubmit(e)} className="p-6 md:p-8 space-y-5">
         <header className="flex items-start justify-between gap-4">
           <div>
             <p className="text-[10px] uppercase tracking-[0.26em] text-fortuno-gold-intense font-semibold">
@@ -173,10 +198,17 @@ export const ChooseNumberModal = (props: ChooseNumberModalProps): JSX.Element | 
           </button>
           <button
             type="submit"
-            disabled={!input.trim()}
+            disabled={!input.trim() || reserving}
+            aria-busy={reserving}
             className="cta-gold focus-visible:outline-none focus-visible:shadow-gold-focus"
           >
-            {t('checkout.modal.add')}
+            {reserving ? (
+              <Loader2
+                className="w-4 h-4 animate-spin motion-reduce:animate-none"
+                aria-hidden="true"
+              />
+            ) : null}
+            {reserving ? 'Reservando...' : t('checkout.modal.add')}
           </button>
         </footer>
       </form>

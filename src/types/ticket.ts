@@ -1,4 +1,4 @@
-import type { TicketOrderMode, TicketOrderStatus, TicketRefundState } from './enums';
+import type { TicketOrderStatus, TicketRefundState } from './enums';
 
 export interface TicketInfo {
   ticketId: number;
@@ -23,10 +23,9 @@ export interface TicketInfo {
 export interface TicketOrderRequest {
   lotteryId: number;
   quantity: number;
-  mode: TicketOrderMode;
   /**
-   * Números escolhidos pelo usuário em modo Manual.
-   * Sempre em formato string canônico:
+   * Números escolhidos pelo usuário (subset). O backend completa o restante
+   * aleatoriamente até atingir `quantity`. Formato string canônico:
    * - Int64:    "42", "1000"
    * - Composed: "05-11-28-39-60" (pode ser enviado desordenado — backend normaliza).
    */

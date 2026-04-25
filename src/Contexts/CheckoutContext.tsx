@@ -168,17 +168,15 @@ export const CheckoutProvider = ({ children }: { children: ReactNode }): JSX.Ele
 
   const startPayment = useCallback(async (): Promise<TicketQRCodeInfo | null> => {
     if (!state.lotteryId) return null;
-    // API exige pickedNumbers.length === quantity no modo Manual; caso contrário envia Random.
-    const isManual =
-      state.mode === TicketOrderMode.Manual &&
-      state.pickedNumbers.length === state.quantity;
-    // Descarta QR/status anteriores para forçar geração de um novo invoice a cada clique.
+    // Backend não usa mais `mode`: completa automaticamente os bilhetes não
+    // especificados em `pickedNumbers` até atingir `quantity`. Enviamos sempre
+    // o que o usuário escolheu (subset 0..quantity).
     setState((prev) => ({ ...prev, qrCode: null, lastStatus: null, tickets: undefined }));
     const payload = {
       lotteryId: state.lotteryId,
       quantity: state.quantity,
-      mode: isManual ? TicketOrderMode.Manual : TicketOrderMode.Random,
-      pickedNumbers: isManual ? state.pickedNumbers : undefined,
+      pickedNumbers:
+        state.pickedNumbers.length > 0 ? state.pickedNumbers : undefined,
       referralCode: state.referralCode,
     };
     // eslint-disable-next-line no-console
@@ -202,7 +200,7 @@ export const CheckoutProvider = ({ children }: { children: ReactNode }): JSX.Ele
       }
       return null;
     }
-  }, [state.lotteryId, state.quantity, state.mode, state.pickedNumbers, state.referralCode]);
+  }, [state.lotteryId, state.quantity, state.pickedNumbers, state.referralCode]);
 
   const setPaymentResult = useCallback(
     (status: TicketOrderStatus, tickets?: TicketInfo[]): void => {
