@@ -139,6 +139,10 @@ export const LotteryDetailPage = (): JSX.Element => {
   }
 
   const startCheckout = (): void => {
+    // Limpa qualquer estado de checkout pendente (QR não pago, picks, etc.)
+    // antes de iniciar uma nova compra. Garante que abrir o checkout sempre
+    // comece um fluxo limpo a partir do clique em "Comprar".
+    checkout.reset();
     checkout.setLotteryId(currentLottery.lotteryId);
     checkout.setQuantity(selectedQuantity);
     const slugOrId = currentLottery.slug ?? currentLottery.lotteryId;
