@@ -1,0 +1,49 @@
+%% Diagram: Fortuno App — System Design
+%% Type: Flowchart
+%% Generated: 2026-04-27
+
+flowchart LR
+    user([Usuário do navegador])
+
+    subgraph SPA["Fortuno SPA — React 18 + TS 5 + Vite 6"]
+        direction TB
+        router[React Router 6<br/>BrowserRouter + ProtectedRoute]
+        shell[AuthenticatedShell<br/>+ Pages: home, sorteios, dashboard,<br/>checkout, wizard admin]
+        pchain["Provider Chain (main.tsx)<br/>NAuth → Commission → Referral →<br/>Ticket → RaffleAward → Raffle →<br/>LotteryImage → LotteryCombo →<br/>Lottery → Checkout"]
+        nauth_lib[nauth-react<br/>NAuthProvider + useAuth]
+        services["Services/<br/>1 classe HTTP por entidade"]
+        api_helpers["apiHelpers.ts<br/>getHeaders + safeFetch + handleResponse<br/>injeta X-Tenant-Id: fortuno + Bearer"]
+        i18n[i18next 25<br/>pt-BR único]
+        styles[Tailwind 3<br/>+ tokens.css fortuno.*]
+        toasts[sonner<br/>toast feedback]
+
+        router --> shell
+        shell --> pchain
+        pchain --> nauth_lib
+        pchain --> services
+        services --> api_helpers
+        shell --> i18n
+        shell --> styles
+        pchain --> toasts
+    end
+
+    subgraph Browser["Browser storage"]
+        localstorage[("localStorage<br/>fortuno:nauth")]
+    end
+
+    subgraph Backend["Backend services (repos separados)"]
+        fortuno_api["Fortuno REST API<br/>c:/repos/Fortuno/Fortuno"]
+        nauth_api[NAuth API<br/>auth + perfil]
+    end
+
+    user -->|HTTPS| router
+    nauth_lib <-->|sessão| localstorage
+    api_helpers -->|"X-Tenant-Id: fortuno<br/>Authorization: Bearer"| fortuno_api
+    nauth_lib -->|"X-Tenant-Id: VITE_NAUTH_TENANT"| nauth_api
+
+    classDef spa fill:#0A2A20,stroke:#B8963F,color:#ECE8E1
+    classDef api fill:#134436,stroke:#D4AF37,color:#ECE8E1
+    classDef store fill:#ECE8E1,stroke:#0B0B0B,color:#0B0B0B
+    class router,shell,pchain,nauth_lib,services,api_helpers,i18n,styles,toasts spa
+    class fortuno_api,nauth_api api
+    class localstorage store
